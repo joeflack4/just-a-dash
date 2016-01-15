@@ -1,0 +1,6 @@
+# - IDE Files
+.settings/
+
+# - Local Environment Files
+localhost_run.py
+localhost_run.sh

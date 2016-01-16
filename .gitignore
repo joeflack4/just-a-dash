@@ -4,3 +4,6 @@
 # - Local Environment Files
 localhost_run.py
 localhost_run.sh
+
+requirements_alt.txt
+README.rst

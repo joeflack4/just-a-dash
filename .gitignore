@@ -1,9 +1,11 @@
-# - IDE Files
+# - IDE #
 .settings/
 
-# - Local Environment Files
+# - Local Development #
+.env/
 localhost_run.py
-localhost_run.sh
+localhost_run.bat
 
+# - Extra #
 requirements_alt.txt
 README.rst

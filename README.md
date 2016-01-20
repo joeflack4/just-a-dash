@@ -15,10 +15,11 @@ Contribution is encouraged. While Vanillerp's documentation is currently sparse,
 - Client Languages/Frameworks: HTML/CSS/JS, with UI in *Bootstrap*, themed with *AdminLTE*.
 
 ## Installation
-#### local Installation
+#### Local Installation
 The recommended method is `virtualenv`, with `pip`. The included `requirements.txt` lists dependencies, and is used by `virtualenv`, and *Heroku* (if deploying online) for installation of these dependencies. I highly recommend [The Flask Mega Tutorial](http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) , Part I (& onwards) of which can be used as a guide for installation of this application.
 
-#### For online deployment, I recommend *Heroku* as a PaaS. If using Heroku, it will utilize the included `requirements.txt` file and `Procfile` to build and run your application.
+#### Online Deployment
+I recommend *Heroku* as a PaaS. If using Heroku, it will utilize the included `requirements.txt` file and `Procfile` to build and run your application.
 
 ## EMS Modules
 #### Released Modules

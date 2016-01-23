@@ -73,15 +73,15 @@ def accounting():
 
 
 # - Services
-@app.route('/sms_respond')
-def sms_respond():
+@app.route('/sms_receive')
+def sms_receive():
     resp = twilio.twiml.Response()
     resp.message("Hello there.")
     return str(resp)
 
 
-@app.route('/sms_receive')
-def sms_receive():
+@app.route('/sms_respond')
+def sms_respond():
     return ""
 
 

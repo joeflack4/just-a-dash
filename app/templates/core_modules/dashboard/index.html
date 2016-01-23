@@ -4,36 +4,41 @@
 
 <!-- Navbar -->
 {% block navbar %}
-        {% include "core_components/navbar/sidebar_toggle_button.html" %} <!-- Sidebar Toggle -->
-        <div class="navbar-right">
-          <ul class="nav navbar-nav">
-			{% include "core_components/navbar/messages_menu.html" %} <!-- Messages -->
-			{% include "core_components/navbar/notifications_menu.html" %} <!-- Notifications -->
-			{% include "core_components/navbar/tasks_menu.html" %} <!-- Tasks -->
-			{% include "core_components/navbar/user_menu.html" %} <!-- User Account -->
-          </ul>
-        </div>
+  {% include "core_components/navbar/sidebar_toggle_button.html" %} <!-- Sidebar Toggle -->
+  <div class="navbar-right">
+    <ul class="nav navbar-nav">
+	  {% include "core_components/navbar/messages_menu.html" %} <!-- Messages -->
+	  {% include "core_components/navbar/notifications_menu.html" %} <!-- Notifications -->
+	  {% include "core_components/navbar/tasks_menu.html" %} <!-- Tasks -->
+	  {% include "core_components/navbar/user_menu.html" %} <!-- User Account -->
+    </ul>
+  </div>
 {%- endblock navbar %}
 
 <!-- Sidebar -->
 {% block sidebar -%}
-		  {% include "core_components/sidebar/sidebar.html" %} <!-- Sidebar -->
+  {% include "core_components/sidebar/sidebar.html" %} <!-- Sidebar -->
 {%- endblock sidebar %}
 
 <!-- Content -->
 {% block content_header -%}
-		  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
 {%- endblock content_header %}
 {% block content -%}
-          <h4 class="page-header">{{ page_header }}</h4>
-		  {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->
-		  {% include "core_modules/dashboard/components/dashboard_footer.html" %} <!-- Content: Footer -->
+  <h4 class="page-header">{{ page_header }}</h4>
+  <!-- Broken - Relative file pathing. -->
+  {# {% include "components/dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+  {# {% import "components/dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+  {# {% include "dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+  <!-- /Broken -->
+  {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->
+  {% include "core_modules/dashboard/components/dashboard_footer.html" %} <!-- Content: Footer -->
 {%- endblock content %}
 
 
 <!-- Broken - Experimentation  -->
-          Nothing appears if not in section elements, or template blocks.     
+  Nothing appears if not in section elements, or template blocks.     
 {% block content_footer -%}
-          <h1><small>Conent Footer Placeholder</small></h1>
+  <h1><small>Conent Footer Placeholder</small></h1>
 {%- endblock content_footer %}
 <!-- /Broken - Experimentation -->

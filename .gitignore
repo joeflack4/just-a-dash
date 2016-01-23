@@ -1,5 +1,6 @@
 # - IDE #
 .settings/
+.idea
 
 # - Local Development #
 .env/

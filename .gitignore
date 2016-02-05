@@ -10,3 +10,7 @@ localhost_run.bat
 # - Extra #
 requirements_alt.txt
 README.rst
+
+# - Modules #
+# These have their own repositories.
+.app/templates/modules

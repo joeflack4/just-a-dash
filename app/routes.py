@@ -12,20 +12,19 @@ import twilio.twiml
 
 # - Root Path
 @app.route('/')
+@app.route('/dashboard')
 def index():
-    page_header = "Welcome to the Pythonic Dashboard."
+    username = ""
     return render_template('core_modules/dashboard/index.html',
-                           page_header=page_header)
+                           username=username)
 
+#@app.route('/dashboard')
+#def dashboard():
+#    page_header = "Welcome to the Pythonic Dashboard."
+#    return render_template('core_modules/dashboard/index.html',
+#                           page_header=page_header)
 
 # - Core Modules
-@app.route('/dashboard')
-def dashboard():
-    page_header = "Welcome to the Pythonic Dashboard."
-    return render_template('core_modules/dashboard/index.html',
-                           page_header=page_header)
-
-
 @app.route('/account-settings')
 def account_settings():
     return render_template('core_modules/account_settings/index.html')

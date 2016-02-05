@@ -2,18 +2,32 @@
 {% import "adminlte/fixes.html" as fixes %}
 
 
-<!-- Navbar -->
-{% block navbar %}
-  {% include "core_components/navbar/sidebar_toggle_button.html" %} <!-- Sidebar Toggle -->
-  <div class="navbar-right">
-    <ul class="nav navbar-nav">
-	  {% include "core_components/navbar/messages_menu.html" %} <!-- Messages -->
-	  {% include "core_components/navbar/notifications_menu.html" %} <!-- Notifications -->
-	  {% include "core_components/navbar/tasks_menu.html" %} <!-- Tasks -->
-	  {% include "core_components/navbar/user_menu.html" %} <!-- User Account -->
-    </ul>
-  </div>
-{%- endblock navbar %}
+<!-- Header -->
+{%  block header -%}
+    <header class="header">
+      <a href="/" class="logo">
+          <!-- Add the class icon to your logo image or logo icon to add the margining -->
+          {# Just-a-Dash #}
+          <span class="glyphicon glyphicon-equalizer" aria-hidden="true"> Just-a-Dash</span>
+      </a>
+
+      <!-- Header Navbar: style can be found in header.less -->
+      <nav class="navbar navbar-static-top" role="navigation">
+      {% block navbar %}
+          {% include "core_components/navbar/sidebar_toggle_button.html" %} <!-- Sidebar Toggle -->
+          <div class="navbar-right">
+            <ul class="nav navbar-nav">
+              {% include "core_components/navbar/messages_menu.html" %} <!-- Messages -->
+              {% include "core_components/navbar/notifications_menu.html" %} <!-- Notifications -->
+              {% include "core_components/navbar/tasks_menu.html" %} <!-- Tasks -->
+              {% include "core_components/navbar/user_menu.html" %} <!-- User Account -->
+            </ul>
+          </div>
+        {%- endblock navbar %}
+      </nav>
+    </header>
+{%- endblock header %}
+
 
 <!-- Sidebar -->
 {% block sidebar -%}
@@ -25,12 +39,16 @@
   {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
 {%- endblock content_header %}
 {% block content -%}
-  <h4 class="page-header">{{ page_header }}</h4>
-  <!-- Broken - Relative file pathing. -->
-  {# {% include "components/dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
-  {# {% import "components/dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
-  {# {% include "dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
-  <!-- /Broken -->
+  <div page-header>
+    <h4 class="page-header">Welcome{% if username %}, {{ username }}.
+      {% else %}.{% endif %}
+    </h4>
+  </div>
+      <!-- Broken - Relative file pathing. -->
+      {# {% include "components/dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+      {# {% import "components/dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+      {# {% include "dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+      <!-- /Broken -->
   {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->
   {% include "core_modules/dashboard/components/dashboard_footer.html" %} <!-- Content: Footer -->
 {%- endblock content %}

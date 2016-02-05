@@ -10,30 +10,33 @@
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     {%- endblock metas %}
     {%- block styles %}
-    <!-- bootstrap 3.0.2 -->
-    <link href="{{ adminlte_find_resource('css/bootstrap.css', cdn='local') }}" rel="stylesheet" type="text/css" />
+    <!-- bootstrap 3.0.2
+      <link href="{{ adminlte_find_resource('css/bootstrap.css', cdn='local') }}" rel="stylesheet" type="text/css" /> -->
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <!-- font Awesome -->
-    <link href="{{ adminlte_find_resource('css/font-awesome.css', cdn='local') }}" rel="stylesheet" type="text/css" />
+      <link href="{{ adminlte_find_resource('css/font-awesome.css', cdn='local') }}" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
-    <link href="{{ adminlte_find_resource('css/ionicons.css', cdn='local') }}" rel="stylesheet" type="text/css" />
+      <link href="{{ adminlte_find_resource('css/ionicons.css', cdn='local') }}" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
-    <link href="{{ adminlte_find_resource('css/AdminLTE.css', cdn='local', use_minified=False) }}" rel="stylesheet" type="text/css" />
+      <link href="{{ adminlte_find_resource('css/AdminLTE.css', cdn='local', use_minified=False) }}" rel="stylesheet" type="text/css" />
     {%- endblock styles %}
     {%- endblock head %}
   </head>
   <body{% block body_attribs %} class="skin-blue"{% endblock body_attribs %}>
     {% block body -%}
-    <header class="header">
-      <a href="../../index.html" class="logo">
-          <!-- Add the class icon to your logo image or logo icon to add the margining -->
-          AdminLTE
-      </a>
-      <!-- Header Navbar: style can be found in header.less -->
-      <nav class="navbar navbar-static-top" role="navigation">
-      {% block navbar %}
-      {%- endblock navbar %}
-      </nav>
-    </header>
+        {%  block header -%}
+            <header class="header">
+              <a href="../../index.html" class="logo">
+                  <!-- Add the class icon to your logo image or logo icon to add the margining -->
+                  AdminLTE
+              </a>
+              <!-- Header Navbar: style can be found in header.less -->
+              <nav class="navbar navbar-static-top" role="navigation">
+              {% block navbar %}
+              {%- endblock navbar %}
+              </nav>
+            </header>
+        {%- endblock header %}
     <div class="wrapper row-offcanvas row-offcanvas-left">
       <!-- Left side column. contains the logo and sidebar -->
       <aside class="left-side sidebar-offcanvas">
@@ -59,8 +62,9 @@
     {% block scripts %}
     <!-- jQuery 2.0.2 -->
     <script src="{{ adminlte_find_resource('jquery.js', cdn='jquery') }}"></script>
-    <!-- Bootstrap -->
-    <script src="{{ adminlte_find_resource('js/bootstrap.js', cdn='local') }}"></script>
+    <!-- Bootstrap
+      <script src="{{ adminlte_find_resource('js/bootstrap.js', cdn='local') }}"></script> -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
     <!-- AdminLTE App -->
     <script src="{{ adminlte_find_resource('js/AdminLTE/app.js', cdn='local', use_minified=False) }}"></script>
     {%- endblock scripts %}

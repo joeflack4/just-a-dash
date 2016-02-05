@@ -1,10 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "adminlte/base.html" %}
+{% import "adminlte/fixes.html" as fixes %}
 
-</body>
-</html>
+<!-- Header -->
+{%  block header -%}
+    <header class="header">
+      <a href="/" class="logo">
+          <!-- Add the class icon to your logo image or logo icon to add the margining -->
+          {# Just-a-Dash #}
+          <span class="glyphicon glyphicon-equalizer" aria-hidden="true"> Just-a-Dash</span>
+      </a>
+
+      <!-- Header Navbar: style can be found in header.less -->
+      <nav class="navbar navbar-static-top" role="navigation">
+      {% block navbar %}
+          {% include "core_components/navbar/sidebar_toggle_button.html" %} <!-- Sidebar Toggle -->
+          <div class="navbar-right">
+            <ul class="nav navbar-nav">
+              {% include "core_components/navbar/messages_menu.html" %} <!-- Messages -->
+              {% include "core_components/navbar/notifications_menu.html" %} <!-- Notifications -->
+              {% include "core_components/navbar/tasks_menu.html" %} <!-- Tasks -->
+              {% include "core_components/navbar/user_menu.html" %} <!-- User Account -->
+            </ul>
+          </div>
+        {%- endblock navbar %}
+      </nav>
+    </header>
+{%- endblock header %}
+
+
+<!-- Sidebar -->
+{% block sidebar -%}
+  {% include "core_components/sidebar/sidebar.html" %} <!-- Sidebar -->
+{%- endblock sidebar %}

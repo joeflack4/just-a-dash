@@ -3,7 +3,6 @@
 .idea
 
 # - Local Development #
-.env/
 localhost_run.py
 localhost_run.bat
 
@@ -11,6 +10,11 @@ localhost_run.bat
 requirements_alt.txt
 README.rst
 
+# - Dependencies #
+.env/
+# FlaskAdminLTE should have its own forked repository and packaging, but it is not time for that yet..
+#flask_adminlte
+
 # - Modules #
 # These have their own repositories.
-.app/templates/modules
+app/templates/modules/**

@@ -35,4 +35,4 @@ Currently none.
 - Interface for External AMS (Accounting Management Systems)
 
 #### Screenshots
-![Mobile Alpha 01](http://joeflack.net/wp-content/uploads/2016/02/JustADash_Alpha01.png)
+![Mobile Alpha 01](http://joeflack.net/wp-content/uploads/2016/02/JustADash_Alpha01-337x600.png)

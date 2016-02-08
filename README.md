@@ -1,14 +1,15 @@
-# Vanillerp
-This application is a light-weight, mobile friendly, scaffolded EMS (Enterprise Management System) platform. For our purposes, EMS is synonymous with the more common term 'ERP' (Enterprise Resource Planning).
+# Just-a-Dash
+[!Just-a-Dash ERP Dashboard](http://joeflack.net/wp-content/uploads/2016/02/Just-a-Dash_Alpha01.png)
+Just-a-Dash application is a light-weight, mobile friendly, scaffolded EMS (Enterprise Management System) platform. For our purposes, EMS is synonymous with the more common term 'ERP' (Enterprise Resource Planning).
 
 #### Architecture
-Vanillerp uses a highly modular SOA (Service Oriented Architecture) on both the front and back ends. The technology stack is as follows,
+Just-a-Dash uses a highly modular SOA (Service Oriented Architecture) on both the front and back ends. The technology stack is as follows,
 
 #### Documentation
 As of right now, no user or development documentation exists. But it will.
 
 #### Contributing
-Contribution is encouraged. While Vanillerp's documentation is currently sparse, it is however straightforward and easy to learn, and the technologies it is built on are robust and well documented. Feel free to reach out to me, and I will assist in any way possible.
+Contribution is encouraged. While Just-a-Dash's documentation is currently sparse, it is however straightforward and easy to learn, and the technologies it is built on are robust and well documented. Feel free to reach out to me, and I will assist in any way possible.
 
 - Data Storage:  Your choice of RDBMS.
 - Server Languages/Frameworks: *Python*, with MVC in *Flask*.

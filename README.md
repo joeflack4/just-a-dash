@@ -1,5 +1,5 @@
 # Just-a-Dash
-[!Just-a-Dash ERP Dashboard](http://joeflack.net/wp-content/uploads/2016/02/Just-a-Dash_Alpha01.png)
+![Just-a-Dash ERP Dashboard](http://joeflack.net/wp-content/uploads/2016/02/Just-a-Dash_Alpha01.png)
 Just-a-Dash application is a light-weight, mobile friendly, scaffolded EMS (Enterprise Management System) platform. For our purposes, EMS is synonymous with the more common term 'ERP' (Enterprise Resource Planning).
 
 #### Architecture

@@ -1,0 +1,15 @@
+# - Modules #
+# These have their own repositories. Keep these in the release repository but remove from the core repository.
+
+templates/modules/
+!templates/modules/modules_config.py
+
+# - Unneceessary Excludes
+# templates/modules/*
+# templates/modules/**
+# /templates/modules/
+# /templates/modules/*
+# /templates/modules/**
+# modules/
+# modules/*
+# modules/**

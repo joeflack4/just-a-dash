@@ -3594,6 +3594,12 @@ input[type="button"].btn-block {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
+/*# This was my attempt at a class extension, but I didn't realize that could only be done by using a CSS pre-processor. -Joe Flack, 02.09.2016
+.dropdown-menu-login{
+  min-width: 20px;
+}
+ */
+
 .open > .dropdown-menu {
   display: block;
 }

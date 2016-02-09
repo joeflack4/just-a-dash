@@ -16,11 +16,16 @@ import twilio.twiml
 def index():
     module_name = "Dashboard"
     page_name = "Home"
+
+    logged_in = False
+
     username = ""
+
     return render_template('core_modules/dashboard/index.html',
-                           username=username,
                            module_name=module_name,
-                           page_name=page_name)
+                           page_name=page_name,
+                           logged_in=logged_in,
+                           username=username)
 
 # - Core Modules
 @app.route('/account-settings')

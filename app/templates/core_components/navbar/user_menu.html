@@ -1,38 +1,83 @@
-			<!-- User Account: style can be found in dropdown.less -->
-            <li class="dropdown user user-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="glyphicon glyphicon-user"></i>
-                <span>Jane Doe <i class="caret"></i></span>
-              </a>
-              <ul class="dropdown-menu">
-                <!-- User image -->
-                <li class="user-header bg-light-blue">
-                  <img src="../../img/avatar3.png" class="img-circle" alt="User Image" />
-                  <p>
-                    Jane Doe - Web Developer
-                    <small>Member since Nov. 2012</small>
-                  </p>
+<!-- User Account: style can be found in dropdown.less -->
+<!-- Modals for login/registration are curently in base.html -->
+
+<!-- Dropdown Menu -->
+{% if logged_in %}
+    <li class="dropdown user user-menu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-user"></i>
+        <span>Jane Doe <i class="caret"></i></span>
+      </a>
+      <ul class="dropdown-menu">
+        <!-- User image -->
+        <li class="user-header bg-light-blue">
+          <img src="../../img/avatar3.png" class="img-circle" alt="User Image" />
+          <p>
+            Jane Doe - Web Developer
+            <small>Member since Nov. 2012</small>
+          </p>
+        </li>
+        <!-- Menu Body -->
+        <li class="user-body">
+          <div class="col-xs-4 text-center">
+            <a href="#">Followers</a>
+          </div>
+          <div class="col-xs-4 text-center">
+            <a href="#">Sales</a>
+          </div>
+          <div class="col-xs-4 text-center">
+            <a href="#">Friends</a>
+          </div>
+        </li>
+        <!-- Menu Footer-->
+        <li class="user-footer">
+          <div class="pull-left">
+            <a href="#" class="btn btn-default btn-flat">Profile</a>
+          </div>
+          <div class="pull-right">
+            <a href="#" class="btn btn-default btn-flat">Sign out</a>
+          </div>
+        </li>
+      </ul>
+    </li>
+
+{% else %}
+    <li class="dropdown notifications-menu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-user"></i>
+        <span>Sign in <i class="caret"></i></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <ul class="menu">
+            <div align="center">
+                <li>
+                   <p></p>
                 </li>
-                <!-- Menu Body -->
-                <li class="user-body">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Friends</a>
-                  </div>
+                <li>
+                   <p>Just-a-Dash application is a light-weight, mobile friendly, scaffolded EMS platform, for your enjoyment!</p>
                 </li>
-                <!-- Menu Footer-->
-                <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  </div>
-                  <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                  </div>
+                <li>
+                  <a href="#Login">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#LoginForm">
+                      Login
+                    </button>
+                  </a>
                 </li>
-              </ul>
-            </li>
+                <li>
+                  <p></p>
+                </li>
+                <li>
+                  <a href="#Register">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#RegisterForm">
+                      Register
+                    </button>
+                  </a>
+                </li>
+            </div>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+{% endif %}

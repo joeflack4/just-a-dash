@@ -59,6 +59,9 @@
       </aside><!-- /.right-side -->
     </div>
 
+    {% block modals -%}
+    {%- endblock modals %}
+
     {% block scripts %}
     <!-- jQuery 2.0.2 -->
     <script src="{{ adminlte_find_resource('jquery.js', cdn='jquery') }}"></script>

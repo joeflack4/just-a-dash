@@ -18,4 +18,4 @@ requirements_alt.txt
 
 # - Modules #
 # These have their own repositories. Keep these in the release repository but remove from the core repository.
-# app/templates/modules/**
+app/templates/modules/**

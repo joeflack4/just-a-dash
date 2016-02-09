@@ -1,8 +1,17 @@
-          <h1>
-            Dashboard
-            <small>Preview page</small>
-          </h1>
-          <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Dashboard</li>
-          </ol>
+{#  <h1>#}
+{#    Dashboard#}
+{#    <small>Preview page</small>#}
+{#  </h1>#}
+{#  <ol class="breadcrumb">#}
+{#    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>#}
+{#    <li class="active">Dashboard</li>#}
+{#  </ol>#}
+
+  <h1>
+    {{ module_name }}
+    <small>{{ page_name }}</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> {{ module_name }}</a></li>
+    <li class="active">{{ page_name }}</li>
+  </ol>

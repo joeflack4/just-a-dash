@@ -14,25 +14,30 @@ import twilio.twiml
 @app.route('/')
 @app.route('/dashboard')
 def index():
+    module_name = "Dashboard"
+    page_name = "Home"
     username = ""
     return render_template('core_modules/dashboard/index.html',
-                           username=username)
-
-#@app.route('/dashboard')
-#def dashboard():
-#    page_header = "Welcome to the Pythonic Dashboard."
-#    return render_template('core_modules/dashboard/index.html',
-#                           page_header=page_header)
+                           username=username,
+                           module_name=module_name,
+                           page_name=page_name)
 
 # - Core Modules
 @app.route('/account-settings')
 def account_settings():
-    return render_template('core_modules/account_settings/index.html')
-
+    module_name = "Account Settings"
+    page_name = "Home"
+    return render_template('core_modules/account_settings/index.html',
+                           module_name=module_name,
+                           page_name=page_name)
 
 @app.route('/app-settings')
 def app_settings():
-    return render_template('core_modules/app_settings/index.html')
+    module_name = "App Settings"
+    page_name = "Home"
+    return render_template('core_modules/app_settings/index.html',
+                           module_name=module_name,
+                           page_name=page_name)
 
 
 @app.route('/login')
@@ -47,28 +52,48 @@ def register():
 
 @app.route('/profile')
 def profile():
-    return render_template('core_modules/profile/index.html')
+    module_name = "Profile"
+    page_name = "Home"
+    return render_template('core_modules/profile/index.html',
+                           module_name=module_name,
+                           page_name=page_name)
 
 
 # - Modules							  
 @app.route('/hrm')
 def hrm():
-    return render_template('modules/hrm/index.html')
+    module_name = "HRM"
+    page_name = "Home"
+    return render_template('modules/hrm/index.html',
+                           module_name=module_name,
+                           page_name=page_name)
 
 
 @app.route('/crm')
 def crm():
-    return render_template('modules/crm/index.html')
+    module_name = "CRM"
+    page_name = "Home"
+    return render_template('modules/crm/index.html',
+                           module_name=module_name,
+                           page_name=page_name)
 
 
 @app.route('/operations')
 def operations():
-    return render_template('modules/operations/index.html')
+    module_name = "OMS"
+    page_name = "Home"
+    return render_template('modules/operations/index.html',
+                           module_name=module_name,
+                           page_name=page_name)
 
 
 @app.route('/accounting')
 def accounting():
-    return render_template('modules/accounting/index.html')
+    module_name = "AMS"
+    page_name = "Home"
+    return render_template('modules/accounting/index.html',
+                           module_name=module_name,
+                           page_name=page_name)
 
 
 # - Services

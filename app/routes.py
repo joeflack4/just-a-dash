@@ -103,6 +103,7 @@ def accounting():
 
 
 # - Services
+@app.route('/sms')
 @app.route('/sms_receive')
 def sms_receive():
     return sms_io.sms_response()

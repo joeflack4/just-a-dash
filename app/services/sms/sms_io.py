@@ -18,7 +18,7 @@ def send_message():
     client.messages.create(to, from_, body)
 
 # !Important! - Turn the following line on when deployed. Turn off for debugging.
-# send_message()
+send_message()
 
 if __name__ == "__main__":
     fake_user_input = "+18509827871"

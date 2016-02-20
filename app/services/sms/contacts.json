@@ -1,1 +1,6 @@
-"{\"contact_type\": \"\", \"secondary_phone_03\": \"\", \"last_name\": \"Flack\", \"first_name\": \"Joe\", \"secondary_phone_02\": \"\", \"secondary_phone_01\": \"\", \"primary_phone\": \"850-982-7871\"}"
+{
+    "+18509827871": {
+        "first_name": "Joe",
+        "last_name": "Flack"
+    }
+}

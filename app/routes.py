@@ -7,7 +7,8 @@ from flask import render_template
 from app import app
 
 # - Services Imports
-import twilio.twiml
+# import twilio.twiml
+import sms_io
 
 
 # - Root Path
@@ -104,15 +105,7 @@ def accounting():
 # - Services
 @app.route('/sms_receive')
 def sms_receive():
-    resp = twilio.twiml.Response()
-    resp.message("Hello there.")
-    return str(resp)
-
-
-@app.route('/sms_respond')
-def sms_respond():
-    return ""
-
+    return sms_io.sms_response()
 
 @app.route('/sms_send')
 def sms_send():

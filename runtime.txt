@@ -1,14 +1,1 @@
-## Virtual Environment Runtime ##
-#python=3.4.4
-
-## Deployment Runtime ##
-#python=2.7.11
 python=3.5.1
-
-
-## Future Desired Runtime ##
-python=3.4.3
-#remote:  !     Requested runtime (python=3.4.3) is not available for this stack
-#(cedar-14).
-#remote:  !     Aborting.  More info: https://devcenter.heroku.com/articles/pytho
-#n-support

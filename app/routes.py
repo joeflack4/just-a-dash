@@ -8,7 +8,7 @@ from app import app
 
 # - Services Imports
 # import twilio.twiml
-from .services.sms.sms_io import sms_response
+from .services.sms.sms import sms_response
 # from sms_io import sms_response
 
 # - Root Path

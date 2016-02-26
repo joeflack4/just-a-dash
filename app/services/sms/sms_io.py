@@ -2,8 +2,8 @@
 # Download the twilio-python library from http://twilio.com/docs/libraries
 import twilio.twiml
 from twilio.rest import TwilioRestClient
-from contacts import CompanyContacts
-
+# from contacts import CompanyContacts
+from .contacts import CompanyContacts
 
 # - Functions
 # Find these values at https://twilio.com/user/account

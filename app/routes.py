@@ -8,8 +8,8 @@ from app import app
 
 # - Services Imports
 # import twilio.twiml
-import sms_io
-
+from .services.sms.sms_io import sms_response
+# from sms_io import sms_response
 
 # - Root Path
 @app.route('/')
@@ -65,7 +65,7 @@ def profile():
                            page_name=page_name)
 
 
-# - Modules							  
+# - Modules
 @app.route('/hrm')
 def hrm():
     module_name = "HRM"
@@ -103,11 +103,11 @@ def accounting():
 
 
 # - Services
-@app.route('/sms')
 @app.route('/sms_receive')
 def sms_receive():
-    return sms_io.sms_response()
+    return sms_response()
 
+@app.route('/sms')
 @app.route('/sms_send')
 def sms_send():
     return ""

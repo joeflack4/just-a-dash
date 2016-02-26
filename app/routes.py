@@ -1,15 +1,30 @@
-# - Framework Imports
-from flask import render_template
-# Imports to be incorporated later.
-# from flask import url_for
+try:
+    # - Framework Imports
+    from flask import render_template
+    # Imports to be incorporated later.
+    # from flask import url_for
 
-# - App Imports
-from app import app
+    # - App Imports
+    from app import app
 
-# - Services Imports
-# import twilio.twiml
-from .services.sms.sms import sms_response
-# from sms_io import sms_response
+    # - Services Imports
+    # import twilio.twiml
+    from .services.sms.sms import sms_response
+    # from sms_io import sms_response
+except:
+    # - Framework Imports
+    from flask import render_template
+    # Imports to be incorporated later.
+    # from flask import url_for
+
+    # - App Imports
+    from app import app
+
+    # - Services Imports
+    # import twilio.twiml
+    from sms import sms_response
+    # from sms_io import sms_response
+
 
 # - Root Path
 @app.route('/')

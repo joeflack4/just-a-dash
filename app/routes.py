@@ -1,7 +1,7 @@
 try:
     # - Framework Imports
     from flask import render_template
-    # Imports to be incorporated later.
+    # - Flask Imports to be incorporated later.
     # from flask import url_for
 
     # - App Imports
@@ -9,21 +9,12 @@ try:
 
     # - Services Imports
     # import twilio.twiml
+    # from sms_io import sms_response
     from .services.sms.sms import sms_response
-    # from sms_io import sms_response
 except:
-    # - Framework Imports
     from flask import render_template
-    # Imports to be incorporated later.
-    # from flask import url_for
-
-    # - App Imports
     from app import app
-
-    # - Services Imports
-    # import twilio.twiml
     from sms import sms_response
-    # from sms_io import sms_response
 
 
 # - Root Path
@@ -119,8 +110,10 @@ def accounting():
 
 # - Services
 @app.route('/sms_receive')
-def sms_receive():
+def sms():
     return sms_response()
+    # return ""
+
 
 @app.route('/sms')
 @app.route('/sms_send')

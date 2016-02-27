@@ -109,13 +109,8 @@ def accounting():
 
 
 # - Services
+@app.route('/sms')
 @app.route('/sms_receive')
+@app.route('/sms_send')
 def sms():
     return sms_response()
-    # return ""
-
-
-@app.route('/sms')
-@app.route('/sms_send')
-def sms_send():
-    return ""

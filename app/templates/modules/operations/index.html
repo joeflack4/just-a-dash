@@ -1,1 +1,33 @@
-Operations module placeholder.
+{% extends "base.html" %}
+
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+  <div page-header>
+    <h4 class="page-header">Operations Management</h4>
+  </div>
+  <div>
+    <h5 class="content-header"><u>Check-in Data</u></h5>
+    <table class="table">
+      <tr>
+          <th>ID</th>
+          <th>Time</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+      </tr>
+      {% for key, value in check_in_entries.items() %}
+        <tr>
+          <td>{{ key }}</td>
+          <td>{{ value.timestamp }}</td>
+          <td>{{ value.first_name }}</td>
+          <td>{{ value.last_name }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+{%- endblock content %}

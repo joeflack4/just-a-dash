@@ -84,7 +84,7 @@ class CompanyContacts:
         return "You have successfully checked in. Thank you!"
 
     # - Methods
-    def get_contact(self, primary_phone):
+    def get_contact(primary_phone):
         with open(os.path.join(__location__, "contacts.json"), "r") as contacts_file:
             contacts = json.loads(contacts_file.read())
             contact = contacts

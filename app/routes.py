@@ -3,6 +3,7 @@ try:
     from flask import render_template
     # - Flask Imports to be incorporated later.
     # from flask import url_for
+    # from flask_table import Table, Col
 
     # - App Imports
     from app import app
@@ -10,11 +11,11 @@ try:
     # - Services Imports
     # import twilio.twiml
     # from sms_io import sms_response
-    from .services.sms.sms import sms_response
+    from .services.sms.sms import sms_response, check_in_data
 except:
     from flask import render_template
     from app import app
-    from sms import sms_response
+    from sms import sms_response, check_in_data
 
 
 # - Root Path
@@ -94,9 +95,12 @@ def crm():
 def operations():
     module_name = "OMS"
     page_name = "Home"
+    # check_in_entries = {"1": {"timestamp": "time", "first_name": "Joe", "last_name": "Flack"}}
+    check_in_entries = check_in_data()
     return render_template('modules/operations/index.html',
                            module_name=module_name,
-                           page_name=page_name)
+                           page_name=page_name,
+                           check_in_entries=check_in_entries)
 
 
 @app.route('/accounting')

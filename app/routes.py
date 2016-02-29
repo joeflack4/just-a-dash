@@ -104,7 +104,7 @@ def crm():
     module_abbreviation = "CRM"
     module_name = "Customer Relationship Management"
     page_name = "CRM Home"
-    icon = "fa fa-dashboard"
+    icon = "ion-ios-people"
     return render_template('modules/crm/index.html',
                            icon=icon,
                            module_abbreviation=module_abbreviation,

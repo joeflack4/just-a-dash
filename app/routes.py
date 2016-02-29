@@ -24,6 +24,7 @@ except:
 def index():
     module_name = "Admin Control Panel"
     page_name = "Dashboard"
+    icon = "fa fa-dashboard"
 
     logged_in = False
     username = ""
@@ -31,6 +32,7 @@ def index():
     return render_template('core_modules/dashboard/index.html',
                            module_name=module_name,
                            page_name=page_name,
+                           icon=icon,
                            logged_in=logged_in,
                            username=username)
 
@@ -40,7 +42,9 @@ def account_settings():
     module_abbreviation = "Account Settings"
     module_name = "Account Settings"
     page_name = "Account Settings Home"
+    icon = "fa fa-dashboard"
     return render_template('core_modules/account_settings/index.html',
+                           icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
@@ -50,7 +54,9 @@ def app_settings():
     module_abbreviation = "App Settings"
     module_name = "App Settings"
     page_name = "App Settings Home"
+    icon = "fa fa-dashboard"
     return render_template('core_modules/app_settings/index.html',
+                           icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
@@ -71,7 +77,9 @@ def profile():
     module_abbreviation = "Profile"
     module_name = "Profile"
     page_name = "Profile Home"
+    icon = "fa fa-dashboard"
     return render_template('core_modules/profile/index.html',
+                           icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
@@ -83,7 +91,9 @@ def hrm():
     module_abbreviation = "HRM"
     module_name = "Human Resource Management"
     page_name = "HRM Home"
+    icon = "fa fa-users"
     return render_template('modules/hrm/index.html',
+                           icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
@@ -94,7 +104,9 @@ def crm():
     module_abbreviation = "CRM"
     module_name = "Customer Relationship Management"
     page_name = "CRM Home"
+    icon = "fa fa-dashboard"
     return render_template('modules/crm/index.html',
+                           icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
@@ -105,6 +117,7 @@ def operations():
     module_abbreviation = "OMS"
     module_name = "Operations Management"
     page_name = "OMS Home"
+    icon = "fa fa-fort-awesome"
 
     try:
         check_in_entries = check_in_data()
@@ -112,6 +125,7 @@ def operations():
         check_in_entries = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-"}}
 
     return render_template('modules/operations/index.html',
+                           icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name,
@@ -123,7 +137,9 @@ def accounting():
     module_abbreviation = "AMS"
     module_name = "Accounting Management"
     page_name = "AMS Home"
+    icon = "fa fa-dashboard"
     return render_template('modules/accounting/index.html',
+                           icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)

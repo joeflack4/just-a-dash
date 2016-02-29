@@ -11,11 +11,11 @@ try:
     # - Services Imports
     # import twilio.twiml
     # from sms_io import sms_response
-    from .services.sms.sms import sms_response, check_in_data
+    from .services.sms.sms import CompanyContacts, sms_response, check_in_data
 except:
     from flask import render_template
     from app import app
-    from sms import sms_response, check_in_data
+    from sms import CompanyContacts, sms_response, check_in_data
 
 
 # - Root Path
@@ -92,11 +92,18 @@ def hrm():
     module_name = "Human Resource Management"
     page_name = "HRM Home"
     icon = "fa fa-users"
+
+    try:
+        personnel = CompanyContacts.get_contacts()
+    except:
+        personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+
     return render_template('modules/hrm/index.html',
                            icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
-                           page_name=page_name)
+                           page_name=page_name,
+                           personnel_data=personnel)
 
 
 @app.route('/crm')
@@ -105,11 +112,19 @@ def crm():
     module_name = "Customer Relationship Management"
     page_name = "CRM Home"
     icon = "ion-person-stalker"
+
+    try:
+        # customers = CompanyContacts.get_customer_contacts()
+        customers = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+    except:
+        customers = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+
     return render_template('modules/crm/index.html',
                            icon=icon,
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
-                           page_name=page_name)
+                           page_name=page_name,
+                           customer_data=customers)
 
 
 @app.route('/operations')
@@ -122,7 +137,7 @@ def operations():
     try:
         check_in_entries = check_in_data()
     except:
-        check_in_entries = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-"}}
+        check_in_entries = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
 
     return render_template('modules/operations/index.html',
                            icon=icon,

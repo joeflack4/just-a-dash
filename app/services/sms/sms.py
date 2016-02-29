@@ -50,9 +50,6 @@ def get_timestamps(id=account_sid, pw=auth_token):
     messages = client.messages.list()
     timestamps = []
 
-    # DEBUGGING
-    # test = twilio.rest.resources.messages.Message
-
     for message in messages:
         if message.from_ != "+18508981787":
             timestamps.append(str(message.date_created))
@@ -89,6 +86,7 @@ def check_in_data():
         check_in_data.insert(entry_number - 1, entry)
 
     entry_number = 0
+
     for entry in check_in_data:
         entry_number += 1
         id = entry["id"]
@@ -96,29 +94,13 @@ def check_in_data():
         first_name = contact["first_name"]
         last_name = contact["last_name"]
         phone_number = entry["phone_number"]
-
         timestamp = timestamps[id - 1]
-        # print(check_in_data[entry_number])
 
-        # print(check_in_data)
-        # print(id, " | ", timestamp, " | ", first_name, " | ", last_name)
         export[entry_number] = {"timestamp": timestamp, "first_name": first_name, "last_name": last_name, "phone_number": phone_number}
 
-    print("")
-    print(export)
-    # return {"1": {"timestamp": "time", "first_name": "Joe", "last_name": "Flack"}}
     return export
-    # print(check_in_data)
-    # return check_in_data
-
 
 # !Important! - Turn the following line on when deployed. Turn off for debugging.
 # send_message()
 if __name__ == "__main__":
-    # fake_user_input = "+18509827871"
-    # CompanyContacts.contacts(fake_user_input)
-    # sms_response()
-    # check_in_data()
-
     get_individual("lkjkls")
-    # get_individual("+18509827871")

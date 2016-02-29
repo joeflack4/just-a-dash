@@ -22,7 +22,7 @@
       </tr>
       {% for key, value in check_in_entries.items() %}
         <tr>
-          <td>{{ key }}</td>
+          <td>{{ loop.index }}</td>
           <td>{{ value.timestamp }}</td>
           <td>{{ value.first_name }}</td>
           <td>{{ value.last_name }}</td>

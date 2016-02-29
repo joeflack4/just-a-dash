@@ -11,6 +11,24 @@
 {#    <h4 class="page-header">Human Resources Management System</h4>#}
 {#  </div>#}
 
-  Under construction.
+  <h4 class="content-header">Personnel List</h4>
+  <div>
+    <table class="table">
+      <tr>
+          <th>#</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Phone Number</th>
+      </tr>
+      {% for key, value in personnel_data.items() %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ value.first_name }}</td>
+          <td>{{ value.last_name }}</td>
+          <td>{{ key }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
 
 {%- endblock content %}

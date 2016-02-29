@@ -83,6 +83,16 @@ class CompanyContacts:
         # return "Thanks, ", contact.first_name, ". You have successfully checked in."
         return "You have successfully checked in. Thank you!"
 
+    @staticmethod
+    def get_contacts():
+        with open(os.path.join(__location__, "contacts.json"), "r") as contacts_file:
+            contacts = json.loads(contacts_file.read())
+            return contacts
+
+        # - Debugging
+        # personnel = {"-": {"first_name": "-", "last_name": "-", "phone_number": "-"}}
+        # return personnel
+
     # - Methods
     def get_contact(primary_phone):
         with open(os.path.join(__location__, "contacts.json"), "r") as contacts_file:

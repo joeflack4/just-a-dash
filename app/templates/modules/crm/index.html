@@ -11,6 +11,24 @@
 {#    <h4 class="page-header">Customer Relationship Management</h4>#}
 {#  </div>#}
 
-  Under construction.
+  <h4 class="content-header">Customer List</h4>
+  <div>
+    <table class="table">
+      <tr>
+          <th>#</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Phone Number</th>
+      </tr>
+      {% for key, value in customer_data.items() %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ value.first_name }}</td>
+          <td>{{ value.last_name }}</td>
+          <td>{{ value.phone_number }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
 
 {%- endblock content %}

@@ -38,17 +38,21 @@ def index():
 # - Core Modules
 @app.route('/account-settings')
 def account_settings():
+    module_abbreviation = "Account Settings"
     module_name = "Account Settings"
     page_name = "Home"
     return render_template('core_modules/account_settings/index.html',
+                           module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
 
 @app.route('/app-settings')
 def app_settings():
+    module_abbreviation = "App Settings"
     module_name = "App Settings"
     page_name = "Home"
     return render_template('core_modules/app_settings/index.html',
+                           module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
 
@@ -65,9 +69,11 @@ def register():
 
 @app.route('/profile')
 def profile():
+    module_abbreviation = "Profile"
     module_name = "Profile"
     page_name = "Home"
     return render_template('core_modules/profile/index.html',
+                           module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
 
@@ -75,37 +81,39 @@ def profile():
 # - Modules
 @app.route('/hrm')
 def hrm():
-    module_name = "HRM"
+    module_abbreviation = "HRM"
+    module_name = "Human Resource Management"
     page_name = "Home"
     return render_template('modules/hrm/index.html',
+                           module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
 
 
 @app.route('/crm')
 def crm():
-    module_name = "CRM"
-    page_name = "Home"
+    module_abbreviation = "CRM"
+    module_name = "Customer Relationship Management"
+    page_name = "CRM Home"
     return render_template('modules/crm/index.html',
+                           module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
 
 
 @app.route('/operations')
 def operations():
-    module_name = "OMS"
+    module_abbreviation = "OMS"
+    module_name = "Operations Management"
     page_name = "Home"
-    # check_in_entries = {"1": {"timestamp": "time", "first_name": "Joe", "last_name": "Flack"}}
 
     try:
         check_in_entries = check_in_data()
-        return render_template('modules/operations/index.html',
-                           module_name=module_name,
-                           page_name=page_name,
-                           check_in_entries=check_in_entries)
     except:
         check_in_entries = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-"}}
-        return render_template('modules/operations/index.html',
+
+    return render_template('modules/operations/index.html',
+                           module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name,
                            check_in_entries=check_in_entries)
@@ -113,9 +121,11 @@ def operations():
 
 @app.route('/accounting')
 def accounting():
-    module_name = "AMS"
+    module_abbreviation = "AMS"
+    module_name = "Accounting Management"
     page_name = "Home"
     return render_template('modules/accounting/index.html',
+                           module_abbreviation=module_abbreviation,
                            module_name=module_name,
                            page_name=page_name)
 

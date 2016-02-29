@@ -82,4 +82,25 @@
         </div>
       </div>
     </div>
+
+    <!-- Dynamic Form -->
+    <div class="modal fade" id="DynamicForm" tabindex="-1" role="dialog" aria-labelledby="DynamicForm">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="LoginForm-Title">Add Personnel</h4>
+          </div>
+          <div class="modal-body" align="left">
+            <form id="DynamicForm">
+              <p>Field: <input type="text" name="Field1"/></p>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
 {%- endblock modals %}

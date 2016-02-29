@@ -86,12 +86,23 @@ class CompanyContacts:
     @staticmethod
     def get_contacts():
         with open(os.path.join(__location__, "contacts.json"), "r") as contacts_file:
-            contacts = json.loads(contacts_file.read())
-            return contacts
+            raw_contacts = json.loads(contacts_file.read())
 
-        # - Debugging
-        # personnel = {"-": {"first_name": "-", "last_name": "-", "phone_number": "-"}}
-        # return personnel
+            # - Work in progress
+            # contacts = []
+            # for contact in raw_contacts:
+                # Debugging
+                # contact_list = []
+                # for item in contact:
+                #     contact_list.append(item)
+                # contacts.append(contact_list)
+
+                # contacts.append(contact)
+
+            # Debugging
+            # print(contacts)
+
+            return raw_contacts
 
     # - Methods
     def get_contact(primary_phone):
@@ -136,6 +147,11 @@ class CompanyContacts:
 
 # - Run
 if __name__ == "__main__":
+    # - Debugging
+    # print("")
+    # fake_user_input = "+18509827871"
+    # CompanyContacts.contacts(fake_user_input)
+
+    # - Debugging
     print("")
-    fake_user_input = "+18509827871"
-    CompanyContacts.contacts(fake_user_input)
+    CompanyContacts.get_contacts()

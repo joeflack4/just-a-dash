@@ -22,11 +22,10 @@ except:
 @app.route('/')
 @app.route('/dashboard')
 def index():
-    module_name = "Dashboard"
-    page_name = "Home"
+    module_name = "Admin Control Panel"
+    page_name = "Dashboard"
 
     logged_in = False
-
     username = ""
 
     return render_template('core_modules/dashboard/index.html',
@@ -40,7 +39,7 @@ def index():
 def account_settings():
     module_abbreviation = "Account Settings"
     module_name = "Account Settings"
-    page_name = "Home"
+    page_name = "Account Settings Home"
     return render_template('core_modules/account_settings/index.html',
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
@@ -50,7 +49,7 @@ def account_settings():
 def app_settings():
     module_abbreviation = "App Settings"
     module_name = "App Settings"
-    page_name = "Home"
+    page_name = "App Settings Home"
     return render_template('core_modules/app_settings/index.html',
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
@@ -71,7 +70,7 @@ def register():
 def profile():
     module_abbreviation = "Profile"
     module_name = "Profile"
-    page_name = "Home"
+    page_name = "Profile Home"
     return render_template('core_modules/profile/index.html',
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
@@ -83,7 +82,7 @@ def profile():
 def hrm():
     module_abbreviation = "HRM"
     module_name = "Human Resource Management"
-    page_name = "Home"
+    page_name = "HRM Home"
     return render_template('modules/hrm/index.html',
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,
@@ -105,7 +104,7 @@ def crm():
 def operations():
     module_abbreviation = "OMS"
     module_name = "Operations Management"
-    page_name = "Home"
+    page_name = "OMS Home"
 
     try:
         check_in_entries = check_in_data()
@@ -123,7 +122,7 @@ def operations():
 def accounting():
     module_abbreviation = "AMS"
     module_name = "Accounting Management"
-    page_name = "Home"
+    page_name = "AMS Home"
     return render_template('modules/accounting/index.html',
                            module_abbreviation=module_abbreviation,
                            module_name=module_name,

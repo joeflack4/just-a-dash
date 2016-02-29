@@ -14,10 +14,11 @@
     <h4 class="content-header">Check-in Data</h4>
     <table class="table">
       <tr>
-          <th>ID</th>
+          <th>#</th>
           <th>Time</th>
           <th>First Name</th>
           <th>Last Name</th>
+          <th>Phone Number</th>
       </tr>
       {% for key, value in check_in_entries.items() %}
         <tr>
@@ -25,6 +26,7 @@
           <td>{{ value.timestamp }}</td>
           <td>{{ value.first_name }}</td>
           <td>{{ value.last_name }}</td>
+          <td>{{ value.phone_number }}</td>
         </tr>
       {% endfor %}
     </table>

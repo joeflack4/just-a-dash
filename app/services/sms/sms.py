@@ -85,7 +85,7 @@ def check_in_data():
     for identifier in identifiers:
         entry_number += 1
         individual = get_individual(identifier)
-        entry = {"id": entry_number, "contact": individual}
+        entry = {"id": entry_number, "contact": individual, "phone_number": identifier}
         check_in_data.insert(entry_number - 1, entry)
 
     entry_number = 0
@@ -95,13 +95,14 @@ def check_in_data():
         contact = entry["contact"]
         first_name = contact["first_name"]
         last_name = contact["last_name"]
+        phone_number = entry["phone_number"]
 
         timestamp = timestamps[id - 1]
         # print(check_in_data[entry_number])
 
         # print(check_in_data)
         # print(id, " | ", timestamp, " | ", first_name, " | ", last_name)
-        export[entry_number] = {"timestamp": timestamp, "first_name": first_name, "last_name": last_name}
+        export[entry_number] = {"timestamp": timestamp, "first_name": first_name, "last_name": last_name, "phone_number": phone_number}
 
     print("")
     print(export)

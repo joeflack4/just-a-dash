@@ -104,7 +104,7 @@ def crm():
     module_abbreviation = "CRM"
     module_name = "Customer Relationship Management"
     page_name = "CRM Home"
-    icon = "ion-ios-people"
+    icon = "ion-person-stalker"
     return render_template('modules/crm/index.html',
                            icon=icon,
                            module_abbreviation=module_abbreviation,
@@ -137,7 +137,7 @@ def accounting():
     module_abbreviation = "AMS"
     module_name = "Accounting Management"
     page_name = "AMS Home"
-    icon = "fa fa-dashboard"
+    icon = "fa fa-bar-chart"
     return render_template('modules/accounting/index.html',
                            icon=icon,
                            module_abbreviation=module_abbreviation,

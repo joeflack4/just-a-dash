@@ -104,6 +104,8 @@ def crm():
 
 
 @app.route('/operations')
+@app.route('/checkin')
+@app.route('/check-in')
 def operations():
     try:
         check_in_entries = check_in_data()

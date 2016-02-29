@@ -43,7 +43,6 @@ def get_incoming_sms_phone_numbers(id=account_sid, pw=auth_token):
     for message in messages:
         if message.from_ != "+18508981787":
             incoming_sms_phone_numbers.append(message.from_)
-            # print(message.from_)
     return incoming_sms_phone_numbers
 
 def get_timestamps(id=account_sid, pw=auth_token):
@@ -52,20 +51,25 @@ def get_timestamps(id=account_sid, pw=auth_token):
     timestamps = []
 
     # DEBUGGING
-    test = twilio.rest.resources.messages.Message
+    # test = twilio.rest.resources.messages.Message
 
     for message in messages:
         if message.from_ != "+18508981787":
             timestamps.append(str(message.date_created))
-            # print(message.date_created)
 
     return timestamps
 
 
 def get_individual(identifier):
     contact = CompanyContacts.get_contact(primary_phone=identifier)
-    individual = {"first_name": contact[identifier]["first_name"],
+
+    if identifier in contact:
+        individual = {"first_name": contact[identifier]["first_name"],
                       "last_name": contact[identifier]["last_name"],
+                      "primary_phone": identifier}
+    else:
+        individual = {"first_name": "Unknown",
+                      "last_name": "Unknown",
                       "primary_phone": identifier}
 
     return individual
@@ -113,4 +117,7 @@ if __name__ == "__main__":
     # fake_user_input = "+18509827871"
     # CompanyContacts.contacts(fake_user_input)
     # sms_response()
-    check_in_data()
+    # check_in_data()
+
+    get_individual("lkjkls")
+    # get_individual("+18509827871")

@@ -96,8 +96,16 @@ def operations():
     module_name = "OMS"
     page_name = "Home"
     # check_in_entries = {"1": {"timestamp": "time", "first_name": "Joe", "last_name": "Flack"}}
-    check_in_entries = check_in_data()
-    return render_template('modules/operations/index.html',
+
+    try:
+        check_in_entries = check_in_data()
+        return render_template('modules/operations/index.html',
+                           module_name=module_name,
+                           page_name=page_name,
+                           check_in_entries=check_in_entries)
+    except:
+        check_in_entries = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-"}}
+        return render_template('modules/operations/index.html',
                            module_name=module_name,
                            page_name=page_name,
                            check_in_entries=check_in_entries)

@@ -3,7 +3,7 @@
 # API Root: https://api.twilio.com/2010-04-01/Accounts/ACe0b46c755c8f0b144c1a31e0a9170cea/
 
 # - Imports
-import twilio.twiml
+# import twilio.twiml
 from twilio.rest import TwilioRestClient
 try:
     from .contacts import CompanyContacts
@@ -16,7 +16,7 @@ auth_token = "c98aa40b61818e730920459b83ec0f4d"
 
 
 # - Functions
-def manually_send_message(): # <- Unused
+def manually_call(): # <- Unused
     # client = TwilioRestClient(account_sid, auth_token)
     # to = "+12316851234"
     # from_ = "+10000000000"
@@ -26,24 +26,26 @@ def manually_send_message(): # <- Unused
 
 
 def call_response():
-    resp = twilio.twiml.Response()
-    # To Do: Replace 'from' later on when using the Twilio API.
-    from_ = "+10000000000"
-    body = CompanyContacts.check_in(from_)
-    resp.message(body)
-    return str(resp)
+    # resp = twilio.twiml.Response()
+    # from_ = "+10000000000"
+    # body = CompanyContacts.check_in(from_)
+    # resp.message(body)
+    # return str(resp)
+    return ""
 
-
+# Sub-function of: call_check_in_data
 def get_incoming_call_phone_numbers(id=account_sid, pw=auth_token):
     client = TwilioRestClient(id, pw)
-    messages = client.messages.list()
-    incoming_sms_phone_numbers = []
 
-    for message in messages:
-        if message.from_ != "+18508981787":
-            incoming_sms_phone_numbers.append(message.from_)
-    return incoming_sms_phone_numbers
+    calls = client.calls.list()
+    incoming_phone_numbers = []
 
+    for call in calls:
+        if call.from_ != "+18508981787":
+            incoming_phone_numbers.append(call.from_)
+    return incoming_phone_numbers
+
+# Sub-function of: call_check_in_data
 def get_timestamps(id=account_sid, pw=auth_token):
     client = TwilioRestClient(id, pw)
     messages = client.messages.list()
@@ -55,7 +57,7 @@ def get_timestamps(id=account_sid, pw=auth_token):
 
     return timestamps
 
-
+# Sub-function of: call_check_in_data
 def get_individual(identifier):
     contact = CompanyContacts.get_contact(primary_phone=identifier)
 
@@ -71,7 +73,7 @@ def get_individual(identifier):
     return individual
 
 
-def check_in_data():
+def call_check_in_data():
     identifiers = get_incoming_call_phone_numbers()
     timestamps = get_timestamps()
     check_in_data = []

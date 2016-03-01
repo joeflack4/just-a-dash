@@ -5,11 +5,14 @@ from app import app
 
 try:
     from .services.telephony.contacts import CompanyContacts
-    from .services.telephony.sms import sms_response, check_in_data
-    from .services.telephony.calls import call_response
+    from .services.telephony.sms import sms_response, sms_check_in_data
+    from .services.telephony.calls import call_response, call_check_in_data
 except:
-    from .services.telephony.sms import sms_response, check_in_data, CompanyContacts
-    from .services.telephony.calls import call_response
+    try:
+        from .services.telephony.sms import sms_response, sms_check_in_data, CompanyContacts
+        from .services.telephony.calls import call_response, call_check_in_data
+    except:
+        print("An error has occurred importing modules.")
 
 # - Root Path
 @app.route('/')
@@ -97,13 +100,17 @@ def crm():
 
 
 @app.route('/operations')
-@app.route('/checkin')
-@app.route('/check-in')
-def operations():
+def operations(*args):
     try:
-        check_in_entries = check_in_data()
+        if args[0] == "sms_check_in":
+            check_in_entries = sms_check_in_data()
+        elif args[0] == "call_check_in":
+            check_in_entries = call_check_in_data()
+        else:
+            check_in_entries = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
     except:
-        check_in_entries = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+        check_in_entries = {".": {"timestamp": ".", "first_name": ".", "last_name": ".", "phone_number": "."}}
+
 
     return render_template('modules/operations/index.html',
                            icon="fa fa-fort-awesome",
@@ -111,6 +118,22 @@ def operations():
                            module_name="Operations Management",
                            page_name="OMS Home",
                            check_in_entries=check_in_entries)
+
+
+@app.route('/checkin')
+@app.route('/check-in')
+@app.route('/callin')
+@app.route('/call-in')
+def call_check_in():
+    return operations("call_check_in")
+
+
+@app.route('/textin')
+@app.route('/text-in')
+@app.route('/text-checkin')
+@app.route('/sms-checkin')
+def sms_check_in():
+    return operations("sms_check_in")
 
 
 @app.route('/accounting')
@@ -136,3 +159,7 @@ def sms():
 @app.route('/call_receive')
 def call():
     return call_response()
+
+
+if __name__ == "__main__":
+    print("yolo")

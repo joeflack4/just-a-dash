@@ -34,7 +34,7 @@ def sms_response():
     resp.message(body)
     return str(resp)
 
-
+# Sub-function of: sms_check_in_data
 def get_incoming_sms_phone_numbers(id=account_sid, pw=auth_token):
     client = TwilioRestClient(id, pw)
     messages = client.messages.list()
@@ -45,6 +45,7 @@ def get_incoming_sms_phone_numbers(id=account_sid, pw=auth_token):
             incoming_sms_phone_numbers.append(message.from_)
     return incoming_sms_phone_numbers
 
+# Sub-function of: sms_check_in_data
 def get_timestamps(id=account_sid, pw=auth_token):
     client = TwilioRestClient(id, pw)
     messages = client.messages.list()
@@ -56,7 +57,7 @@ def get_timestamps(id=account_sid, pw=auth_token):
 
     return timestamps
 
-
+# Sub-function of: sms_check_in_data
 def get_individual(identifier):
     contact = CompanyContacts.get_contact(primary_phone=identifier)
 
@@ -72,7 +73,7 @@ def get_individual(identifier):
     return individual
 
 
-def check_in_data():
+def sms_check_in_data():
     identifiers = get_incoming_sms_phone_numbers()
     timestamps = get_timestamps()
     check_in_data = []

@@ -104,6 +104,12 @@ class CompanyContacts:
 
             return raw_contacts
 
+    @staticmethod
+    def get_customer_contacts():
+        with open(os.path.join(__location__, "customer_contacts.json"), "r") as contacts_file:
+            raw_contacts = json.loads(contacts_file.read())
+            return raw_contacts
+
     # - Methods
     def get_contact(primary_phone):
         with open(os.path.join(__location__, "contacts.json"), "r") as contacts_file:

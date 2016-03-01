@@ -85,8 +85,7 @@ def hrm():
 @app.route('/crm')
 def crm():
     try:
-        # customers = CompanyContacts.get_customer_contacts()
-        customers = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+        customers = CompanyContacts.get_customer_contacts()
     except:
         customers = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
 

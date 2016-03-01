@@ -1,22 +1,15 @@
+from flask import render_template
+from app import app
+# # Unused -> from flask import url_for
+# # Unused -> from flask_table import Table, Col
+
 try:
-    # - Framework Imports
-    from flask import render_template
-    # - Flask Imports to be incorporated later.
-    # from flask import url_for
-    # from flask_table import Table, Col
-
-    # - App Imports
-    from app import app
-
-    # - Services Imports
-    # import twilio.twiml
-    # from sms_io import sms_response
-    from .services.sms.sms import CompanyContacts, sms_response, check_in_data
+    from .services.telephony.contacts import CompanyContacts
+    from .services.telephony.sms import sms_response, check_in_data
+    from .services.telephony.calls import call_response
 except:
-    from flask import render_template
-    from app import app
-    from sms import CompanyContacts, sms_response, check_in_data
-
+    from .services.telephony.sms import sms_response, check_in_data, CompanyContacts
+    from .services.telephony.calls import call_response
 
 # - Root Path
 @app.route('/')
@@ -135,3 +128,11 @@ def accounting():
 @app.route('/sms_receive')
 def sms():
     return sms_response()
+
+
+@app.route('/call')
+@app.route('/calls')
+@app.route('/call_send')
+@app.route('/call_receive')
+def call():
+    return call_response()

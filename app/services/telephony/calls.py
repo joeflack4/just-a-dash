@@ -59,9 +59,14 @@ def get_timestamps(id=account_sid, pw=auth_token):
 
 # Sub-function of: call_check_in_data
 def get_individual(identifier):
+    customer_contact = CompanyContacts.get_customer_contact(primary_phone=identifier)
     contact = CompanyContacts.get_contact(primary_phone=identifier)
 
-    if identifier in contact:
+    if identifier in customer_contact:
+        individual = {"first_name": contact[identifier]["first_name"],
+                      "last_name": contact[identifier]["last_name"],
+                      "primary_phone": identifier}
+    elif identifier in contact:
         individual = {"first_name": contact[identifier]["first_name"],
                       "last_name": contact[identifier]["last_name"],
                       "primary_phone": identifier}

@@ -101,18 +101,18 @@ def crm():
 @app.route('/operations')
 def operations(*args):
     try:
-        if args[0] == "sms_check_in":
-            check_in_entries = sms_check_in_data()
-        elif args[0] == "call_check_in":
-            check_in_entries = call_check_in_data()
-        else:
-            try:
-                check_in_entries = call_check_in_data()
-            except:
-                check_in_entries = {".": {"timestamp": ".", "first_name": ".", "last_name": ".", "phone_number": "."}}
+        check_in_type = args[0]
     except:
-        check_in_entries = {".": {"timestamp": ".", "first_name": ".", "last_name": ".", "phone_number": "."}}
+        check_in_type = None
 
+    if check_in_type == "sms_check_in":
+        check_in_entries = sms_check_in_data()
+    elif check_in_type == "call_check_in":
+        check_in_entries = call_check_in_data()
+    elif check_in_type == None:
+        check_in_entries = call_check_in_data()
+    else:
+        check_in_entries = {".": {"timestamp": ".", "first_name": ".", "last_name": ".", "phone_number": "."}}
 
     return render_template('modules/operations/index.html',
                            icon="fa fa-fort-awesome",

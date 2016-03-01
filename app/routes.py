@@ -106,7 +106,10 @@ def operations(*args):
         elif args[0] == "call_check_in":
             check_in_entries = call_check_in_data()
         else:
-            check_in_entries = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+            try:
+                check_in_entries = call_check_in_data()
+            except:
+                check_in_entries = {".": {"timestamp": ".", "first_name": ".", "last_name": ".", "phone_number": "."}}
     except:
         check_in_entries = {".": {"timestamp": ".", "first_name": ".", "last_name": ".", "phone_number": "."}}
 

@@ -3,7 +3,7 @@
 # API Root: https://api.twilio.com/2010-04-01/Accounts/ACe0b46c755c8f0b144c1a31e0a9170cea/
 
 # - Imports
-# import twilio.twiml
+import twilio.twiml
 from twilio.rest import TwilioRestClient
 try:
     from .contacts import CompanyContacts
@@ -27,11 +27,8 @@ def manually_call(): # <- Unused
 
 def call_response():
     resp = twilio.twiml.Response()
-    from_ = "+10000000000"
-    body = CompanyContacts.check_in(from_)
-    resp.message(body)
+    resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!")
     return str(resp)
-    return ""
 
 # Sub-function of: call_check_in_data
 def get_incoming_call_phone_numbers(id=account_sid, pw=auth_token):

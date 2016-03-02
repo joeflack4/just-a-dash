@@ -155,10 +155,10 @@ def sms():
     return sms_response()
 
 
-@app.route('/call')
-@app.route('/calls')
-@app.route('/call_send')
-@app.route('/call_receive')
+@app.route('/call', methods=['GET', 'POST'])
+@app.route('/calls', methods=['GET', 'POST'])
+@app.route('/call_send', methods=['GET', 'POST'])
+@app.route('/call_receive', methods=['GET', 'POST'])
 def call():
     return call_response()
 

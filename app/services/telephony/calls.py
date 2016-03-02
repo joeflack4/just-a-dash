@@ -27,7 +27,7 @@ def manually_call(): # <- Unused
 
 def call_response():
     resp = twilio.twiml.Response()
-    resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!")
+    resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!", voice="alice")
     return str(resp)
 
 # Sub-function of: call_check_in_data

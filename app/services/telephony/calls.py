@@ -30,7 +30,7 @@ def call_response():
     resp = twilio.twiml.Response()
 
     # Randomly chooses confirmation that is either pre-recording, or text-to-speech.
-    confirmation = random.choice("say", "play")
+    confirmation = random.choice(["say", "play"])
     if confirmation == "play":
         resp.play("http://www.sonshinecompanioncare.com/scccheckin01.mp3")
     elif confirmation == "say":

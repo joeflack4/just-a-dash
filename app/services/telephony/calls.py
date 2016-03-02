@@ -3,6 +3,7 @@
 # API Root: https://api.twilio.com/2010-04-01/Accounts/ACe0b46c755c8f0b144c1a31e0a9170cea/
 
 # - Imports
+import random
 import twilio.twiml
 from twilio.rest import TwilioRestClient
 try:
@@ -27,10 +28,16 @@ def manually_call(): # <- Unused
 
 def call_response():
     resp = twilio.twiml.Response()
-    try:
+
+    # Randomly chooses confirmation that is either pre-recording, or text-to-speech.
+    confirmation = random.choice("say", "play")
+    if confirmation == "play":
         resp.play("http://www.sonshinecompanioncare.com/scccheckin01.mp3")
-    except:
+    elif confirmation == "say":
         resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!", voice="alice")
+    else:
+        resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!")
+
     return str(resp)
 
 # Sub-function of: call_check_in_data

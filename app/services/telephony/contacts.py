@@ -151,13 +151,13 @@ class CompanyContacts:
             return response
 
     def check_in(*args, contacts=contacts):
-        for contact_number in args:
+        # for contact_number in args:
             # - Work in progress: The following code works, but it currently does not dynamically give back the individual's information. It only replies with "Esteemed + Caregiver".
             # first_name = str(contacts[contact_number]["first_name"])
             # last_name = str(contacts[contact_number]["last_name"])
             # return "You have successfully checked in, " + first_name + " " + last_name + "!"
-
-            return "You have successfully checked in!"
+            # return "You have successfully checked in!"
+        return "You have successfully checked in!"
 
 
 # - Run

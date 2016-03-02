@@ -26,11 +26,11 @@ def manually_call(): # <- Unused
 
 
 def call_response():
-    # resp = twilio.twiml.Response()
-    # from_ = "+10000000000"
-    # body = CompanyContacts.check_in(from_)
-    # resp.message(body)
-    # return str(resp)
+    resp = twilio.twiml.Response()
+    from_ = "+10000000000"
+    body = CompanyContacts.check_in(from_)
+    resp.message(body)
+    return str(resp)
     return ""
 
 # Sub-function of: call_check_in_data

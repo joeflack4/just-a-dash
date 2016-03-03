@@ -48,19 +48,17 @@ def get_incoming_call_phone_numbers(id=account_sid, pw=auth_token):
     incoming_phone_numbers = []
 
     for call in calls:
-        if call.from_ != "+18508981787":
-            incoming_phone_numbers.append(call.from_)
+        incoming_phone_numbers.append(call.from_)
     return incoming_phone_numbers
 
 # Sub-function of: call_check_in_data
 def get_timestamps(id=account_sid, pw=auth_token):
     client = TwilioRestClient(id, pw)
-    messages = client.messages.list()
+    calls = client.calls.list()
     timestamps = []
 
-    for message in messages:
-        if message.from_ != "+18508981787":
-            timestamps.append(str(message.date_created))
+    for call in calls:
+        timestamps.append(str(call.date_created))
 
     return timestamps
 

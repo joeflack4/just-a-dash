@@ -17,7 +17,7 @@ auth_token = "c98aa40b61818e730920459b83ec0f4d"
 
 
 # - Functions
-def manually_call(): # <- Unused
+def manually_call():  # <- Unused
     # client = TwilioRestClient(account_sid, auth_token)
     # to = "+12316851234"
     # from_ = "+10000000000"
@@ -51,6 +51,7 @@ def get_incoming_call_phone_numbers(id=account_sid, pw=auth_token):
         incoming_phone_numbers.append(call.from_)
     return incoming_phone_numbers
 
+
 # Sub-function of: call_check_in_data
 def get_timestamps(id=account_sid, pw=auth_token):
     client = TwilioRestClient(id, pw)
@@ -61,6 +62,7 @@ def get_timestamps(id=account_sid, pw=auth_token):
         timestamps.append(str(call.date_created))
 
     return timestamps
+
 
 # Sub-function of: call_check_in_data
 def get_individual(identifier):

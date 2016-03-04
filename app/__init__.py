@@ -5,11 +5,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 # - Initialize App
+print("##### Just-a-Dash ERP Dashboard #####")
 app = Flask(__name__)
 
 
 # - Initialize DB
-app.config['SQLALCHEMY_DATABASE_uRI'] = "postgresql://joeflack4:pizzaLatte186*@localhost/justadash"
+app.config['SQL_ALCHEMY_URI'] = 'postgresql+psycopg2://postgres:Megaman40oz@localhost/justadash'
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -25,15 +26,14 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 def setup_db():
-    temporary_variable = True  # Will remove this after refactoring
-    if temporary_variable:
-        print("DB: ", db)
+    temp_var = True  # Will refacror this.
+    if temp_var:
+        from app import db
         db.create_all()
     else:
         print("Error. Could not setup DB. Either an exception occurred, or the DB is already setup.")
 
 setup_db()
-
 
 # - Initialize UI Theme
 from app import routes

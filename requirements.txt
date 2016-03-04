@@ -5,8 +5,9 @@ Jinja2==2.7.3
 itsdangerous==0.24
 Werkzeug==0.9.6
 
-# - Flask Plugins #
+# - Flask Extensions #
 Flask-SQLAlchemy==2.0
+Flask-Migrate
 #Flask-WTF==0.10.2
 #Flask-Login==0.2.11
 #Flask-Mail==0.9.0

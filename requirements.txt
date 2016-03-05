@@ -16,6 +16,7 @@ Flask-Migrate
 
 # - Server Dependencies #
 gunicorn==19.1.1
+# gunicorn==18.0.0
 
 # - Database Dependencies
 SQLAlchemy==0.9.7

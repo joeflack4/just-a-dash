@@ -16,27 +16,28 @@ from app import app, config
 
 
 
-print("test")
 
 
 # Set app settings to detect and react to the type of environment being run.
-try:
-    app.config.from_object(os.environ['APP_SETTINGS'])
-    print(os.environ['APP_SETTINGS'])
-except KeyError as e:
-    # print("Exception: ", e, ": APP_SETTINGS not set. This may be your local development environment, or APP_SETTINGS has otherwise not been set on your test/staging/deployment environments.")
-    # print("Exception has been handled by automatic runtime setting of APP_SETTINGS value.")
-    os.environ["APP_SETTINGS"] = str(config.DevelopmentConfig)
-    # app.config.from_object(os.environ['APP_SETTINGS'])
-    app.config.from_object(config.DevelopmentConfig)
-    print(os.environ['APP_SETTINGS'])
-except:
-    # print("Error: Unexpected exception occured when trying to apply APP_SETTINGS. This may be your local development environment, or APP_SETTINGS has otherwise not been set on your test/staging/deployment environments.")
-    # print("Exception has been handled by automatic runtime setting of APP_SETTINGS value.")
-    os.environ["APP_SETTINGS"] = str(config.DevelopmentConfig)
-    app.config.from_object(config.DevelopmentConfig)
-    print(os.environ['APP_SETTINGS'])
-    pass
+# Isn't working at the moment.... Right now development environment will not be set.
+
+# try:
+#     app.config.from_object(os.environ['APP_SETTINGS'])
+#     print(os.environ['APP_SETTINGS'])
+# except KeyError as e:
+#     # print("Exception: ", e, ": APP_SETTINGS not set. This may be your local development environment, or APP_SETTINGS has otherwise not been set on your test/staging/deployment environments.")
+#     # print("Exception has been handled by automatic runtime setting of APP_SETTINGS value.")
+#     os.environ["APP_SETTINGS"] = str(config.DevelopmentConfig)
+#     # app.config.from_object(os.environ['APP_SETTINGS'])
+#     app.config.from_object(config.DevelopmentConfig)
+#     print(os.environ['APP_SETTINGS'])
+# except:
+#     # print("Error: Unexpected exception occured when trying to apply APP_SETTINGS. This may be your local development environment, or APP_SETTINGS has otherwise not been set on your test/staging/deployment environments.")
+#     # print("Exception has been handled by automatic runtime setting of APP_SETTINGS value.")
+#     os.environ["APP_SETTINGS"] = str(config.DevelopmentConfig)
+#     app.config.from_object(config.DevelopmentConfig)
+#     print(os.environ['APP_SETTINGS'])
+#     pass
 
 
 

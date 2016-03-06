@@ -1,16 +1,37 @@
 #!/usr/bin/env python
+import os
+from .config import Config, DevelopmentConfig
+
 from flask import Flask
 from flask_adminlte import AdminLTE
 from flask_sqlalchemy import SQLAlchemy
 
 
 # - Initialize App
-print("##### Just-a-Dash ERP Dashboard #####")
 app = Flask(__name__)
+
+# Set app settings to detect and react to the type of environment being run.
+try:
+    app.config.from_object(os.environ['APP_SETTINGS'])
+    print(os.environ['APP_SETTINGS'])
+except KeyError as e:
+    # print("Exception: ", e, ": APP_SETTINGS not set. This may be your local development environment, or APP_SETTINGS has otherwise not been set on your test/staging/deployment environments.")
+    # print("Exception has been handled by automatic runtime setting of APP_SETTINGS value.")
+    os.environ["APP_SETTINGS"] = str(config.DevelopmentConfig)
+    # app.config.from_object(os.environ['APP_SETTINGS'])
+    app.config.from_object(config.DevelopmentConfig)
+    print(os.environ['APP_SETTINGS'])
+except:
+    # print("Error: Unexpected exception occured when trying to apply APP_SETTINGS. This may be your local development environment, or APP_SETTINGS has otherwise not been set on your test/staging/deployment environments.")
+    # print("Exception has been handled by automatic runtime setting of APP_SETTINGS value.")
+    os.environ["APP_SETTINGS"] = str(config.DevelopmentConfig)
+    app.config.from_object(config.DevelopmentConfig)
+    print(os.environ['APP_SETTINGS'])
+    pass
 
 
 # - Initialize DB
-app.config['SQL_ALCHEMY_URI'] = 'postgresql+psycopg2://joeflack4pizzaLatte186*:@localhost/justadash'
+app.config['SQL_ALCHEMY_URI'] = 'postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash'
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -26,7 +47,7 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 def setup_db():
-    temp_var = True  # Will refacror this.
+    temp_var = True  # Will refactor this.
     if temp_var:
         from app import db
         db.create_all()
@@ -43,5 +64,5 @@ AdminLTE(app)
 
 # - Contingencies
 if __name__ == '__main__':
-# Run: Allows running of app directly from this file.
+    # Run: Allows running of app directly from this file.
     app().run(debug=True)

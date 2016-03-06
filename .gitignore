@@ -1,17 +1,12 @@
 # - IDE #
 .idea
 
-# - Local Development #
-# Keep these in repository for now.
-# localhost_run.py
-# localhost_run.bat
-
-# - Extra #
-requirements_alt.txt
-runtime_alt.txt
-
 # - Dependencies #
 env/
+
+# - Local Development #
+# Keep in repository for now.
+# run.py
 
 # FlaskAdminLTE should have its own forked repository and packaging, but it is not time for that yet..
 # flask_adminlte

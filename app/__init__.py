@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 
 # - Initialize DB
-app.config['SQL_ALCHEMY_URI'] = 'postgresql+psycopg2://postgres:Megaman40oz@localhost/justadash'
+app.config['SQL_ALCHEMY_URI'] = 'postgresql+psycopg2://joeflack4pizzaLatte186*:@localhost/justadash'
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -35,12 +35,13 @@ def setup_db():
 
 setup_db()
 
+
 # - Initialize UI Theme
 from app import routes
 AdminLTE(app)
 
 
 # - Contingencies
-# Run - Allows running of app directly from this file.
 if __name__ == '__main__':
+# Run: Allows running of app directly from this file.
     app().run(debug=True)

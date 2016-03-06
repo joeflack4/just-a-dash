@@ -1,7 +1,6 @@
-from flask import render_template
+from flask import render_template, url_for
 from app import app
-# # Unused -> from flask import url_for
-# # Unused -> from flask_table import Table, Col
+# Unused -> from flask_table import Table, Col
 
 try:
     from .services.telephony.contacts import CompanyContacts
@@ -27,6 +26,7 @@ def index():
                            icon="fa fa-dashboard",
                            logged_in=logged_in,
                            username=username)
+
 
 # - Core Modules
 @app.route('/account-settings')

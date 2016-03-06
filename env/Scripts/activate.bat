@@ -1,5 +1,5 @@
 @echo off
-set "VIRTUAL_ENV=C:\Program Files (x86)\Ampps\www\projects\Vanillerp\project_root\env"
+set "VIRTUAL_ENV=C:\PROGRA~2\Ampps\www\projects\VANILL~2\VANILL~1\env"
 
 if defined _OLD_VIRTUAL_PROMPT (
     set "PROMPT=%_OLD_VIRTUAL_PROMPT%"
@@ -7,20 +7,24 @@ if defined _OLD_VIRTUAL_PROMPT (
     if not defined PROMPT (
         set "PROMPT=$P$G"
     )
-	set "_OLD_VIRTUAL_PROMPT=%PROMPT%"	
+    set "_OLD_VIRTUAL_PROMPT=%PROMPT%"
 )
 set "PROMPT=(env) %PROMPT%"
 
-if not defined _OLD_VIRTUAL_PYTHONHOME (
+REM Don't use () to avoid problems with them in %PATH%
+if defined _OLD_VIRTUAL_PYTHONHOME goto ENDIFVHOME
     set "_OLD_VIRTUAL_PYTHONHOME=%PYTHONHOME%"
-)
+:ENDIFVHOME
+
 set PYTHONHOME=
 
-if defined _OLD_VIRTUAL_PATH (
+REM if defined _OLD_VIRTUAL_PATH (
+if not defined _OLD_VIRTUAL_PATH goto ENDIFVPATH1
     set "PATH=%_OLD_VIRTUAL_PATH%"
-) else (
+:ENDIFVPATH1
+REM ) else (
+if defined _OLD_VIRTUAL_PATH goto ENDIFVPATH2
     set "_OLD_VIRTUAL_PATH=%PATH%"
-)
-set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"
+:ENDIFVPATH2
 
-:END
+set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"

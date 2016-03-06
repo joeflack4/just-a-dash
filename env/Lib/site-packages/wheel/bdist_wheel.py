@@ -33,7 +33,7 @@ from distutils.sysconfig import get_python_version
 
 from distutils import log as logger
 
-from .pep425tags import get_abbr_impl, get_impl_ver
+from .pep425tags import get_abbr_impl, get_impl_ver, get_abi_tag
 from .util import native, open_for_csv
 from .archive import archive_wheelfile
 from .pkginfo import read_pkg_info, write_pkg_info
@@ -85,18 +85,20 @@ class bdist_wheel(Command):
         self.bdist_dir = None
         self.data_dir = None
         self.plat_name = None
+        self.plat_tag = None
         self.format = 'zip'
         self.keep_temp = False
         self.dist_dir = None
         self.distinfo_dir = None
         self.egginfo_dir = None
-        self.root_is_purelib = None
+        self.root_is_pure = None
         self.skip_build = None
         self.relative = False
         self.owner = None
         self.group = None
         self.universal = False
         self.python_tag = 'py' + get_impl_ver()[0]
+        self.plat_name_supplied = False
 
     def finalize_options(self):
         if self.bdist_dir is None:
@@ -104,13 +106,15 @@ class bdist_wheel(Command):
             self.bdist_dir = os.path.join(bdist_base, 'wheel')
 
         self.data_dir = self.wheel_dist_name + '.data'
+        self.plat_name_supplied = self.plat_name is not None
 
         need_options = ('dist_dir', 'plat_name', 'skip_build')
 
         self.set_undefined_options('bdist',
                                    *zip(need_options, need_options))
 
-        self.root_is_purelib = self.distribution.is_pure()
+        self.root_is_pure = not (self.distribution.has_ext_modules()
+                                 or self.distribution.has_c_libraries())
 
         # Support legacy [wheel] section for setting universal
         wheel = self.distribution.get_option_dict('wheel')
@@ -127,30 +131,30 @@ class bdist_wheel(Command):
                          safer_version(self.distribution.get_version())))
 
     def get_tag(self):
-        supported_tags = pep425tags.get_supported()
+        # bdist sets self.plat_name if unset, we should only use it for purepy
+        # wheels if the user supplied it.
+        if self.plat_name_supplied:
+            plat_name = self.plat_name
+        elif self.root_is_pure:
+            plat_name = 'any'
+        else:
+            plat_name = self.plat_name or get_platform()
+        plat_name = plat_name.replace('-', '_').replace('.', '_')
 
-        if self.distribution.is_pure():
+        if self.root_is_pure:
             if self.universal:
                 impl = 'py2.py3'
             else:
                 impl = self.python_tag
-            tag = (impl, 'none', 'any')
+            tag = (impl, 'none', plat_name)
         else:
-            plat_name = self.plat_name
-            if plat_name is None:
-                plat_name = get_platform()
-            plat_name = plat_name.replace('-', '_').replace('.', '_')
             impl_name = get_abbr_impl()
             impl_ver = get_impl_ver()
-            # PEP 3149 -- no SOABI in Py 2
-            # For PyPy?
-            # "pp%s%s" % (sys.pypy_version_info.major,
-            # sys.pypy_version_info.minor)
-            abi_tag = sysconfig.get_config_vars().get('SOABI', 'none')
-            if abi_tag.startswith('cpython-'):
-                abi_tag = 'cp' + abi_tag.rsplit('-', 1)[-1]
-
+            # PEP 3149
+            abi_tag = str(get_abi_tag()).lower()
             tag = (impl_name + impl_ver, abi_tag, plat_name)
+            supported_tags = pep425tags.get_supported(
+                supplied_platform=plat_name if self.plat_name_supplied else None)
             # XXX switch to this alternate implementation for non-pure:
             assert tag == supported_tags[0]
         return tag
@@ -199,11 +203,11 @@ class bdist_wheel(Command):
         if os.name == 'nt':
             # win32 barfs if any of these are ''; could be '.'?
             # (distutils.command.install:change_roots bug)
-            basedir_observed = os.path.join(self.data_dir, '..')
+            basedir_observed = os.path.normpath(os.path.join(self.data_dir, '..'))
             self.install_libbase = self.install_lib = basedir_observed
 
         setattr(install,
-                'install_purelib' if self.root_is_purelib else 'install_platlib',
+                'install_purelib' if self.root_is_pure else 'install_platlib',
                 basedir_observed)
 
         logger.info("installing to %s", self.bdist_dir)
@@ -255,7 +259,7 @@ class bdist_wheel(Command):
         msg = Message()
         msg['Wheel-Version'] = '1.0'  # of the spec
         msg['Generator'] = generator
-        msg['Root-Is-Purelib'] = str(self.root_is_purelib).lower()
+        msg['Root-Is-Purelib'] = str(self.root_is_pure).lower()
 
         # Doesn't work for bdist_wininst
         impl_tag, abi_tag, plat_tag = self.get_tag()
@@ -377,9 +381,11 @@ class bdist_wheel(Command):
                                                      'not-zip-safe',)))
 
             # delete dependency_links if it is only whitespace
-            dependency_links = os.path.join(distinfo_path, 'dependency_links.txt')
-            if not open(dependency_links, 'r').read().strip():
-                adios(dependency_links)
+            dependency_links_path = os.path.join(distinfo_path, 'dependency_links.txt')
+            with open(dependency_links_path, 'r') as dependency_links_file:
+                dependency_links = dependency_links_file.read().strip()
+            if not dependency_links:
+                adios(dependency_links_path)
 
         write_pkg_info(os.path.join(distinfo_path, 'METADATA'), pkg_info)
 
@@ -409,7 +415,7 @@ class bdist_wheel(Command):
             pymeta['extensions']['python.details']['document_names']['license'] = license_filename
 
         with open(metadata_json_path, "w") as metadata_json:
-            json.dump(pymeta, metadata_json)
+            json.dump(pymeta, metadata_json, sort_keys=True)
 
         adios(egginfo_path)
 
@@ -421,7 +427,8 @@ class bdist_wheel(Command):
 
         def walk():
             for dir, dirs, files in os.walk(bdist_dir):
-                for f in files:
+                dirs.sort()
+                for f in sorted(files):
                     yield os.path.join(dir, f)
 
         def skip(path):

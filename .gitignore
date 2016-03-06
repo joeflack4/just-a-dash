@@ -11,8 +11,7 @@ requirements_alt.txt
 runtime_alt.txt
 
 # - Dependencies #
-# Keep virtualenv for now.
-# env/
+env/
 
 # FlaskAdminLTE should have its own forked repository and packaging, but it is not time for that yet..
 # flask_adminlte

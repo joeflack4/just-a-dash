@@ -1,3 +1,17 @@
-A core module placeholder.
+{% extends "base.html" %}
 
-{% include "core_components/footer.html" %}
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+{% block content -%}
+  <div page-header>
+    <h4 class="page-header">Welcome{% if username %}, {{ username }}.
+      {% else %} ~{% endif %}
+    </h4>
+  </div>
+
+  <p>Please <a href="" data-toggle="modal" data-target="#LoginForm">log in.</a></p>
+
+{%- endblock content %}

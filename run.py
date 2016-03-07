@@ -42,7 +42,7 @@ from app import app, config
 
 
 
-print(os.environ['APP_SETTINGS'])
+# print(os.environ['APP_SETTINGS'])
 
 print("")
 print("##### Just-a-Dash ERP Dashboard #####")

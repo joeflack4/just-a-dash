@@ -1,14 +1,17 @@
-from flask import render_template, url_for
+from flask import render_template, url_for, flash, redirect
 from app import app
 # Unused -> from flask_table import Table, Col
 
 try:
+    from .forms import LoginForm
+    from .model.users import get_user
     from .services.telephony.contacts import CompanyContacts
     from .services.telephony.sms import sms_response, sms_check_in_data
     from .services.telephony.calls import call_response, call_check_in_data
-    from .model.users import get_user
 except:
     try:
+        from .forms import LoginForm
+        from .model.users import get_user
         from .services.telephony.sms import sms_response, sms_check_in_data, CompanyContacts
         from .services.telephony.calls import call_response, call_check_in_data
     except:
@@ -47,9 +50,12 @@ def app_settings():
                            page_name="App Settings Home")
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('core_modules/login/index.html')
+    form = LoginForm()
+
+    return render_template('core_modules/login/index.html',
+                           form=form)
 
 
 @app.route('/register')

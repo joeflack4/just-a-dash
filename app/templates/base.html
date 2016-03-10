@@ -46,10 +46,14 @@
             <h4 class="modal-title" id="LoginForm-Title">Login</h4>
           </div>
           <div class="modal-body" align="left">
-            <form id="LoginForm">
-              <p>E-mail / Username: <input type="text" name="username"/></p>
-              <p>Password: <input type="password" name="password"/></p>
+
+            <form id="LoginForm" action="" method="post" name="login">
+              {{ login_form.hidden_tag() }}
+              <p>E-mail / Username: <input type="text" name="username" title="username"/></p>
+              <p>Password: <input type="password" name="password" title="password"/></p>
+              <p>{{ login_form.remember_me }} Remember Me</p>
             </form>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -58,6 +62,26 @@
         </div>
       </div>
     </div>
+
+
+{#      #}
+{#      #}
+{#          {{ login_form.openid(size=80) }}#}
+{##}
+{#          {% for error in login_form.openid.errors %}#}
+{#            <span style="color: red;">[{{ error }}</span>#}
+{#          {% endfor %}<br/>#}
+{##}
+{#          |{% for pr in providers %}#}
+{#            <a href="javascript:set_openid('{{ pr.url }}', '{{ pr.name }}');">{{ pr.name }}</a> |#}
+{#          {% endfor %}#}
+{#      #}
+
+
+
+      <p><input type="submit" value="Sign In"></p>
+
+
 
     <!-- Register Form -->
     <div class="modal fade" id="RegisterForm" tabindex="-1" role="dialog" aria-labelledby="RegisterForm">
@@ -68,12 +92,14 @@
             <h4 class="modal-title" id="RegisterForm-Title">Login</h4>
           </div>
           <div class="modal-body" align="left">
+
             <form id="RegisterForm">
-              <p>E-mail: <input type="text" name="email"/></p>
-              <p>Username: <input type="text" name="username"/></p>
-              <p>Password: <input type="password" name="password"/></p>
-              <p>Repeat Password: <input type="password" name="password-verify"/></p>
+              <p>E-mail: <input type="text" name="email" title="email"/></p>
+              <p>Username: <input type="text" name="username" title="username"/></p>
+              <p>Password: <input type="password" name="password" title="password"/></p>
+              <p>Repeat Password: <input type="password" name="password-verify" title="password-verify"/></p>
             </form>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -92,11 +118,13 @@
             <h4 class="modal-title" id="DynamicForm-Title">Add {{ form_title }}</h4>
           </div>
           <div class="modal-body" align="left">
+
             <form id="DynamicForm">
-              <p>First Name: <input type="text" name="First Name"/></p>
-              <p>Last Name: <input type="text" name="Last Name"/></p>
-              <p>Phone Number: <input type="text" name="Phone Number"/></p>
+              <p>First Name: <input type="text" name="First Name" title="first-name"/></p>
+              <p>Last Name: <input type="text" name="Last Name" title="last-name"/></p>
+              <p>Phone Number: <input type="text" name="Phone Number" title="phone-number"/></p>
             </form>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -17,11 +17,16 @@ except:
     except:
         print("An error has occurred importing modules.")
 
+
+# - Variables
+logged_in = False
+
+
 # - Root Path
 @app.route('/')
 @app.route('/dashboard')
-def index():
-    logged_in = False
+def index(logged_in):
+    logged_in = logged_in
     username = ""
 
     return render_template('core_modules/dashboard/index.html',
@@ -34,7 +39,8 @@ def index():
 
 # - Core Modules
 @app.route('/account-settings')
-def account_settings():
+def account_settings(logged_in):
+    logged_in = logged_in
     return render_template('core_modules/account_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Account Settings",
@@ -42,7 +48,8 @@ def account_settings():
                            page_name="Account Settings Home")
 
 @app.route('/app-settings')
-def app_settings():
+def app_settings(logged_in):
+    logged_in = logged_in
     return render_template('core_modules/app_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="App Settings",
@@ -53,9 +60,14 @@ def app_settings():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    
+    if form.validate_on_submit():
+        flash('Login requested for OpenID="%s", remember_me="%s"' %
+              form.openid.data, str(form.remember_me.data))
+        return redirect('/')
 
     return render_template('core_modules/login/index.html',
-                           form=form)
+                           login_form=form)
 
 
 @app.route('/register')
@@ -64,7 +76,8 @@ def register():
 
 
 @app.route('/profile')
-def profile():
+def profile(logged_in):
+    logged_in = logged_in
     return render_template('core_modules/profile/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Profile",
@@ -74,7 +87,8 @@ def profile():
 
 # - Modules
 @app.route('/hrm')
-def hrm():
+def hrm(logged_in):
+    logged_in = logged_in
     try:
         personnel = CompanyContacts.get_contacts()
     except:
@@ -90,7 +104,8 @@ def hrm():
 
 
 @app.route('/crm')
-def crm():
+def crm(logged_in):
+    logged_in = logged_in
     try:
         customers = CompanyContacts.get_customer_contacts()
     except:
@@ -106,7 +121,8 @@ def crm():
 
 
 @app.route('/operations')
-def operations(*args):
+def operations(logged_in, *args):
+    logged_in = logged_in
     try:
         check_in_type = args[0]
     except:
@@ -133,7 +149,8 @@ def operations(*args):
 @app.route('/check-in')
 @app.route('/callin')
 @app.route('/call-in')
-def call_check_in():
+def call_check_in(logged_in):
+    logged_in = logged_in
     return operations("call_check_in")
 
 
@@ -141,12 +158,14 @@ def call_check_in():
 @app.route('/text-in')
 @app.route('/text-checkin')
 @app.route('/sms-checkin')
-def sms_check_in():
+def sms_check_in(logged_in):
+    logged_in = logged_in
     return operations("sms_check_in")
 
 
 @app.route('/accounting')
-def accounting():
+def accounting(logged_in):
+    logged_in = logged_in
     return render_template('modules/accounting/index.html',
                            icon="fa fa-bar-chart",
                            module_abbreviation="AMS",
@@ -158,7 +177,8 @@ def accounting():
 @app.route('/sms')
 @app.route('/sms_send')
 @app.route('/sms_receive')
-def sms():
+def sms(logged_in):
+    logged_in = logged_in
     return sms_response()
 
 
@@ -166,7 +186,8 @@ def sms():
 @app.route('/calls', methods=['GET', 'POST'])
 @app.route('/call_send', methods=['GET', 'POST'])
 @app.route('/call_receive', methods=['GET', 'POST'])
-def call():
+def call(logged_in):
+    logged_in = logged_in
     return call_response()
 
 

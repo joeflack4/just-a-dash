@@ -1,16 +1,26 @@
 #!/usr/bin/env python
 import os
-from .config import Config, DevelopmentConfig
-
 from flask import Flask
 from flask_adminlte import AdminLTE
-# 1. Tutorial 1
+from .config import Config
+# 1. Tutorial 1 Import
 # from flask_sqlalchemy import SQLAlchemy
-# 2. Tutorial 2
 
 
 # - Initialize App
 app = Flask(__name__)
+
+# - Initialize Configuration
+try:
+    app.config.from_object(os.environ['APP_SETTINGS'])
+except KeyError:
+    # If environment variable 'APP_SETTINGS' isn't defined by administrator, exception defaults to development settings.
+    app.config.from_object(config.DevelopmentConfig)
+except:
+    # Backup exception.
+    app.config.from_object(config.DevelopmentConfig)
+
+
 
 
 

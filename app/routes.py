@@ -25,40 +25,52 @@ logged_in = False
 # - Root Path
 @app.route('/')
 @app.route('/dashboard')
-def index(logged_in):
-    logged_in = logged_in
+def index(logged_in=True):
     username = ""
 
     return render_template('core_modules/dashboard/index.html',
-                           module_name="Just-a-Dash Control Panel",
-                           page_name="Dashboard",
-                           icon="fa fa-dashboard",
-                           logged_in=logged_in,
-                           username=username)
+                       module_name="Just-a-Dash Control Panel",
+                       page_name="Dashboard",
+                       icon="fa fa-dashboard",
+                       logged_in=logged_in,
+                       username=username)
+
+    #
+    #
+    # if logged_in == False:
+    #     redirect(url_for('login'))
+    # else:
+    #     return render_template('core_modules/dashboard/index.html',
+    #                        module_name="Just-a-Dash Control Panel",
+    #                        page_name="Dashboard",
+    #                        icon="fa fa-dashboard",
+    #                        logged_in=logged_in,
+    #                        username=username)
 
 
 # - Core Modules
 @app.route('/account-settings')
-def account_settings(logged_in):
-    logged_in = logged_in
+def account_settings(logged_in=logged_in):
     return render_template('core_modules/account_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Account Settings",
                            module_name="Account Settings",
-                           page_name="Account Settings Home")
+                           page_name="Account Settings Home",
+                           logged_in=logged_in)
+
 
 @app.route('/app-settings')
-def app_settings(logged_in):
-    logged_in = logged_in
+def app_settings(logged_in=logged_in):
     return render_template('core_modules/app_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="App Settings",
                            module_name="App Settings",
-                           page_name="App Settings Home")
+                           page_name="App Settings Home",
+                           logged_in=logged_in)
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login(logged_in=logged_in):
     form = LoginForm()
     
     if form.validate_on_submit():
@@ -67,6 +79,7 @@ def login():
         return redirect('/')
 
     return render_template('core_modules/login/index.html',
+                           logged_in=logged_in,
                            login_form=form)
 
 
@@ -76,19 +89,19 @@ def register():
 
 
 @app.route('/profile')
-def profile(logged_in):
-    logged_in = logged_in
+def profile(logged_in=logged_in):
     return render_template('core_modules/profile/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Profile",
                            module_name="Profile",
-                           page_name="Profile Home")
+                           page_name="Profile Home",
+                           logged_in=logged_in)
 
 
 # - Modules
+@app.route('/hr')
 @app.route('/hrm')
-def hrm(logged_in):
-    logged_in = logged_in
+def hrm(logged_in=logged_in):
     try:
         personnel = CompanyContacts.get_contacts()
     except:
@@ -100,12 +113,12 @@ def hrm(logged_in):
                            module_name="Human Resource Management",
                            page_name="HRM Home",
                            form_title="Personnel",
+                           logged_in=logged_in,
                            personnel_data=personnel)
 
 
 @app.route('/crm')
-def crm(logged_in):
-    logged_in = logged_in
+def crm(logged_in=logged_in):
     try:
         customers = CompanyContacts.get_customer_contacts()
     except:
@@ -117,12 +130,12 @@ def crm(logged_in):
                            module_name="Customer Relationship Management",
                            page_name="CRM Home",
                            form_title="Customer",
+                           logged_in=logged_in,
                            customer_data=customers)
 
 
 @app.route('/operations')
-def operations(logged_in, *args):
-    logged_in = logged_in
+def operations(logged_in=logged_in, *args):
     try:
         check_in_type = args[0]
     except:
@@ -142,6 +155,7 @@ def operations(logged_in, *args):
                            module_abbreviation="OMS",
                            module_name="Operations Management",
                            page_name="OMS Home",
+                           logged_in=logged_in,
                            check_in_entries=check_in_entries)
 
 
@@ -149,36 +163,42 @@ def operations(logged_in, *args):
 @app.route('/check-in')
 @app.route('/callin')
 @app.route('/call-in')
-def call_check_in(logged_in):
-    logged_in = logged_in
-    return operations("call_check_in")
+def call_check_in(logged_in=logged_in):
+    return operations("call_check_in",
+                           logged_in=logged_in,)
 
 
 @app.route('/textin')
 @app.route('/text-in')
 @app.route('/text-checkin')
 @app.route('/sms-checkin')
-def sms_check_in(logged_in):
-    logged_in = logged_in
-    return operations("sms_check_in")
+def sms_check_in(logged_in=logged_in):
+    return operations("sms_check_in",
+                           logged_in=logged_in,)
 
 
+
+@app.route('/bms')
+@app.route('/billing')
+@app.route('/ams')
 @app.route('/accounting')
-def accounting(logged_in):
-    logged_in = logged_in
-    return render_template('modules/accounting/index.html',
-                           icon="fa fa-bar-chart",
-                           module_abbreviation="AMS",
-                           module_name="Accounting Management",
-                           page_name="AMS Home")
+def accounting(logged_in=logged_in):
+    if logged_in == False:
+        redirect(url_for('login'))
+    else:
+        return render_template('modules/accounting/index.html',
+                               icon="fa fa-bar-chart",
+                               module_abbreviation="AMS",
+                               module_name="Accounting Management",
+                               page_name="AMS Home",
+                               logged_in=logged_in,)
 
 
 # - Services
 @app.route('/sms')
 @app.route('/sms_send')
 @app.route('/sms_receive')
-def sms(logged_in):
-    logged_in = logged_in
+def sms():
     return sms_response()
 
 
@@ -186,8 +206,7 @@ def sms(logged_in):
 @app.route('/calls', methods=['GET', 'POST'])
 @app.route('/call_send', methods=['GET', 'POST'])
 @app.route('/call_receive', methods=['GET', 'POST'])
-def call(logged_in):
-    logged_in = logged_in
+def call():
     return call_response()
 
 

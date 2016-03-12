@@ -4,22 +4,25 @@ from app import app
 
 try:
     from .forms import LoginForm
+except:
+    print("An error has occurred importing [Form] module.")
+    print("")
+try:
     from .model.users import get_user
+except:
+    print("An error has occurred importing [User] module.")
+    print("")
+try:
     from .services.telephony.contacts import CompanyContacts
     from .services.telephony.sms import sms_response, sms_check_in_data
     from .services.telephony.calls import call_response, call_check_in_data
 except:
-    try:
-        from .forms import LoginForm
-        from .model.users import get_user
-        from .services.telephony.sms import sms_response, sms_check_in_data, CompanyContacts
-        from .services.telephony.calls import call_response, call_check_in_data
-    except:
-        print("An error has occurred importing modules.")
+    print("An error has occurred importing [Telephony] module.")
+    print("")
 
 
 # - Variables
-logged_in = False
+logged_in = True
 
 
 # - Root Path
@@ -112,7 +115,8 @@ def hrm(logged_in=logged_in):
         try:
             personnel = CompanyContacts.get_contacts()
         except:
-            personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+            personnel = CompanyContacts.get_contacts()
+            # personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
 
         return render_template('modules/hrm/index.html',
                                icon="fa fa-users",
@@ -145,7 +149,7 @@ def crm(logged_in=logged_in):
 
 
 @app.route('/operations')
-def operations(logged_in=logged_in, *args):
+def operations(*args, logged_in=logged_in):
     if logged_in == False:
         return redirect(url_for('login'))
     else:

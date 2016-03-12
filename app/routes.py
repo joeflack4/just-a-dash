@@ -8,11 +8,6 @@ except:
     print("An error has occurred importing [Form] module.")
     print("")
 try:
-    from .model.users import get_user
-except:
-    print("An error has occurred importing [User] module.")
-    print("")
-try:
     from .services.telephony.contacts import CompanyContacts
     from .services.telephony.sms import sms_response, sms_check_in_data
     from .services.telephony.calls import call_response, call_check_in_data
@@ -22,7 +17,7 @@ except:
 
 
 # - Variables
-logged_in = True
+logged_in = False
 
 
 # - Root Path

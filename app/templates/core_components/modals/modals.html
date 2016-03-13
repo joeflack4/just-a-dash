@@ -7,7 +7,7 @@
             <h4 class="modal-title" id="DynamicForm-Title">Add {{ form_title }}</h4>
           </div>
           <div class="modal-body" align="left">
-
+          <!-- This form style is dated. Use the login/register forms as templates for a new one. -->
             <form id="DynamicForm">
               <p>First Name: <input type="text" name="First Name" title="first-name"/></p>
               <p>Last Name: <input type="text" name="Last Name" title="last-name"/></p>
@@ -25,6 +25,7 @@
 
 
 {% if logged_in == False %}
+
     <!-- Register Form -->
     <div class="modal fade" id="RegisterForm" tabindex="-1" role="dialog" aria-labelledby="RegisterForm">
       <div class="modal-dialog" role="document">
@@ -33,23 +34,37 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="RegisterForm-Title">Login</h4>
           </div>
-          <div class="modal-body" align="left">
 
-            <form id="RegisterForm">
-              <p>E-mail: <input type="text" name="email" title="email"/></p>
-              <p>Username: <input type="text" name="username" title="username"/></p>
-              <p>Password: <input type="password" name="password" title="password"/></p>
-              <p>Repeat Password: <input type="password" name="password-verify" title="password-verify"/></p>
-            </form>
+          <form id=RegisterForm" role="form" method='POST' action='/'>
+            <div class="modal-body" align="left">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" placeholder="Username">
+              </div>
+              <div class="form-group">
+                <label for="email">E-mail Address</label>
+                <input type="email" class="form-control" id="email" placeholder="E-mail">
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Password">
+              </div>
+              <div class="form-group">
+                <label for="repeat-password">Repeat Password</label>
+                <input type="password" class="form-control" id="repeat-password" placeholder="Password">
+              </div>
+            </div>
 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Login</button>
-          </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+          </form>
+
         </div>
       </div>
     </div>
+
 
     <!-- Login Form -->
     <div class="modal fade" id="LoginForm" tabindex="-1" role="dialog" aria-labelledby="LoginForm">
@@ -59,38 +74,35 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="LoginForm-Title">Login</h4>
           </div>
-          <div class="modal-body" align="left">
 
-            <form id="LoginForm" action="" method="post" name="login">
-              {{ login_form.hidden_tag() }}
-              <p>E-mail / Username: <input type="text" name="username" title="username"/></p>
-              <p>Password: <input type="password" name="password" title="password"/></p>
-              <p>{{ login_form.remember_me }} Remember Me</p>
-            </form>
+          <form id=LoginForm" role="form" method='POST' action='/'>
+            {{ login_form.hidden_tag() }}
+            <div class="modal-body" align="left">
+              <div class="form-group">
+                <label for="username-email">Username / E-mail</label>
+                <input type="text" class="form-control" id="username-email" placeholder="Username/E-mail">
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Password">
+              </div>
+              <div class="checkbox">
+                <label>
+{#                  <input type="checkbox"> Remember Me#}
+                  {{ login_form.remember_me }} Remember Me
+                </label>
+              </div>
+            </div>
 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Login</button>
-          </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+          </form>
+
         </div>
       </div>
     </div>
-
-{#      #}
-{#      #}
-{#          {{ login_form.openid(size=80) }}#}
-{##}
-{#          {% for error in login_form.openid.errors %}#}
-{#            <span style="color: red;">[{{ error }}</span>#}
-{#          {% endfor %}<br/>#}
-{##}
-{#          |{% for pr in providers %}#}
-{#            <a href="javascript:set_openid('{{ pr.url }}', '{{ pr.name }}');">{{ pr.name }}</a> |#}
-{#          {% endfor %}#}
-{#      #}
-
-      <p><input type="submit" value="Sign In"></p>
 
 {% else %}
 

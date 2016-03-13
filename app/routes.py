@@ -212,6 +212,20 @@ def accounting(logged_in=logged_in):
                                logged_in=logged_in,)
 
 
+@app.route('/mms')
+@app.route('/marketing')
+def marketing(logged_in=True):
+    if logged_in == False:
+        return redirect(url_for('login'))
+    else:
+        return render_template('modules/marketing/index.html',
+                               icon="fa fa-line-chart",
+                               module_abbreviation="MMS",
+                               module_name="Marketing Management",
+                               page_name="MMS Home",
+                               logged_in=logged_in,)
+
+
 # - Services
 @app.route('/sms')
 @app.route('/sms_send')

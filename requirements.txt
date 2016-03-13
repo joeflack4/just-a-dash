@@ -22,7 +22,12 @@ gunicorn==19.1.1
 psycopg2
 SQLAlchemy==0.9.7
 
-# - Service Dependencies
+# - Libraries
+requests
+beautifulsoup4
+nltk
+
+# - Services
 twilio
 
 # - Unused

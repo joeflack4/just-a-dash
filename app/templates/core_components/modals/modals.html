@@ -35,7 +35,7 @@
             <h4 class="modal-title" id="RegisterForm-Title">Login</h4>
           </div>
 
-          <form id=RegisterForm" role="form" method='POST' action='/'>
+          <form id=RegisterForm" role="form" method='POST' action='/register'>
             <div class="modal-body" align="left">
               <div class="form-group">
                 <label for="username">Username</label>
@@ -57,7 +57,7 @@
 
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Login</button>
+              <button type="submit" class="btn btn-primary">Register</button>
             </div>
           </form>
 
@@ -75,7 +75,7 @@
             <h4 class="modal-title" id="LoginForm-Title">Login</h4>
           </div>
 
-          <form id=LoginForm" role="form" method='POST' action='/'>
+          <form id=LoginForm" role="form" method='POST' action='/login'>
             {{ login_form.hidden_tag() }}
             <div class="modal-body" align="left">
               <div class="form-group">

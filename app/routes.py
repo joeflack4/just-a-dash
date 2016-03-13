@@ -22,6 +22,7 @@ logged_in = False
 
 # - Root Path
 @app.route('/')
+@app.route('/home')
 @app.route('/dashboard')
 def index(logged_in=logged_in):
 # def index(logged_in=True):
@@ -79,12 +80,10 @@ def login(logged_in=logged_in):
                            login_form=form)
 
 
-# @app.route('/register')
-# def register(logged_in=False):
-#     if logged_in == False:
-#         return redirect(url_for('login'))
-#     else:
-#         return render_template('core_modules/register/index.html')
+@app.route('/register', methods=['GET', 'POST'])
+def register(logged_in=False):
+    return "Thank you for your submission. The administrator will contact you when registration is complete." \
+           "<br/><br/><- <a href='/'>Go Back</>"
 
 
 @app.route('/profile')

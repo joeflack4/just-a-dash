@@ -1,5 +1,6 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from app import app
+import requests
 # Unused -> from flask_table import Table, Col
 
 try:
@@ -42,7 +43,7 @@ def index(logged_in=logged_in):
 # - Core Modules
 @app.route('/account-settings')
 def account_settings(logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         return render_template('core_modules/account_settings/index.html',
@@ -55,7 +56,7 @@ def account_settings(logged_in=logged_in):
 
 @app.route('/app-settings')
 def app_settings(logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         return render_template('core_modules/app_settings/index.html',
@@ -88,7 +89,7 @@ def register(logged_in=False):
 
 @app.route('/profile')
 def profile(logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         return render_template('core_modules/profile/index.html',
@@ -103,7 +104,7 @@ def profile(logged_in=logged_in):
 @app.route('/hr')
 @app.route('/hrm')
 def hrm(logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         try:
@@ -124,7 +125,7 @@ def hrm(logged_in=logged_in):
 
 @app.route('/crm')
 def crm(logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         try:
@@ -144,7 +145,7 @@ def crm(logged_in=logged_in):
 
 @app.route('/operations')
 def operations(*args, logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         try:
@@ -175,7 +176,7 @@ def operations(*args, logged_in=logged_in):
 @app.route('/callin')
 @app.route('/call-in')
 def call_check_in(logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         return operations("call_check_in",
@@ -187,7 +188,7 @@ def call_check_in(logged_in=logged_in):
 @app.route('/text-checkin')
 @app.route('/sms-checkin')
 def sms_check_in(logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         return operations("sms_check_in",
@@ -200,7 +201,7 @@ def sms_check_in(logged_in=logged_in):
 @app.route('/ams')
 @app.route('/accounting')
 def accounting(logged_in=logged_in):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
         return render_template('modules/accounting/index.html',
@@ -211,18 +212,36 @@ def accounting(logged_in=logged_in):
                                logged_in=logged_in,)
 
 
-@app.route('/mms')
-@app.route('/marketing')
+@app.route('/mms', methods=['GET', 'POST'])
+@app.route('/marketing', methods=['GET', 'POST'])
 def marketing(logged_in=True):
-    if logged_in == False:
+    if not logged_in:
         return redirect(url_for('login'))
     else:
+        errors = []
+        results = {}
+        if request.method == "POST":
+            try:
+                url = request.form['url']
+                # See if URL submitted contains 'http://' prepended.
+                if url.find("http://") == 0:
+                    r = requests.get(url).text.encode("utf-8")
+                    print(r)
+                else:
+                    url = "http://" + url
+                    r = requests.get(url).text.encode("utf-8")
+                    print(r)
+            except:
+                errors.append('Unable to get URL. Please make sure it\'s valid and try again.')
+
         return render_template('modules/marketing/index.html',
                                icon="fa fa-line-chart",
                                module_abbreviation="MMS",
                                module_name="Marketing Management",
                                page_name="MMS Home",
-                               logged_in=logged_in,)
+                               logged_in=logged_in,
+                               errors=errors,
+                               results=results)
 
 
 # - Services

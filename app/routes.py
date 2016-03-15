@@ -1,7 +1,18 @@
 from flask import render_template, url_for, flash, redirect, request
 from app import app
-import requests
 # Unused -> from flask_table import Table, Col
+
+from app import db, Result
+
+# Imports to be ported to eventual Marketing blueprint module.
+import requests
+from collections import Counter
+from bs4 import BeautifulSoup
+import operator
+import re
+import nltk
+# more
+from .stop_words import stops
 
 try:
     from .forms import LoginForm
@@ -17,10 +28,12 @@ except:
     print("")
 
 
+##############
 # - Variables
 logged_in = False
 
 
+##############
 # - Root Path
 @app.route('/')
 @app.route('/home')
@@ -40,6 +53,7 @@ def index(logged_in=logged_in):
                            username=username)
 
 
+################
 # - Core Modules
 @app.route('/account-settings')
 def account_settings(logged_in=logged_in):
@@ -100,6 +114,7 @@ def profile(logged_in=logged_in):
                                logged_in=logged_in)
 
 
+############
 # - Modules
 @app.route('/hr')
 @app.route('/hrm')
@@ -225,14 +240,58 @@ def marketing(logged_in=True):
                 url = request.form['url']
                 # See if URL submitted contains 'http://' prepended.
                 if url.find("http://") == 0:
-                    r = requests.get(url).text.encode("utf-8")
-                    print(r)
+                    # r = requests.get(url).text.encode("utf-8")
+                    # r = requests.get(url).text
+                    r = requests.get(url)
+                    # print(r)
                 else:
                     url = "http://" + url
-                    r = requests.get(url).text.encode("utf-8")
-                    print(r)
+                    r = requests.get(url)
             except:
                 errors.append('Unable to get URL. Please make sure it\'s valid and try again.')
+                return render_template('modules/marketing/index.html',
+                       icon="fa fa-line-chart",
+                       module_abbreviation="MMS",
+                       module_name="Marketing Management",
+                       page_name="MMS Home",
+                       logged_in=logged_in,
+                       errors=errors)
+            if r:
+                # - Debugging
+                # print("")
+                # return r.text
+
+                # text processing
+                raw = BeautifulSoup(r.text).get_text()
+                nltk.data.path.append('./nltk_data/')  # set the path
+                tokens = nltk.word_tokenize(raw)
+                text = nltk.Text(tokens)
+
+                # remove punctuation, count raw words
+                nonPunct = re.compile('.*[A-Za-z].*')
+                raw_words = [w for w in text if nonPunct.match(w)]
+                raw_word_count = Counter(raw_words)
+
+                # stop words
+                no_stop_words = [w for w in raw_words if w.lower() not in stops]
+                no_stop_words_count = Counter(no_stop_words)
+
+                # save the results
+                results = sorted(
+                    no_stop_words_count.items(),
+                    key=operator.itemgetter(1),
+                    reverse=True
+                )[0:10]
+                try:
+                    result = Result(
+                        url=url,
+                        result_all=raw_word_count,
+                        result_no_stop_words=no_stop_words_count
+                    )
+                    db.session.add(result)
+                    db.session.commit()
+                except:
+                    errors.append("Unable to add item to database.")
 
         return render_template('modules/marketing/index.html',
                                icon="fa fa-line-chart",

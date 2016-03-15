@@ -2,7 +2,10 @@ from flask import render_template, url_for, flash, redirect, request
 from app import app
 # Unused -> from flask_table import Table, Col
 
-from app import db, Result
+# from app import db, Result
+# from app import db
+# from .models import Result
+from .models import Result, db
 
 # Imports to be ported to eventual Marketing blueprint module.
 import requests
@@ -289,6 +292,8 @@ def marketing(logged_in=True):
                         result_no_stop_words=no_stop_words_count
                     )
                     db.session.add(result)
+
+                    # - Debugging
                     db.session.commit()
                 except:
                     errors.append("Unable to add item to database.")

@@ -5,7 +5,10 @@ from flask_adminlte import AdminLTE
 from .config import Config
 
 # 1. Tutorial 1 Import
-from flask_sqlalchemy import SQLAlchemy
+try:
+    from flask.ext.sqlalchemy import SQLAlchemy
+except:
+    from flask_sqlalchemy import SQLAlchemy
 
 
 # - Initialize App

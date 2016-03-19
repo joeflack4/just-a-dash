@@ -121,7 +121,7 @@ def profile(logged_in=logged_in):
 # - Modules
 @app.route('/hr')
 @app.route('/hrm')
-def hrm(logged_in=True):
+def hrm(logged_in=logged_in):
     if not logged_in:
         return redirect(url_for('login'))
     else:

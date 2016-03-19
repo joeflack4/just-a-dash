@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+{#  <div page-header>#}
+{#    <h4 class="page-header">Human Resources Management System</h4>#}
+{#  </div>#}
+
+  <h3 class="content-header">Personnel List</h3>
+  <ol class="breadcrumb">
+    <li><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#DynamicForm">
+      Add New <span class="fa fa-user-plus"></span>
+    </button></li>
+  </ol>
+
+  <div>
+    <table class="table">
+      <tr>
+          <th>#</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Phone Number</th>
+      </tr>
+      {% for key, value in personnel_data.items() %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ value.first_name }}</td>
+          <td>{{ value.last_name }}</td>
+          <td>{{ key }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+{%- endblock content %}

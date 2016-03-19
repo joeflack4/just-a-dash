@@ -13,4 +13,4 @@ env/
 
 # - Modules #
 #These have their own repositories. Keep these in the release repository but remove from the core repository.
-#app/templates/modules/**
+#path/to/app/templates/modules/**

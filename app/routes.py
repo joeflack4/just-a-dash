@@ -260,10 +260,6 @@ def marketing(logged_in=True):
                        logged_in=logged_in,
                        errors=errors)
             if r:
-                # - Debugging
-                # print("")
-                # return r.text
-
                 # text processing
                 raw = BeautifulSoup(r.text).get_text()
                 nltk.data.path.append('./nltk_data/')  # set the path
@@ -285,6 +281,7 @@ def marketing(logged_in=True):
                     key=operator.itemgetter(1),
                     reverse=True
                 )[0:10]
+
                 try:
                     result = Result(
                         url=url,

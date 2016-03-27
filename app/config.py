@@ -20,9 +20,9 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     WTF_CSRF_ENABLED = True
-    SECRET_KEY = 'this-really-needs-to-be-changed'
+    SECRET_KEY = '\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1\x19\xbfZ\xaa\x84\x8e;\x19'
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
-    
+
     # SQLALCHEMY_DATABASE_URI = os.environ['postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash']
     # app.config['SQL_ALCHEMY_URI'] = 'postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash'
 

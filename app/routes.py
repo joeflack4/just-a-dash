@@ -149,6 +149,8 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        flash(u'Thank you for your submission. The site administrator will contact you when registration is complete.', 'success')
     return render_template('core_modules/register/index.html',
                            icon="fa fa-pencil-square-o",
                            module_abbreviation="Registration",

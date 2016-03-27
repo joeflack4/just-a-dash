@@ -5,7 +5,7 @@
 <!-- Header -->
 {%  block header -%}
     <header class="header">
-      <a href="/" class="logo">
+      <a href="{{ url_for('index') }}" class="logo">
           <!-- Add the class icon to your logo image or logo icon to add the margining -->
           {# Just-a-Dash #}
           <span class="glyphicon glyphicon-equalizer" aria-hidden="true"> Just-a-Dash</span>
@@ -42,11 +42,11 @@
           {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}
                 {% for category, message in messages %}
+                    <div
                     {% if category == 'message' %}
-{#                    Note to self: Div error is caused here in IDE due to the conditional.#}
-                      <div class="alert alert-warning alert-dismissable" role="alert">
+                      class="alert alert-warning alert-dismissable" role="alert">
                     {% else %}
-                      <div class="alert alert-{{ category }} alert-dismissable" role="alert">
+                      class="alert alert-{{ category }} alert-dismissable" role="alert">
                     {% endif %}
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                       {{ message }}

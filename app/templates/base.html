@@ -17,7 +17,7 @@
           {% include "core_components/navbar/sidebar_toggle_button.html" %} <!-- Sidebar Toggle -->
           <div class="navbar-right">
             <ul class="nav navbar-nav">
-              {% include "core_components/navbar/messages_menu.html" %} <!-- Messages -->
+{#              {% include "core_components/navbar/messages_menu.html" %} <!-- Messages -->#}
               {% include "core_components/navbar/notifications_menu.html" %} <!-- Notifications -->
               {% include "core_components/navbar/tasks_menu.html" %} <!-- Tasks -->
               {% include "core_components/navbar/user_menu.html" %} <!-- User Account -->
@@ -43,6 +43,7 @@
               {% if messages %}
                 {% for category, message in messages %}
                     {% if category == 'message' %}
+{#                    Note to self: Div error is caused here in IDE due to the conditional.#}
                       <div class="alert alert-warning alert-dismissable" role="alert">
                     {% else %}
                       <div class="alert alert-{{ category }} alert-dismissable" role="alert">

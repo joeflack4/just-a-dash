@@ -2,11 +2,11 @@
 <!-- Modals for login/registration are curently in base.html -->
 
 <!-- Dropdown Menu -->
-{% if logged_in %}
+{% if session['logged_in'] %}
     <li class="dropdown user user-menu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
         <i class="glyphicon glyphicon-user"></i>
-        <span>Jane Doe <i class="caret"></i></span>
+        <span>Placeholder <i class="caret"></i></span>
       </a>
       <ul class="dropdown-menu">
         <!-- User image -->

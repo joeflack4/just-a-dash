@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, session
 from app import app
 # Unused -> from flask_table import Table, Col
 
@@ -40,11 +40,11 @@ logged_in = False
 # - Root Path
 @app.route('/')
 @app.route('/home')
+@app.route('/index')
 @app.route('/dashboard')
-def index(logged_in=logged_in):
-# def index(logged_in=True):
+def index(logged_in=True):
+# def home(logged_in=True):
     username = ""
-
     if logged_in == False:
         return redirect(url_for('login'))
     else:
@@ -55,6 +55,16 @@ def index(logged_in=logged_in):
                            logged_in=logged_in,
                            username=username)
 
+
+@app.route('/welcome')
+def welcome():
+    # username = ""
+    return render_template('core_modules/welcome/index.html',
+                           module_name="Just-a-Dash Control Panel",
+                           page_name="Welcome",
+                           icon="fa fa-dashboard")
+                           # logged_in=logged_in,
+                           # username=username)
 
 ################
 # - Core Modules
@@ -84,18 +94,48 @@ def app_settings(logged_in=logged_in):
                                logged_in=logged_in)
 
 
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', True)
+    flash('You have been logged out. Thank you, come again ~')
+    return redirect(url_for('welcome'))
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login(logged_in=logged_in):
-    form = LoginForm()
-    
-    if form.validate_on_submit():
-        flash('Login requested for OpenID="%s", remember_me="%s"' %
-              form.openid.data, str(form.remember_me.data))
-        return redirect('/')
+    # form = LoginForm()
+    errors = []
 
-    return render_template('core_modules/login/index.html',
-                           logged_in=logged_in,
-                           login_form=form)
+    if request.method == 'POST':
+        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+            errors.append('Invalid credentials. Please try again.')
+            # flash(error)
+            return render_template('core_modules/login/index.html',
+                                   icon="fa fa-dashboard",
+                                   module_abbreviation="ACP",
+                                   module_name="Just-a-Dash Control Panel",
+                                   page_name="Login",
+                                   logged_in=logged_in,
+                                   errors=errors)
+                                   # login_form=form)
+
+        ## - This is from Flask Mega Tutorial, with OpenID
+        # elif form.validate_on_submit():
+        #     flash('Login requested for "%s", remember_me="%s"' %
+        #           form.openid.data, str(form.remember_me.data))
+        #     return redirect('/login')
+        else:
+            session['logged_in'] = True
+            flash('Credentials accepted. Welcome back!')
+            return redirect(url_for('index'))
+    else:
+        return render_template('core_modules/login/index.html',
+                                   icon="fa fa-dashboard",
+                                   module_abbreviation="ACP",
+                                   module_name="Just-a-Dash Control Panel",
+                                   page_name="Login",
+                                   logged_in=logged_in)
+                                   # login_form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])

@@ -35,6 +35,15 @@
 {%- endblock sidebar %}
 
 
+<!-- Content -->
+{% block content -%}
+    {% for message in get_flashed_messages() %}
+      {{ message }}
+{#        bootstrap#}
+    {% endfor %}
+{%- endblock content %}
+
+
 <!-- Modals -->
 {% block modals -%}
   {% include "core_components/modals/modals.html" %}

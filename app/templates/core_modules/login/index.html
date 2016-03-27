@@ -7,10 +7,17 @@
 {%- endblock content_header %}
 
 {% block content -%}
-  <div page-header>
-    <h4 class="page-header">Welcome{% if username %}, {{ username }}.{% else %} ~{% endif %}</h4>
-  </div>
+{#  <div page-header>#}
+{#    <h4 class="page-header">Welcome{% if username %}, {{ username }}.{% else %} ~{% endif %}</h4>#}
+{#  </div>#}
+
+    {# - Use html of super-block template.#}
+    {{ super() }}
 
   <p>Please <a href="" data-toggle="modal" data-target="#LoginForm">log in.</a></p>
+
+  {% for error in errors %}
+    <h4 style="color:#e4231e;">{{ error }}</h4>
+  {% endfor %}
 
 {%- endblock content %}

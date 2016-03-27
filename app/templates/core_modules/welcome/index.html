@@ -6,11 +6,9 @@
   {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
 {%- endblock content_header %}
 {% block content -%}
-  <div page-header>
-    <h4 class="page-header">Welcome{% if username %}, {{ username }}.
-      {% else %} ~{% endif %}
-    </h4>
-  </div>
+{#  <div page-header>#}
+    <h4 class="page-header">~ Welcome to Just-a-Dash ~</h4>
+{#  </div>#}
 
     {# - Use html of super-block template.#}
     {{ super() }}
@@ -24,14 +22,17 @@
 {#Remove this for main project.    #}
 {#    <img src ="http://www.sonshinecompanioncare.com/wp-content/uploads/2015/03/SCC-Header-01.png"/>#}
 
-{#    <h4>Current Features</h4>#}
-{#    <ul>#}
-{#      <li><a href="/checkin">Check-in Service</a></li>#}
-{#      <li><a href="/hrm">CP List (WiP)</a></li>#}
-{#      <li><a href="/crm">Client List (WiP)</a></li>#}
-{#    </ul>#}
+    <h4>Current Features</h4>
+    <ul>
+      <li><a href="{{ url_for('call_check_in') }}">Check-in Service</a></li>
+      <li><a href="{{ url_for('hrm') }}">CP List (WiP)</a></li>
+      <li><a href="{{ url_for('crm') }}">Client List (WiP)</a></li>
+    </ul>
 
-  {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->
+    <p>Please <a href="" data-toggle="modal" data-target="#LoginForm">log in</a> to access these wonderful features, and more!</p>
+
+
+{#  {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->#}
 
 {#  {% include "core_modules/dashboard/components/dashboard_footer.html" %} <!-- Content: Footer -->#}
 {%- endblock content %}

@@ -97,7 +97,7 @@ def app_settings(logged_in=logged_in):
 @app.route('/logout')
 def logout():
     session.pop('logged_in', True)
-    flash('You have been logged out. Thank you, come again ~')
+    flash(u'Logged out. Thank you, come again!', 'success')
     return redirect(url_for('welcome'))
 
 
@@ -109,14 +109,15 @@ def login(logged_in=logged_in):
     if request.method == 'POST':
         if request.form['username'] != 'admin' or request.form['password'] != 'admin':
             errors.append('Invalid credentials. Please try again.')
-            # flash(error)
+            for error in errors:
+                flash(error, 'danger')
             return render_template('core_modules/login/index.html',
                                    icon="fa fa-dashboard",
                                    module_abbreviation="ACP",
                                    module_name="Just-a-Dash Control Panel",
                                    page_name="Login",
-                                   logged_in=logged_in,
-                                   errors=errors)
+                                   logged_in=logged_in)
+                                   # errors=errors)
                                    # login_form=form)
 
         ## - This is from Flask Mega Tutorial, with OpenID
@@ -126,7 +127,7 @@ def login(logged_in=logged_in):
         #     return redirect('/login')
         else:
             session['logged_in'] = True
-            flash('Credentials accepted. Welcome back!')
+            flash(u'Logged in. Welcome back!', 'success')
             return redirect(url_for('index'))
     else:
         return render_template('core_modules/login/index.html',

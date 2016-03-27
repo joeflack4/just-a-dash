@@ -38,8 +38,31 @@
 <!-- Content -->
 {% block content -%}
     {% for message in get_flashed_messages() %}
-      {{ message }}
-{#        bootstrap#}
+        <div>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'message' %}
+                      <div class="alert alert-warning" role="alert">
+                    {% else %}
+                      <div class="alert alert-{{ category }}" role="alert">
+                    {% endif %}
+                      {{ message }}
+                    </div>
+                {% endfor %}
+              {% endif %}
+          {% endwith %}
+        </div>
+
+        {#        {{ message }}#}
+
+
+        {#        {% if alert_class %}#}
+                  {# The 4 Bootstrap alert classes are: success, info, warning, & danger. #}
+        {#          <div class="alert alert-{{ alert_class }}" role="alert">{{ message }}</div>#}
+        {#        {% else %}#}
+        {#          <div class="alert alert-info" role="alert">{{ message }}</div>#}
+        {#        {% endif %}#}
     {% endfor %}
 {%- endblock content %}
 

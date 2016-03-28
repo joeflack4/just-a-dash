@@ -9,6 +9,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
+    groups = db.Column(db.String(500))
+    permissions = db.Column(db.String(500))
     sent_messages = relationship("Messages", backref="author")
     received_messages = relationship("Messages", backref="destinations")
 

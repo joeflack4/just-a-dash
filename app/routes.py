@@ -1,4 +1,5 @@
 from flask import render_template, url_for, flash, redirect, request, session
+from flask.ext.login import login_user
 from functools import wraps
 from app import app
 # Unused -> from flask_table import Table, Col
@@ -34,8 +35,6 @@ except:
 
 ##############
 # - Variables
-
-
 
 
 ##############
@@ -120,11 +119,20 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # form = LoginForm()
     errors = []
+    form = LoginForm(request.form)
 
     if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+        # if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+        if form.validate_on_submit():
+            user = User.query.filter_by(name=request.form['username']).first()
+            flash('test')
+            if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
+                # session['logged_in'] = True
+                login_user(user)
+                flash(u'Logged in. Welcome back!', 'success')
+                return redirect(url_for('index'))
+        else:
             errors.append('Invalid credentials. Please try again.')
             for error in errors:
                 flash(error, 'danger')
@@ -136,16 +144,6 @@ def login():
                                    messages=db.session.query(Messages))
                                    # errors=errors)
                                    # login_form=form)
-        ## - This is from Flask Mega Tutorial, with OpenID
-        # elif form.validate_on_submit():
-        #     flash('Login requested for "%s", remember_me="%s"' %
-        #           form.openid.data, str(form.remember_me.data))
-        #     return redirect('/login')
-
-        else:
-            session['logged_in'] = True
-            flash(u'Logged in. Welcome back!', 'success')
-            return redirect(url_for('index'))
     else:
         return render_template('core_modules/login/index.html',
                                    icon="fa fa-dashboard",

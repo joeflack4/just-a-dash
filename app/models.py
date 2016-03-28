@@ -6,10 +6,11 @@ from sqlalchemy.ext.declarative import declarative_base
 
 db.Base = declarative_base()
 
-user_messages = db.Table('user_messages', db.Base.metadata,
-    db.Column('user_id', db.Integer, ForeignKey('user.id')),
-    db.Column('messages_id', db.Integer, ForeignKey('messages.id'))
-)
+# - To Do: Figure out relational mapping.
+# user_messages = db.Table('user_messages', db.Base.metadata,
+#     db.Column('user_id', db.Integer, ForeignKey('user.id')),
+#     db.Column('messages_id', db.Integer, ForeignKey('messages.id'))
+# )
 
 
 class User(db.Model):
@@ -21,17 +22,31 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     groups = db.Column(db.String(500))
     permissions = db.Column(db.String(500))
-    sent_messages = relationship("Messages", backref="user")
+    # - To Do: Figure out relational mapping.
+    # http: // docs.sqlalchemy.org / en / latest / orm / basic_relationships.html  # many-to-many
+    # sent_messages = relationship("Messages", backref="user")
     # received_messages = relationship("Messages", backref="user")
-    received_messages = relationship(
-        "messages",
-        secondary=user_messages,
-        back_populates="user")
+    # received_messages = relationship(
+    #     "messages",
+    #     secondary=user_messages,
+    #     back_populates="user")
 
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = bcrypt.generate_password_has(password)
+        self.password = bcrypt.generate_password_hash(password)
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return True
+
+    def get_id(self):
+        return unicode(self.id)
 
     def __repr__(self):
         return '<User {}>'.format(self.name)
@@ -51,13 +66,14 @@ class Messages(db.Model):
     delivery_methods = db.Column(db.String())
     # Delivery Method examples: To webapp, native app, push notification, SMS, e-mail, phone call, etc.
     notes = db.Column(db.String())
-    user_id = db.Column(db.Integer, ForeignKey('user.id'))
+    # - To Do: Figure out relational mapping.
+    # user_id = db.Column(db.Integer, ForeignKey('user.id'))
     # destinations = db.Column(db.String())
     # Destinations examples: To users, groups.
-    destinations = relationship(
-        "user",
-        secondary=user_messages,
-        back_populates="messages")
+    # destinations = relationship(
+    #     "user",
+    #     secondary=user_messages,
+    #     back_populates="messages")
 
     def __init__(self, type, subcategory, title, body, author, destinations, delivery_methods, notes):
         self.type = type

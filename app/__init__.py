@@ -1,7 +1,11 @@
 #!/usr/bin/env python
+######################
+###     Imports    ###
+######################
 import os
 from flask import Flask
 from flask.ext.bcrypt import Bcrypt
+from flask.ext.login import LoginManager
 from flask_adminlte import AdminLTE
 from .config import Config
 
@@ -12,12 +16,17 @@ except:
     from flask_sqlalchemy import SQLAlchemy
 
 
-
-# - Initialize App
+######################
+### Initialize App ###
+######################
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
-# - Initialize Configuration
+######################
+###   Init Config  ###
+######################
 try:
     app.config.from_object(os.environ['APP_SETTINGS'])
 except KeyError:
@@ -27,15 +36,11 @@ except:
     # Backup exception.
     app.config.from_object(config.DevelopmentConfig)
 
-
 # - Initialize DB
-
 # 1. Tutorial 1
 # app.config['SQL_ALCHEMY_URI'] = 'postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash'
 db = SQLAlchemy(app)
 from .models import Result
-
-
 
 
 # # # My added magic # # #
@@ -63,8 +68,6 @@ from .models import Result
 # # # My added magic # # #
 
 
-
-
 # 2. Tutorial 2
 # DATABASE_URL = "postgresql://localhost/wordcount_dev"
 # os.environ["DATABASE_URL"] = 'postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash'
@@ -86,11 +89,25 @@ from .models import Result
 #
 
 
+######################
+###  Blueprints   ###
+######################
 
 
+######################
+###    Sessions    ###
+######################
+from .models import User
+# - may need to change thsi
+login_manager.login_view = "login"
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.filter(User.id == int(user_id)).first()
 
-# - Initialize UI Theme
+######################
+### Initialize UI  ###
+######################
 from app import routes
 AdminLTE(app)
 

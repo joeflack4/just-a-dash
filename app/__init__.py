@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 from flask import Flask
+from flask.ext.bcrypt import Bcrypt
 from flask_adminlte import AdminLTE
 from .config import Config
 
@@ -11,9 +12,10 @@ except:
     from flask_sqlalchemy import SQLAlchemy
 
 
+
 # - Initialize App
 app = Flask(__name__)
-
+bcrypt = Bcrypt(app)
 
 # - Initialize Configuration
 try:

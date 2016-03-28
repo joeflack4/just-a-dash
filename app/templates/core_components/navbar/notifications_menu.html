@@ -10,11 +10,19 @@
       <ul class="dropdown-menu">
         <li class="header">Placeholder: "You have 10 notifications."</li>
         <li>
-          <!-- inner menu: contains the actual data -->
           <ul class="menu">
+            <!-- inner menu: contains the actual data -->
+            {% for message in messages %}
+            <li>
+              <a href="#" data-toggle="modal" data-target="#Message{{ message.id }}">
+                <i class="fa fa-paper-plane-o info"></i>{{ message.title }}
+              </a>
+            </li>
+            {% endfor %}
+            <!-- Placeholder Stuff -->
             <li>
               <a href="#">
-                <i class="ion ion-ios7-people info"></i> 5 new members joined today
+                <i class="fa fa-exclamation-circle info"></i> 5 new members joined today
               </a>
             </li>
             <li>
@@ -30,12 +38,12 @@
 
             <li>
               <a href="#">
-                <i class="ion ion-ios7-cart success"></i> 25 sales made
+                <i class="fa fa-exclamation-circle success"></i> 25 sales made
               </a>
             </li>
             <li>
               <a href="#">
-                <i class="ion ion-ios7-person danger"></i> You changed your username
+                <i class="fa fa-exclamation-circle danger"></i> You changed your username
               </a>
             </li>
           </ul>

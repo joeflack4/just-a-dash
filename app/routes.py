@@ -6,7 +6,7 @@ from app import app
 # from app import db, Result
 # from app import db
 # from .models import Result
-from .models import Result, db
+from .models import *
 
 # Imports to be ported to eventual Marketing blueprint module.
 import requests
@@ -36,6 +36,8 @@ except:
 # - Variables
 
 
+
+
 ##############
 # - Decorators
 def login_required(f):
@@ -53,7 +55,7 @@ def login_required(f):
 # - Root Path
 @app.route('/')
 def root_path():
-    if session['logged_in']:
+    if 'logged_in' in session:
         return redirect(url_for('index'))
     else:
         return redirect(url_for('welcome'))
@@ -65,7 +67,8 @@ def welcome():
                            module_name="Just-a-Dash Control Panel",
                            page_name="Welcome",
                            icon="fa fa-star-o",
-                           module_abbreviation="Home",)
+                           module_abbreviation="Home",
+                           messages=db.session.query(Messages))
 
 
 @app.route('/index')
@@ -80,7 +83,8 @@ def index():
                            page_name="Dashboard",
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",
-                           username=username)
+                           username=username,
+                           messages=db.session.query(Messages))
 
 
 ################
@@ -92,7 +96,8 @@ def account_settings():
                            icon="fa fa-dashboard",
                            module_abbreviation="Account Settings",
                            module_name="Account Settings",
-                           page_name="Account Settings Home")
+                           page_name="Account Settings Home",
+                           messages=db.session.query(Messages))
 
 
 @app.route('/app-settings')
@@ -102,7 +107,8 @@ def app_settings():
                            icon="fa fa-dashboard",
                            module_abbreviation="App Settings",
                            module_name="App Settings",
-                           page_name="App Settings Home")
+                           page_name="App Settings Home",
+                           messages=db.session.query(Messages))
 
 
 @app.route('/logout')
@@ -126,7 +132,8 @@ def login():
                                    icon="fa fa-dashboard",
                                    module_abbreviation="Home",
                                    module_name="Just-a-Dash Control Panel",
-                                   page_name="Login")
+                                   page_name="Login",
+                                   messages=db.session.query(Messages))
                                    # errors=errors)
                                    # login_form=form)
         ## - This is from Flask Mega Tutorial, with OpenID
@@ -144,7 +151,8 @@ def login():
                                    icon="fa fa-dashboard",
                                    module_abbreviation="Home",
                                    module_name="Just-a-Dash Control Panel",
-                                   page_name="Login")
+                                   page_name="Login",
+                                   messages=db.session.query(Messages))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -155,7 +163,9 @@ def register():
                            icon="fa fa-pencil-square-o",
                            module_abbreviation="Registration",
                            module_name="Registration",
-                           page_name="New Submission")
+                           page_name="New Submission",
+                           messages=db.session.query(Messages))
+
 
 @app.route('/profile')
 @login_required
@@ -164,7 +174,8 @@ def profile():
                            icon="fa fa-dashboard",
                            module_abbreviation="Profile",
                            module_name="Profile",
-                           page_name="Profile Home")
+                           page_name="Profile Home",
+                           messages=db.session.query(Messages))
 
 
 ############
@@ -185,7 +196,8 @@ def hrm():
                                module_name="Human Resource Management",
                                page_name="HRM Home",
                                form_title="Personnel",
-                               personnel_data=personnel)
+                               personnel_data=personnel,
+                               messages=db.session.query(Messages))
 
 
 @app.route('/crm')
@@ -202,8 +214,8 @@ def crm():
                            module_name="Customer Relationship Management",
                            page_name="CRM Home",
                            form_title="Customer",
-                           customer_data=customers)
-
+                           customer_data=customers,
+                           messages=db.session.query(Messages))
 
 
 @app.route('/operations')
@@ -228,7 +240,8 @@ def operations(*args):
                            module_abbreviation="OMS",
                            module_name="Operations Management",
                            page_name="OMS Home",
-                           check_in_entries=check_in_entries)
+                           check_in_entries=check_in_entries,
+                           messages=db.session.query(Messages))
 
 
 @app.route('/checkin')
@@ -259,8 +272,8 @@ def accounting():
                            icon="fa fa-bar-chart",
                            module_abbreviation="AMS",
                            module_name="Accounting Management",
-                           page_name="AMS Home")
-
+                           page_name="AMS Home",
+                           messages=db.session.query(Messages))
 
 
 @app.route('/mms', methods=['GET', 'POST'])
@@ -288,7 +301,9 @@ def marketing():
                                    module_abbreviation="MMS",
                                    module_name="Marketing Management",
                                    page_name="MMS Home",
-                                   errors=errors)
+                                   errors=errors,
+                                   messages=db.session.query(Messages))
+
         if r:
             # text processing
             raw = BeautifulSoup(r.text).get_text()
@@ -329,8 +344,8 @@ def marketing():
                            module_name="Marketing Management",
                            page_name="MMS Home",
                            errors=errors,
-                           results=results)
-
+                           results=results,
+                           messages=db.session.query(Messages))
 
 
 # - Services

@@ -21,6 +21,7 @@ from .stop_words import stops
 
 try:
     from .forms import LoginForm
+    from flask.ext.login import login_required
 except:
     print("An error has occurred importing [Form] module.")
     print("")
@@ -39,15 +40,15 @@ except:
 
 ##############
 # - Decorators
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash('Please log in before proceeding.', 'warning')
-            return redirect(url_for('login'))
-    return wrap
+# def login_required(f):
+#     @wraps(f)
+#     def wrap(*args, **kwargs):
+#         if 'logged_in' in session:
+#             return f(*args, **kwargs)
+#         else:
+#             flash('Please log in before proceeding.', 'warning')
+#             return redirect(url_for('login'))
+#     return wrap
 
 
 ##############
@@ -123,10 +124,15 @@ def login():
     form = LoginForm(request.form)
 
     if request.method == 'POST':
-        # if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+        # if request.form['username'] == 'admin' or request.form['password'] == 'admin':
         if form.validate_on_submit():
             user = User.query.filter_by(name=request.form['username']).first()
-            flash('test')
+            # DEBUGGING
+            # flash('test')
+            # user = User.query.filter_by(name=request.form['Username']).first()
+            # login_user(user)
+            # return redirect(url_for('index'))
+            # DEBUGGING
             if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
                 # session['logged_in'] = True
                 login_user(user)
@@ -134,6 +140,8 @@ def login():
                 return redirect(url_for('index'))
         else:
             errors.append('Invalid credentials. Please try again.')
+            errors.append(request.form['username'])
+            # errors.append(request.form['password'])
             for error in errors:
                 flash(error, 'danger')
             return render_template('core_modules/login/index.html',
@@ -141,7 +149,8 @@ def login():
                                    module_abbreviation="Home",
                                    module_name="Just-a-Dash Control Panel",
                                    page_name="Login",
-                                   messages=db.session.query(Messages))
+                                   messages=db.session.query(Messages),
+                                   form=form)
                                    # errors=errors)
                                    # login_form=form)
     else:
@@ -150,7 +159,8 @@ def login():
                                    module_abbreviation="Home",
                                    module_name="Just-a-Dash Control Panel",
                                    page_name="Login",
-                                   messages=db.session.query(Messages))
+                                   messages=db.session.query(Messages),
+                                   form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])

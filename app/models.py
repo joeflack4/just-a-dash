@@ -17,7 +17,7 @@ class User(db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     groups = db.Column(db.String(500))
@@ -46,6 +46,7 @@ class User(db.Model):
         return True
 
     def get_id(self):
+        # Due to a weird pycharm bug, it may sometimes falseley state that 'unicode' is not a valid reference.
         return unicode(self.id)
 
     def __repr__(self):

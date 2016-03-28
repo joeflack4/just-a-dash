@@ -3,6 +3,8 @@ from app.models import *
 
 db.create_all()
 
+db.session.add(User("admin", "ad@min.com", "admin"))
+
 # Initializes the database creation with a first message.
 # Messages Fields: type, subcategory, title, body, author, destinations, delivery_methods, notes.
 db.session.add(Messages("Notification",

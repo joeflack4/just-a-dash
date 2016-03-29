@@ -17,7 +17,7 @@ class User(db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     groups = db.Column(db.String(500))
@@ -34,7 +34,13 @@ class User(db.Model):
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
+        # self.password = bcrypt.generate_password_hash(str(password).encode('utf-8'))
+        # print(self.password)
         self.password = bcrypt.generate_password_hash(password)
+        # self.password = bcrypt.generate_password_hash(str(password))
+        # print(self.password)
+        # self.password = password
+        # print(self.password)
 
     def is_authenticated(self):
         return True
@@ -46,11 +52,11 @@ class User(db.Model):
         return True
 
     def get_id(self):
-        # Due to a weird pycharm bug, it may sometimes falseley state that 'unicode' is not a valid reference.
-        return unicode(self.id)
+        # Due to a weird pycharm bug, or perhaps dependency issue with python environment, it may sometimes falseley state that 'unicode' is not a valid reference.
+        return self.id
 
     def __repr__(self):
-        return '<User {}>'.format(self.name)
+        return '<User {}>'.format(self.username)
 
 
 class Messages(db.Model):

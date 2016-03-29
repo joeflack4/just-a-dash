@@ -1,13 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request, session
 from flask.ext.login import login_user
-from functools import wraps
-from app import app
+from app import app, db, bcrypt
 # Unused -> from flask_table import Table, Col
+# from functools import wraps
 
-# from app import db, Result
-# from app import db
-# from .models import Result
-from .models import *
+from .models import User, Messages, Result
 
 # Imports to be ported to eventual Marketing blueprint module.
 import requests
@@ -20,7 +17,7 @@ import nltk
 from .stop_words import stops
 
 try:
-    from .forms import LoginForm
+    from .forms import LoginForm, RegisterForm
     from flask.ext.login import login_required
 except:
     print("An error has occurred importing [Form] module.")
@@ -63,12 +60,16 @@ def root_path():
 
 @app.route('/welcome')
 def welcome():
+    form = LoginForm(request.form)
+    register_form = RegisterForm()
     return render_template('core_modules/welcome/index.html',
                            module_name="Just-a-Dash Control Panel",
                            page_name="Welcome",
                            icon="fa fa-star-o",
                            module_abbreviation="Home",
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form,
+                           register_form=register_form)
 
 
 @app.route('/index')
@@ -77,14 +78,15 @@ def welcome():
 @login_required
 def index():
     username = ""
-
+    form = LoginForm(request.form)
     return render_template('core_modules/dashboard/index.html',
                            module_name="Just-a-Dash Control Panel",
                            page_name="Dashboard",
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",
                            username=username,
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form)
 
 
 ################
@@ -92,23 +94,27 @@ def index():
 @app.route('/account-settings')
 @login_required
 def account_settings():
+    form = LoginForm(request.form)
     return render_template('core_modules/account_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Account Settings",
                            module_name="Account Settings",
                            page_name="Account Settings Home",
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form)
 
 
 @app.route('/app-settings')
 @login_required
 def app_settings():
+    form = LoginForm(request.form)
     return render_template('core_modules/app_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="App Settings",
                            module_name="App Settings",
                            page_name="App Settings Home",
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form)
 
 
 @app.route('/logout')
@@ -122,11 +128,12 @@ def logout():
 def login():
     errors = []
     form = LoginForm(request.form)
+    register_form = RegisterForm()
 
     if request.method == 'POST':
         # if request.form['username'] == 'admin' or request.form['password'] == 'admin':
         if form.validate_on_submit():
-            user = User.query.filter_by(name=request.form['username']).first()
+            user = User.query.filter_by(username=request.form['username']).first()
             # DEBUGGING
             # flash('test')
             # user = User.query.filter_by(name=request.form['Username']).first()
@@ -140,7 +147,9 @@ def login():
                 return redirect(url_for('index'))
         else:
             errors.append('Invalid credentials. Please try again.')
-            errors.append(request.form['username'])
+            user = User.query.filter_by(username=request.form['username']).first()
+            errors.append(user.password)
+            # errors.append(request.form['username'])
             # errors.append(request.form['password'])
             for error in errors:
                 flash(error, 'danger')
@@ -160,30 +169,52 @@ def login():
                                    module_name="Just-a-Dash Control Panel",
                                    page_name="Login",
                                    messages=db.session.query(Messages),
-                                   form=form)
+                                   form=form,
+                                   register_form=register_form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    form = LoginForm(request.form)
+    # if request.method == 'POST':
+    #     flash(u'Thank you for your submission. The site administrator will contact you when registration is complete.', 'success')
+    register_form = RegisterForm()
     if request.method == 'POST':
-        flash(u'Thank you for your submission. The site administrator will contact you when registration is complete.', 'success')
+        if register_form.validate_on_submit():
+            user = User(
+                username=register_form.username.data,
+                email=register_form.email.data,
+                password=register_form.password.data
+            )
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            flash(u'Registration complete! You have been logged in.', 'success')
+            # return redirect(url_for('index'))
+        else:
+            flash(u'Registration failed. Please try again, or contact the site administrator. Ensure that: (1) Username is between 3-25 characters, (2) E-mail is between 6-40 characters, (3) Password is beteen 6-25 characters, (4) Password and confirm password are matching.', 'warning')
+
     return render_template('core_modules/register/index.html',
                            icon="fa fa-pencil-square-o",
                            module_abbreviation="Registration",
                            module_name="Registration",
                            page_name="New Submission",
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form,
+                           register_form=register_form)
 
 
 @app.route('/profile')
 @login_required
 def profile():
+    form = LoginForm(request.form)
     return render_template('core_modules/profile/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Profile",
                            module_name="Profile",
                            page_name="Profile Home",
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form)
 
 
 ############
@@ -192,6 +223,7 @@ def profile():
 @app.route('/hrm')
 @login_required
 def hrm():
+    form = LoginForm(request.form)
     try:
         personnel = CompanyContacts.get_contacts()
     except:
@@ -205,12 +237,14 @@ def hrm():
                                page_name="HRM Home",
                                form_title="Personnel",
                                personnel_data=personnel,
-                               messages=db.session.query(Messages))
+                               messages=db.session.query(Messages),
+                               form=form)
 
 
 @app.route('/crm')
 @login_required
 def crm():
+    form = LoginForm(request.form)
     try:
         customers = CompanyContacts.get_customer_contacts()
     except:
@@ -223,12 +257,14 @@ def crm():
                            page_name="CRM Home",
                            form_title="Customer",
                            customer_data=customers,
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form)
 
 
 @app.route('/operations')
 @login_required
 def operations(*args):
+    form = LoginForm(request.form)
     try:
         check_in_type = args[0]
     except:
@@ -249,7 +285,8 @@ def operations(*args):
                            module_name="Operations Management",
                            page_name="OMS Home",
                            check_in_entries=check_in_entries,
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form)
 
 
 @app.route('/checkin')
@@ -276,12 +313,14 @@ def sms_check_in():
 @app.route('/accounting')
 @login_required
 def accounting():
+    form = LoginForm(request.form)
     return render_template('modules/accounting/index.html',
                            icon="fa fa-bar-chart",
                            module_abbreviation="AMS",
                            module_name="Accounting Management",
                            page_name="AMS Home",
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form)
 
 
 @app.route('/mms', methods=['GET', 'POST'])
@@ -290,6 +329,7 @@ def accounting():
 def marketing():
     errors = []
     results = {}
+    form = LoginForm(request.form)
     if request.method == "POST":
         try:
             url = request.form['url']
@@ -310,7 +350,8 @@ def marketing():
                                    module_name="Marketing Management",
                                    page_name="MMS Home",
                                    errors=errors,
-                                   messages=db.session.query(Messages))
+                                   messages=db.session.query(Messages),
+                                   form=form)
 
         if r:
             # text processing
@@ -353,7 +394,8 @@ def marketing():
                            page_name="MMS Home",
                            errors=errors,
                            results=results,
-                           messages=db.session.query(Messages))
+                           messages=db.session.query(Messages),
+                           form=form)
 
 
 # - Services

@@ -26,46 +26,6 @@
 
 {#{% if logged_in == False %}#}
 
-    <!-- Register Form -->
-    <div class="modal fade" id="RegisterForm" tabindex="-1" role="dialog" aria-labelledby="RegisterForm">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="RegisterForm-Title">Login</h4>
-          </div>
-
-          <form id=RegisterForm" role="form" method='POST' action={{ url_for('register') }}>
-            <div class="modal-body" align="left">
-              <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Username">
-              </div>
-              <div class="form-group">
-                <label for="email">E-mail Address</label>
-                <input type="email" class="form-control" id="email" placeholder="E-mail">
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password">
-              </div>
-              <div class="form-group">
-                <label for="repeat-password">Repeat Password</label>
-                <input type="password" class="form-control" id="repeat-password" placeholder="Password">
-              </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Register</button>
-            </div>
-          </form>
-
-        </div>
-      </div>
-    </div>
-
-
     <!-- Login Form -->
     <div class="modal fade" id="LoginForm" tabindex="-1" role="dialog" aria-labelledby="LoginForm">
       <div class="modal-dialog" role="document">
@@ -108,12 +68,12 @@
                     </span>
                   </p>
               </div>
-              <div class="checkbox">
-                <label>
+{#              <div class="checkbox">#}
+{#                <label>#}
 {#                  <input type="checkbox"> Remember Me#}
 {#                  {{ login_form.remember_me }} Remember Me#}
-                </label>
-              </div>
+{#                </label>#}
+{#              </div>#}
             </div>
 
             <div class="modal-footer">
@@ -148,6 +108,106 @@
           </div>
         </div>
     {% endfor %}
+
+{% if register_form %}
+    <!-- Register Form -->
+    <div class="modal fade" id="RegisterForm" tabindex="-1" role="dialog" aria-labelledby="RegisterForm">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="RegisterForm-Title">Login</h4>
+          </div>
+
+          <form id=RegisterForm" role="form" method='POST' action={{ url_for('register') }}>
+            <div class="modal-body" align="left">
+                {{ form.csrf_token }}
+                <div class="modal-body" align="left">
+                  <div class="form-group">
+                      <p>
+                        {{ register_form.username(placeholder="username") }}
+                        <span class="error">
+                          {% if register_form.username.errors %}
+                            {% for error in register_form.username.errors %}
+                              {{ error }}
+                            {% endfor %}
+                          {% endif %}
+                        </span>
+                      </p>
+                  </div>
+                  <div class="form-group">
+                      <p>
+                      {{ register_form.email(placeholder="email") }}
+                        <span class="error">
+                          {% if register_form.password.errors %}
+                            {% for error in register_form.email.errors %}
+                              {{ error }}
+                            {% endfor %}
+                          {% endif %}
+                        </span>
+                      </p>
+                  </div>
+                  <div class="form-group">
+                      <p>
+                      {{ register_form.password(placeholder="password") }}
+                        <span class="error">
+                          {% if register_form.password.errors %}
+                            {% for error in register_form.password.errors %}
+                              {{ error }}
+                            {% endfor %}
+                          {% endif %}
+                        </span>
+                      </p>
+                  </div>
+                  <div class="form-group">
+                      <p>
+                      {{ register_form.confirm(placeholder="confirm password") }}
+                        <span class="error">
+                          {% if register_form.confirm.errors %}
+                            {% for error in register_form.confirm.errors %}
+                              {{ error }}
+                            {% endfor %}
+                          {% endif %}
+                        </span>
+                      </p>
+                  </div>
+
+{#              <div class="form-group">    #}
+{#                <label for="username">Username</label>#}
+{#                <input type="text" class="form-control" id="username" placeholder="Username">#}
+{#              </div>#}
+{#              <div class="form-group">#}
+{#                <label for="email">E-mail Address</label>#}
+{#                <input type="email" class="form-control" id="email" placeholder="E-mail">#}
+{#              </div>#}
+{#              <div class="form-group">#}
+{#                <label for="password">Password</label>#}
+{#                <input type="password" class="form-control" id="password" placeholder="Password">#}
+{#              </div>#}
+{#              <div class="form-group">#}
+{#                <label for="repeat-password">Repeat Password</label>#}
+{#                <input type="password" class="form-control" id="repeat-password" placeholder="Password">#}
+{#              </div>#}
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+{% endif %}
+
+
+
+
+
+
+
+
 
 {#{% else %}#}
 {##}

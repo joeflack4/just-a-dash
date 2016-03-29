@@ -14,13 +14,13 @@ import os
 #     print(os.environ['DATABASE_URL'])
 #     pass
 
-
 class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
     WTF_CSRF_ENABLED = True
-    SECRET_KEY = '\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1\x19\xbfZ\xaa\x84\x8e;\x19'
+    # SECRET_KEY = '\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1\x19\xbfZ\xaa\x84\x8e;\x19'
+    SECRET_KEY = '\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1'
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
     # SQLALCHEMY_DATABASE_URI = os.environ['postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash']
@@ -41,5 +41,8 @@ class DevelopmentConfig(Config):
     DEBUG = True
 
 
-class TestingConfig(Config):
+class TestConfig(Config):
     TESTING = True
+    DEBUG = True
+    TESTING = True
+    WTF_CSRF_ENABLED = False

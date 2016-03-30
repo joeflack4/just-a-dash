@@ -148,7 +148,6 @@ def login():
         else:
             errors.append('Invalid credentials. Please try again.')
             user = User.query.filter_by(username=request.form['username']).first()
-            errors.append(user.password)
             # errors.append(request.form['username'])
             # errors.append(request.form['password'])
             for error in errors:

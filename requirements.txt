@@ -7,9 +7,12 @@ Werkzeug==0.9.6
 
 # - Flask Extensions #
 #Flask-WhooshAlchemy==0.56
+#Either cffi or cryptography is a dependency for Flask-Bcrypt#
+#cffi
+cryptography
+Flask-Bcrypt
 Flask-SQLAlchemy==2.0
 Flask-Migrate
-Flask-Bcrypt
 Flask-Login==0.2.11
 Flask-Testing==0.4.2
 Flask-WTF==0.10.2

@@ -7,25 +7,30 @@ from app.models import *
 # user = User.query.filter_by(id='9').update(dict(username='newname'))
 
 db.create_all()
-# Keep this - Helps start a newly deployed app.
-# db.session.add(User("admin", "ad@min.com", "admin".encode('utf-8')))
-db.session.add(User("test16", "test16@gmail.com", "test"))
-for item in db.session:
-    item.password = item.password.decode("utf-8")
-
 
 # Keep this - Helps start tutorial.
 # Initializes the database creation with a first message.
 # Messages Fields: type, subcategory, title, body, author, destinations, delivery_methods, notes.
-# db.session.add(Messages("Notification",
-#                         "Tutorial",
-#                         "Welcome to Just-a-Dash!",
-#                         "Welcome to Just-a-Dash, the minimalist's dashboard application. I hope that you enjoy your experience. To get in touch with me for comment / question / feature request / whatever it may be, feel free to e-mail joeflack4@gmail.com, or check out my blog, joeflack.net. - Joe Flack, Creator of Just-a-Dash",
-#                         "Joe Flack",
-#                         "Group:AllUsers",
-#                         "WebApp, NativeApps, Email",
-#                         ""
-#                         ))
+db.session.add(Messages("Notification",
+                        "Tutorial",
+                        "Welcome to Just-a-Dash!",
+                        "Welcome to Just-a-Dash, the minimalist's dashboard application. I hope that you enjoy your experience. To get in touch with me for comment / question / feature request / whatever it may be, feel free to e-mail joeflack4@gmail.com, or check out my blog, joeflack.net. - Joe Flack, Creator of Just-a-Dash",
+                        "Joe Flack",
+                        "Group:AllUsers",
+                        "WebApp, NativeApps, Email",
+                        ""
+                        ))
+
+db.session.commit()
+
+# Keep this - Helps start a newly deployed app.
+# db.session.add(User("admin", "ad@min.com", "admin".encode('utf-8')))
+db.session.add(User("admin", "ad@min.com", "admin"))
+
+for item in db.session:
+    item.password = item.password.decode("utf-8")
+
+db.session.commit()
 
 
 # - Debugging

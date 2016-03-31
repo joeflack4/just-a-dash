@@ -23,8 +23,30 @@
       </div>
     </div>
 
+    <!-- Message Popup -->
+    {% for message in messages %}
+        <div class="modal fade" id="Message{{ message.id }}" tabindex="-1" role="dialog" aria-labelledby="Message{{ message.id }}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="Messages{{ message.id }}Title">{{ message.title }}</h4>
+              </div>
 
-{#{% if logged_in == False %}#}
+              <div class="modal-body" align="left">
+                {{ message.body }}
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-dismiss="modal">Mark Read</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+
+{% if logged_in == False %}
 
     <!-- Login Form -->
     <div class="modal fade" id="LoginForm" tabindex="-1" role="dialog" aria-labelledby="LoginForm">
@@ -86,30 +108,8 @@
       </div>
     </div>
 
-    <!-- Message Popup -->
-    {% for message in messages %}
-        <div class="modal fade" id="Message{{ message.id }}" tabindex="-1" role="dialog" aria-labelledby="Message{{ message.id }}">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="Messages{{ message.id }}Title">{{ message.title }}</h4>
-              </div>
+{#{% if register_form %}#}
 
-              <div class="modal-body" align="left">
-                {{ message.body }}
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" data-dismiss="modal">Mark Read</button>
-              </div>
-            </div>
-          </div>
-        </div>
-    {% endfor %}
-
-{% if register_form %}
     <!-- Register Form -->
     <div class="modal fade" id="RegisterForm" tabindex="-1" role="dialog" aria-labelledby="RegisterForm">
       <div class="modal-dialog" role="document">
@@ -200,17 +200,3 @@
       </div>
     </div>
 {% endif %}
-
-
-
-
-
-
-
-
-
-{#{% else %}#}
-{##}
-{#    <!-- Blank -->#}
-{##}
-{#{% endif %}#}

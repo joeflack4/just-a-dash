@@ -1,5 +1,5 @@
-from flask import render_template, url_for, flash, redirect, request, session
-from flask.ext.login import login_user
+from flask import render_template, url_for, flash, redirect, request
+from flask.ext.login import login_user, logout_user, current_user
 from app import app, db, bcrypt
 # Unused -> from flask_table import Table, Col
 # from functools import wraps
@@ -52,7 +52,7 @@ except:
 # - Root Path
 @app.route('/')
 def root_path():
-    if 'logged_in' in session:
+    if current_user.is_authenticated():
         return redirect(url_for('index'))
     else:
         return redirect(url_for('welcome'))
@@ -60,6 +60,8 @@ def root_path():
 
 @app.route('/welcome')
 def welcome():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     register_form = RegisterForm()
     return render_template('core_modules/welcome/index.html',
@@ -69,7 +71,9 @@ def welcome():
                            module_abbreviation="Home",
                            messages=db.session.query(Messages),
                            form=form,
-                           register_form=register_form)
+                           register_form=register_form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 @app.route('/index')
@@ -77,16 +81,18 @@ def welcome():
 @app.route('/home')
 @login_required
 def index():
-    username = ""
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     return render_template('core_modules/dashboard/index.html',
                            module_name="Just-a-Dash Control Panel",
                            page_name="Dashboard",
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",
-                           username=username,
                            messages=db.session.query(Messages),
-                           form=form)
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 ################
@@ -94,6 +100,8 @@ def index():
 @app.route('/account-settings')
 @login_required
 def account_settings():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     return render_template('core_modules/account_settings/index.html',
                            icon="fa fa-dashboard",
@@ -101,12 +109,16 @@ def account_settings():
                            module_name="Account Settings",
                            page_name="Account Settings Home",
                            messages=db.session.query(Messages),
-                           form=form)
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 @app.route('/app-settings')
 @login_required
 def app_settings():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     return render_template('core_modules/app_settings/index.html',
                            icon="fa fa-dashboard",
@@ -114,18 +126,23 @@ def app_settings():
                            module_name="App Settings",
                            page_name="App Settings Home",
                            messages=db.session.query(Messages),
-                           form=form)
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', True)
+    logged_in = current_user.is_authenticated()
+    logout_user()
     flash(u'Logged out. Thank you, come again!', 'success')
     return redirect(url_for('welcome'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     errors = []
     form = LoginForm(request.form)
     register_form = RegisterForm()
@@ -153,41 +170,47 @@ def login():
             for error in errors:
                 flash(error, 'danger')
             return render_template('core_modules/login/index.html',
-                                   icon="fa fa-dashboard",
-                                   module_abbreviation="Home",
-                                   module_name="Just-a-Dash Control Panel",
-                                   page_name="Login",
-                                   messages=db.session.query(Messages),
-                                   form=form)
-                                   # errors=errors)
-                                   # login_form=form)
+                                        icon="fa fa-dashboard",
+                                        module_abbreviation="Home",
+                                        module_name="Just-a-Dash Control Panel",
+                                        page_name="Login",
+                                        messages=db.session.query(Messages),
+                                        form=form,
+                                        user=user,
+                                        logged_in=logged_in)
+                                        # errors=errors)
+                                        # login_form=form)
     else:
         return render_template('core_modules/login/index.html',
-                                   icon="fa fa-dashboard",
-                                   module_abbreviation="Home",
-                                   module_name="Just-a-Dash Control Panel",
-                                   page_name="Login",
-                                   messages=db.session.query(Messages),
-                                   form=form,
-                                   register_form=register_form)
+                                    icon="fa fa-dashboard",
+                                    module_abbreviation="Home",
+                                    module_name="Just-a-Dash Control Panel",
+                                    page_name="Login",
+                                    messages=db.session.query(Messages),
+                                    form=form,
+                                    register_form=register_form,
+                                    user=user,
+                                    logged_in=logged_in)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     # if request.method == 'POST':
     #     flash(u'Thank you for your submission. The site administrator will contact you when registration is complete.', 'success')
     register_form = RegisterForm()
     if request.method == 'POST':
         if register_form.validate_on_submit():
-            user = User(
+            new_user = User(
                 username=register_form.username.data,
                 email=register_form.email.data,
                 password=register_form.password.data
             )
-            db.session.add(user)
+            db.session.add(new_user)
             db.session.commit()
-            login_user(user)
+            login_user(new_user)
             flash(u'Registration complete! You have been logged in.', 'success')
             # return redirect(url_for('index'))
         else:
@@ -200,12 +223,16 @@ def register():
                            page_name="New Submission",
                            messages=db.session.query(Messages),
                            form=form,
-                           register_form=register_form)
+                           register_form=register_form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 @app.route('/profile')
 @login_required
 def profile():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     return render_template('core_modules/profile/index.html',
                            icon="fa fa-dashboard",
@@ -213,7 +240,9 @@ def profile():
                            module_name="Profile",
                            page_name="Profile Home",
                            messages=db.session.query(Messages),
-                           form=form)
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 ############
@@ -222,6 +251,8 @@ def profile():
 @app.route('/hrm')
 @login_required
 def hrm():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     try:
         personnel = CompanyContacts.get_contacts()
@@ -230,19 +261,23 @@ def hrm():
         # personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
 
     return render_template('modules/hrm/index.html',
-                               icon="fa fa-users",
-                               module_abbreviation="HRM",
-                               module_name="Human Resource Management",
-                               page_name="HRM Home",
-                               form_title="Personnel",
-                               personnel_data=personnel,
-                               messages=db.session.query(Messages),
-                               form=form)
+                                icon="fa fa-users",
+                                module_abbreviation="HRM",
+                                module_name="Human Resource Management",
+                                page_name="HRM Home",
+                                form_title="Personnel",
+                                personnel_data=personnel,
+                                messages=db.session.query(Messages),
+                                form=form,
+                                user=user,
+                                logged_in=logged_in)
 
 
 @app.route('/crm')
 @login_required
 def crm():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     try:
         customers = CompanyContacts.get_customer_contacts()
@@ -257,12 +292,16 @@ def crm():
                            form_title="Customer",
                            customer_data=customers,
                            messages=db.session.query(Messages),
-                           form=form)
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 @app.route('/operations')
 @login_required
 def operations(*args):
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     try:
         check_in_type = args[0]
@@ -285,7 +324,9 @@ def operations(*args):
                            page_name="OMS Home",
                            check_in_entries=check_in_entries,
                            messages=db.session.query(Messages),
-                           form=form)
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 @app.route('/checkin')
@@ -312,6 +353,8 @@ def sms_check_in():
 @app.route('/accounting')
 @login_required
 def accounting():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     form = LoginForm(request.form)
     return render_template('modules/accounting/index.html',
                            icon="fa fa-bar-chart",
@@ -319,13 +362,17 @@ def accounting():
                            module_name="Accounting Management",
                            page_name="AMS Home",
                            messages=db.session.query(Messages),
-                           form=form)
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 @app.route('/mms', methods=['GET', 'POST'])
 @app.route('/marketing', methods=['GET', 'POST'])
 @login_required
 def marketing():
+    logged_in = current_user.is_authenticated()
+    user = current_user
     errors = []
     results = {}
     form = LoginForm(request.form)
@@ -350,7 +397,9 @@ def marketing():
                                    page_name="MMS Home",
                                    errors=errors,
                                    messages=db.session.query(Messages),
-                                   form=form)
+                                   form=form,
+                                   user=user,
+                                   logged_in=logged_in)
 
         if r:
             # text processing
@@ -394,7 +443,9 @@ def marketing():
                            errors=errors,
                            results=results,
                            messages=db.session.query(Messages),
-                           form=form)
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 # - Services

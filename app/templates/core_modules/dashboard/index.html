@@ -7,7 +7,7 @@
 {%- endblock content_header %}
 {% block content -%}
   <div page-header>
-    <h4 class="page-header">Welcome{% if username %}, {{ username }}.
+    <h4 class="page-header">Welcome{% if user.is_authenticated %}, {{ user.username }}.
       {% else %} ~{% endif %}
     </h4>
   </div>
@@ -36,11 +36,3 @@
 
 {#  {% include "core_modules/dashboard/components/dashboard_footer.html" %} <!-- Content: Footer -->#}
 {%- endblock content %}
-
-
-<!-- Broken - Experimentation  -->
-  Nothing appears if not in section elements, or template blocks.
-{% block content_footer -%}
-  <h1><small>Conent Footer Placeholder</small></h1>
-{%- endblock content_footer %}
-<!-- /Broken - Experimentation -->

@@ -2,10 +2,25 @@
         <section class="sidebar">
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
+            <li class="header"><span>Home</span></li>
             <li>
               <a href="{{ url_for('root_path') }}">
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
               </a>
+            </li>
+            <li class="treeview">
+              <a href="#"><i class="fa fa-cogs"></i> <span>Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
+              <ul class="treeview-menu">
+                <li class="header"><i class="fa fa-cog"></i> <span>Account Settings</span></li>
+                <li><a href="{{ url_for('account_settings') }}"><span>Account</span></a></li>
+                <li><a href="{{ url_for('profile') }}"><span>Profile</span></a></li>
+                <li class="header"><i class="fa fa-cogs"></i> <span>Application Settings</span></li>
+                <li><a href="{{ url_for('user_management') }}"><span>User Management</span></a></li>
+               </ul>
+            </li>
+
+            <li class="header"><span>Modules</span></li>
+            <li>
               <a href="{{ url_for('operations') }}">
 {#                <i class="fa fa-fort-awesome"></i> <span>Operations Management</span>#}
                 <i class="fa fa-fort-awesome"></i> <span>Operations</span>

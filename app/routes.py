@@ -131,6 +131,23 @@ def app_settings():
                            logged_in=logged_in)
 
 
+@app.route('/user-management')
+@login_required
+def user_management():
+    logged_in = current_user.is_authenticated()
+    user = current_user
+    form = LoginForm(request.form)
+    return render_template('core_modules/app_settings/user_management.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="App Settings",
+                           module_name="App Settings",
+                           page_name="User Management",
+                           messages=db.session.query(Messages),
+                           form=form,
+                           user=user,
+                           logged_in=logged_in)
+
+
 @app.route('/logout')
 def logout():
     logged_in = current_user.is_authenticated()

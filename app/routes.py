@@ -20,12 +20,12 @@ except:
     print("An error has occurred importing [Models].")
     print("")
 try:
-    from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm
+    from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, CustomerAddForm, CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm
 except:
     print("An error has occurred importing [Forms].")
     print("")
 try:
-    from .modals import user_add_modal, user_update_modal
+    from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, personnel_update_modal
 except:
     print("An error has occurred importing [Modals].")
     print("")
@@ -145,14 +145,8 @@ def user_management():
     user = current_user
     login_form = LoginForm(request.form)
     modals = {'UserAddModal': user_add_modal, 'UserUpdateModal': user_update_modal}
-    # forms = {UserAddForm.form_id: UserAddForm(request.form),
-    #          UserUpdateForm.form_id: UserUpdateForm(request.form)}
-
     forms = {'User-Add-Form': UserAddForm(request.form),
              'User-Update-Form': UserUpdateForm(request.form)}
-
-    #debugging
-    # form = login_form
 
     return render_template('core_modules/app_settings/user_management.html',
                            icon="fa fa-dashboard",
@@ -290,6 +284,10 @@ def hrm():
     logged_in = current_user.is_authenticated()
     user = current_user
     login_form = LoginForm(request.form)
+    modals = {'PersonnelAddModal': personnel_add_modal, 'PersonnelUpdateModal': personnel_update_modal}
+    forms = {'Personnel-Add-Form': PersonnelAddForm(request.form),
+             'Personnel-Update-Form': PersonnelUpdateForm(request.form)}
+
     try:
         personnel = CompanyContacts.get_contacts()
     except:
@@ -306,7 +304,9 @@ def hrm():
                                 messages=db.session.query(Messages),
                                 login_form=login_form,
                                 user=user,
-                                logged_in=logged_in)
+                                logged_in=logged_in,
+                                modals=modals,
+                                forms=forms)
 
 
 @app.route('/crm')
@@ -315,6 +315,10 @@ def crm():
     logged_in = current_user.is_authenticated()
     user = current_user
     login_form = LoginForm(request.form)
+    modals = {'CustomerAddModal': customer_add_modal, 'CustomerUpdateModal': customer_update_modal}
+    forms = {'Customer-Add-Form': CustomerAddForm(request.form),
+             'Customer-Update-Form': CustomerUpdateForm(request.form)}
+
     try:
         customers = CompanyContacts.get_customer_contacts()
     except:
@@ -330,7 +334,9 @@ def crm():
                            messages=db.session.query(Messages),
                            login_form=login_form,
                            user=user,
-                           logged_in=logged_in)
+                           logged_in=logged_in,
+                           modals=modals,
+                           forms=forms)
 
 
 @app.route('/operations')

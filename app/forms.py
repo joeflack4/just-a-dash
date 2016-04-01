@@ -79,88 +79,64 @@ class UserUpdateForm(Form):
 
 
 class CustomerAddForm(Form):
-    form_id = 'User-Add-Form'
-    username = StringField(
-        'username',
+    form_id = 'Customer-Add-Form'
+    first_name = StringField(
+        'first_name',
+        validators=[DataRequired(), Length(min=3, max=25)])
+    last_name = StringField(
+        'last_name',
         validators=[DataRequired(), Length(min=3, max=25)])
     email = StringField(
         'email',
-        validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
-    password = PasswordField(
-        'password',
-        validators=[DataRequired(), Length(min=6, max=25)])
-    confirm = PasswordField(
-        'Repeat password',
-        validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
-    groups = StringField(
-        'username',
-        validators=[Length(max=500)])
-    permissions = StringField(
-        'username',
-        validators=[Length(max=500)])
+        validators=[Email(message=None), Length(min=6, max=40)])
+    phone_number = StringField(
+        'phone_number',
+        validators=[DataRequired(), Length(min=6, max=40)])
 
 
 class CustomerUpdateForm(Form):
-    form_id = 'User-Update-Form'
-    username = StringField(
-        'username',
+    form_id = 'Customer-Update-Form'
+    first_name = StringField(
+        'first_name',
+        validators=[Length(min=3, max=25)])
+    last_name = StringField(
+        'last_name',
         validators=[Length(min=3, max=25)])
     email = StringField(
         'email',
         validators=[Email(message=None), Length(min=6, max=40)])
-    password = PasswordField(
-        'password',
-        validators=[Length(min=6, max=25)])
-    confirm = PasswordField(
-        'Repeat password',
-        validators=[EqualTo('password', message='Passwords must match.')])
-    groups = StringField(
-        'username',
-        validators=[Length(max=500)])
-    permissions = StringField(
-        'username',
-        validators=[Length(max=500)])
+    phone_number = StringField(
+        'phone_number',
+        validators=[Length(min=6, max=40)])
 
 
 class PersonnelAddForm(Form):
-    form_id = 'User-Add-Form'
-    username = StringField(
-        'username',
+    form_id = 'Personnel-Add-Form'
+    first_name = StringField(
+        'first_name',
+        validators=[DataRequired(), Length(min=3, max=25)])
+    last_name = StringField(
+        'last_name',
         validators=[DataRequired(), Length(min=3, max=25)])
     email = StringField(
         'email',
-        validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
-    password = PasswordField(
-        'password',
-        validators=[DataRequired(), Length(min=6, max=25)])
-    confirm = PasswordField(
-        'Repeat password',
-        validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
-    groups = StringField(
-        'username',
-        validators=[Length(max=500)])
-    permissions = StringField(
-        'username',
-        validators=[Length(max=500)])
+        validators=[Email(message=None), Length(min=6, max=40)])
+    phone_number = StringField(
+        'phone_number',
+        validators=[DataRequired(), Length(min=6, max=40)])
 
 
 class PersonnelUpdateForm(Form):
-    form_id = 'User-Update-Form'
-    username = StringField(
-        'username',
+    form_id = 'Personnel-Update-Form'
+    first_name = StringField(
+        'first_name',
+        validators=[Length(min=3, max=25)])
+    last_name = StringField(
+        'last_name',
         validators=[Length(min=3, max=25)])
     email = StringField(
         'email',
         validators=[Email(message=None), Length(min=6, max=40)])
-    password = PasswordField(
-        'password',
-        validators=[Length(min=6, max=25)])
-    confirm = PasswordField(
-        'Repeat password',
-        validators=[EqualTo('password', message='Passwords must match.')])
-    groups = StringField(
-        'username',
-        validators=[Length(max=500)])
-    permissions = StringField(
-        'username',
-        validators=[Length(max=500)])
+    phone_number = StringField(
+        'phone_number',
+        validators=[Length(min=6, max=40)])

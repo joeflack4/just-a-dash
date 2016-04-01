@@ -69,7 +69,7 @@ def root_path():
 def welcome():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     register_form = RegisterForm()
     return render_template('core_modules/welcome/index.html',
                            module_name="Just-a-Dash Control Panel",
@@ -77,7 +77,7 @@ def welcome():
                            icon="fa fa-star-o",
                            module_abbreviation="Home",
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            register_form=register_form,
                            user=user,
                            logged_in=logged_in)

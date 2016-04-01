@@ -82,7 +82,7 @@
           <form id=LoginForm" role="form" method='POST' action={{ url_for('login') }}>
 {#          <form id=LoginForm" role="form" method='POST'>#}
 {#            {{ login_form.hidden_tag() }}#}
-            {{ form.csrf_token }}
+            {{ login_form.csrf_token }}
             <div class="modal-body" align="left">
               <div class="form-group">
 {#                <label for="username-email">Username / E-mail</label>#}
@@ -143,7 +143,7 @@
 
           <form id=RegisterForm" role="form" method='POST' action={{ url_for('register') }}>
             <div class="modal-body" align="left">
-                {{ form.csrf_token }}
+                {{ register_form.csrf_token }}
                 <div class="modal-body" align="left">
                   <div class="form-group">
                       <p>

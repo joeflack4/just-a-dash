@@ -31,7 +31,7 @@
           <th>Phone Number</th>
       </tr>
       {% for key, value in customer_data.items() %}
-        <tr>
+        <tr data-toggle="modal" data-id="{{ value.id }}" data-target="#Customer-Update-Modal">
           <td>{{ loop.index }}</td>
           <td>{{ value.first_name }}</td>
           <td>{{ value.last_name }}</td>

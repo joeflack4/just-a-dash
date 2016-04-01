@@ -30,7 +30,7 @@
           <th>Phone Number</th>
       </tr>
       {% for key, value in personnel_data.items() %}
-        <tr>
+        <tr data-toggle="modal" data-id="{{ value.id }}" data-target="#Personnel-Update-Modal">
           <td>{{ loop.index }}</td>
           <td>{{ value.first_name }}</td>
           <td>{{ value.last_name }}</td>

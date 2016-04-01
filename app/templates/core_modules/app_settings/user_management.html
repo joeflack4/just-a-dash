@@ -1,3 +1,53 @@
-A core module placeholder.
+{% extends "base.html" %}
 
-{#{% include "core_components/footer.html" %}#}
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+{#  <div page-header>#}
+{#    <h4 class="page-header">Customer Relationship Management</h4>#}
+{#  </div>#}
+
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+  <h3 class="content-header">{{ page_name }}</h3>
+
+  <ol class="breadcrumb">
+    <li><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#User-Add-Modal">
+      Add New <span class="fa fa-user-plus"></span>
+    </button></li>
+  </ol>
+
+  <div>
+    <table class="table">
+      <tr>
+          <th>#</th>
+          <th>Username</th>
+          <th>E-mail</th>
+          <th>User Groups</th>
+          <th>Permissions</th>
+      </tr>
+      <tr data-toggle="modal" data-id="" data-target="#User-Update-Modal">
+        <td>test</td>
+        <td>test</td>
+        <td>test</td>
+        <td>test</td>
+        <td>test</td>
+      </tr>
+{#      {% for key, value in user.items() %}#}
+{#        <tr>#}
+{#          <td>{{ loop.index }}</td>#}
+{#          <td>{{ value.username }}</td>#}
+{#          <td>{{ value.email }}</td>#}
+{#          <td>{{ value.groups }}</td>#}
+{#          <td>{{ value.phone_number }}</td>#}
+{#        </tr>#}
+{#      {% endfor %}#}
+    </table>
+  </div>
+
+{%- endblock content %}

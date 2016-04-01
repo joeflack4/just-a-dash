@@ -1,10 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request
-from flask.ext.login import login_user, logout_user, current_user
+from flask.ext.login import login_required, login_user, logout_user, current_user
 from app import app, db, bcrypt
 # Unused -> from flask_table import Table, Col
 # from functools import wraps
-
-from .models import User, Messages, Result
 
 # Imports to be ported to eventual Marketing blueprint module.
 import requests
@@ -17,10 +15,19 @@ import nltk
 from .stop_words import stops
 
 try:
-    from .forms import LoginForm, RegisterForm
-    from flask.ext.login import login_required
+    from .models import User, Messages, Result
 except:
-    print("An error has occurred importing [Form] module.")
+    print("An error has occurred importing [Models].")
+    print("")
+try:
+    from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm
+except:
+    print("An error has occurred importing [Forms].")
+    print("")
+try:
+    from .modals import user_add_modal, user_update_modal
+except:
+    print("An error has occurred importing [Modals].")
     print("")
 try:
     from .services.telephony.contacts import CompanyContacts
@@ -83,14 +90,14 @@ def welcome():
 def index():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     return render_template('core_modules/dashboard/index.html',
                            module_name="Just-a-Dash Control Panel",
                            page_name="Dashboard",
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
                            logged_in=logged_in)
 
@@ -102,14 +109,14 @@ def index():
 def account_settings():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     return render_template('core_modules/account_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Account Settings",
                            module_name="Account Settings",
                            page_name="Account Settings Home",
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
                            logged_in=logged_in)
 
@@ -119,14 +126,14 @@ def account_settings():
 def app_settings():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     return render_template('core_modules/app_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="App Settings",
                            module_name="App Settings",
                            page_name="App Settings Home",
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
                            logged_in=logged_in)
 
@@ -136,16 +143,28 @@ def app_settings():
 def user_management():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
+    modals = {'UserAddModal': user_add_modal, 'UserUpdateModal': user_update_modal}
+    # forms = {UserAddForm.form_id: UserAddForm(request.form),
+    #          UserUpdateForm.form_id: UserUpdateForm(request.form)}
+
+    forms = {'User-Add-Form': UserAddForm(request.form),
+             'User-Update-Form': UserUpdateForm(request.form)}
+
+    #debugging
+    # form = login_form
+
     return render_template('core_modules/app_settings/user_management.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="App Settings",
                            module_name="App Settings",
                            page_name="User Management",
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
-                           logged_in=logged_in)
+                           logged_in=logged_in,
+                           modals=modals,
+                           forms=forms)
 
 
 @app.route('/logout')
@@ -161,12 +180,12 @@ def login():
     logged_in = current_user.is_authenticated()
     user = current_user
     errors = []
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     register_form = RegisterForm()
 
     if request.method == 'POST':
         # if request.form['username'] == 'admin' or request.form['password'] == 'admin':
-        if form.validate_on_submit():
+        if login_form.validate_on_submit():
             user = User.query.filter_by(username=request.form['username']).first()
             # DEBUGGING
             # flash('test')
@@ -192,7 +211,7 @@ def login():
                                         module_name="Just-a-Dash Control Panel",
                                         page_name="Login",
                                         messages=db.session.query(Messages),
-                                        form=form,
+                                        login_form=login_form,
                                         user=user,
                                         logged_in=logged_in)
                                         # errors=errors)
@@ -204,7 +223,7 @@ def login():
                                     module_name="Just-a-Dash Control Panel",
                                     page_name="Login",
                                     messages=db.session.query(Messages),
-                                    form=form,
+                                    login_form=login_form,
                                     register_form=register_form,
                                     user=user,
                                     logged_in=logged_in)
@@ -214,7 +233,7 @@ def login():
 def register():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     # if request.method == 'POST':
     #     flash(u'Thank you for your submission. The site administrator will contact you when registration is complete.', 'success')
     register_form = RegisterForm()
@@ -239,7 +258,7 @@ def register():
                            module_name="Registration",
                            page_name="New Submission",
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            register_form=register_form,
                            user=user,
                            logged_in=logged_in)
@@ -250,14 +269,14 @@ def register():
 def profile():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     return render_template('core_modules/profile/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Profile",
                            module_name="Profile",
                            page_name="Profile Home",
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
                            logged_in=logged_in)
 
@@ -270,7 +289,7 @@ def profile():
 def hrm():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     try:
         personnel = CompanyContacts.get_contacts()
     except:
@@ -285,7 +304,7 @@ def hrm():
                                 form_title="Personnel",
                                 personnel_data=personnel,
                                 messages=db.session.query(Messages),
-                                form=form,
+                                login_form=login_form,
                                 user=user,
                                 logged_in=logged_in)
 
@@ -295,7 +314,7 @@ def hrm():
 def crm():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     try:
         customers = CompanyContacts.get_customer_contacts()
     except:
@@ -309,7 +328,7 @@ def crm():
                            form_title="Customer",
                            customer_data=customers,
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
                            logged_in=logged_in)
 
@@ -319,7 +338,7 @@ def crm():
 def operations(*args):
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     try:
         check_in_type = args[0]
     except:
@@ -341,7 +360,7 @@ def operations(*args):
                            page_name="OMS Home",
                            check_in_entries=check_in_entries,
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
                            logged_in=logged_in)
 
@@ -372,14 +391,14 @@ def sms_check_in():
 def accounting():
     logged_in = current_user.is_authenticated()
     user = current_user
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     return render_template('modules/accounting/index.html',
                            icon="fa fa-bar-chart",
                            module_abbreviation="AMS",
                            module_name="Accounting Management",
                            page_name="AMS Home",
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
                            logged_in=logged_in)
 
@@ -392,7 +411,7 @@ def marketing():
     user = current_user
     errors = []
     results = {}
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
     if request.method == "POST":
         try:
             url = request.form['url']
@@ -414,7 +433,7 @@ def marketing():
                                    page_name="MMS Home",
                                    errors=errors,
                                    messages=db.session.query(Messages),
-                                   form=form,
+                                   login_form=login_form,
                                    user=user,
                                    logged_in=logged_in)
 
@@ -460,7 +479,7 @@ def marketing():
                            errors=errors,
                            results=results,
                            messages=db.session.query(Messages),
-                           form=form,
+                           login_form=login_form,
                            user=user,
                            logged_in=logged_in)
 

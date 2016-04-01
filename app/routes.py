@@ -138,7 +138,7 @@ def app_settings():
                            logged_in=logged_in)
 
 
-@app.route('/user-management')
+@app.route('/user-management', methods=['GET', 'POST'])
 @login_required
 def user_management():
     logged_in = current_user.is_authenticated()
@@ -277,8 +277,8 @@ def profile():
 
 ############
 # - Modules
-@app.route('/hr')
-@app.route('/hrm')
+@app.route('/hr', methods=['GET', 'POST'])
+@app.route('/hrm', methods=['GET', 'POST'])
 @login_required
 def hrm():
     logged_in = current_user.is_authenticated()
@@ -309,7 +309,7 @@ def hrm():
                                 forms=forms)
 
 
-@app.route('/crm')
+@app.route('/crm', methods=['GET', 'POST'])
 @login_required
 def crm():
     logged_in = current_user.is_authenticated()

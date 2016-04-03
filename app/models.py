@@ -56,7 +56,7 @@ class User(db.Model):
         return self.id
 
     def __repr__(self):
-        return '<user: {}>'.format(self.username)
+        return '<user id: {}>'.format(self.id)
 
 
 class Messages(db.Model):
@@ -93,7 +93,7 @@ class Messages(db.Model):
         self.notes = notes
 
     def __repr__(self):
-        return '<id: {}>'.format(self.id)
+        return '<message id: {}>'.format(self.id)
 
 
 class Result(db.Model):
@@ -110,7 +110,7 @@ class Result(db.Model):
         self.result_no_stop_words = result_no_stop_words
 
     def __repr__(self):
-        return '<id: {}>'.format(self.id)
+        return '<result id: {}>'.format(self.id)
 
 
 class Customers(db.Model):
@@ -202,7 +202,7 @@ class Customers(db.Model):
         self.first_name = name_first
 
     def __repr__(self):
-        return '<id: {}>'.format(self.id)
+        return '<customer id: {}>'.format(self.id)
 
 
 class Personnel(db.Model):
@@ -241,7 +241,7 @@ class Personnel(db.Model):
         self.name_last = name_last
 
     def __repr__(self):
-        return '<id: {}>'.format(self.id)
+        return '<personnel id: {}>'.format(self.id)
 
 
 class Contacts(db.Model):
@@ -281,7 +281,7 @@ class Contacts(db.Model):
         self.first_name = name_first
 
     def __repr__(self):
-        return '<id: {}>'.format(self.id)
+        return '<contact id: {}>'.format(self.id)
 
 
 class Agencies(db.Model):
@@ -295,40 +295,65 @@ class Agencies(db.Model):
         self.name = name
 
     def __repr__(self):
-        return '<id: {}>'.format(self.id)
+        return '<agency name: {}>'.format(self.id)
 
 
-class AdminRoles(db.Model):
-    __tablename__ = 'admin_roles'
+class Modules(db.Model):
+    __tablename__ = 'modules'
+
+    name = db.Column(db.String(80), primary_key=True, nullable=False)
+    abbreviation = db.Column(db.String(20), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, name, abbreviation, description, active):
+        self.name = name
+        self.abbreviation = abbreviation
+        self.description = description
+        self.active = active
+
+    def __repr__(self):
+        return '<module name: {}>'.format(self.id)
+
+
+class Roles(db.Model):
+    __tablename__ = 'roles'
     # - admin role permissions
     # 	- role (pk)  /  permission name / r / w / u / d
     # - custom admin permissions
     # 	- id # / permission name  / r / w / u / d
     role = db.Column(db.String(20), primary_key=True)
-    permission = db.Column(db.String(80), nullable=False)
-    read = db.Column(db.Boolean)
-    write = db.Column(db.Boolean)
-    update = db.Column(db.Boolean)
-    delete = db.Column(db.Boolean)
+    module_abbreviation = db.Column(db.String(3), primary_key=True)
 
-    def __init__(self, role):
-        self.role = role
+    def __init__(self, role, module_abbreviation):
+        self.module_abbreviation = module_abbreviation
 
     def __repr__(self):
-        return '<role: {}>'.format(self.role)
+        return '<role/module: {}/{}>'.format(self.role, self.module_abbreviation)
 
-class GroupRoles(db.Model):
-    __tablename__ = 'group_roles'
+class Permissions(db.Model):
+    __tablename__ = 'permissions'
     # 	- table (user id #  /  group name  /  read  /  write  /  update  / delete
-    id = db.Column(db.String(20), primary_key=True)
+    # - need a relationship here with roles
+    id = db.Column(db.Integer, primary_key=True)
+    # role = db.Column(db.String(20), foreign_key=True)
+    # module = db.Column(db.String(3), foreign_key=True)
+    role = db.Column(db.String(20))
+    module = db.Column(db.String(3))
     permission = db.Column(db.String(80), nullable=False)
-    read = db.Column(db.Boolean)
-    write = db.Column(db.Boolean)
-    update = db.Column(db.Boolean)
-    delete = db.Column(db.Boolean)
+    read = db.Column(db.Boolean, nullable=False)
+    write = db.Column(db.Boolean, nullable=False)
+    update = db.Column(db.Boolean, nullable=False)
+    delete = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, role, module, permission, R, W, U, D):
+        self.role = role
+        self.module = module
+        self.permission = permission
+        self.read = R
+        self.write = W
+        self.update = U
+        self.delete = D
 
     def __repr__(self):
-        return '<id: {}>'.format(self.id)
+        return '<role/module permission: {}/{} {}>'.format(self.role, self.module, self.permission)

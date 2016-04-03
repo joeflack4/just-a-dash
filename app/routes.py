@@ -178,49 +178,27 @@ def login():
     register_form = RegisterForm()
 
     if request.method == 'POST':
-        # if request.form['username'] == 'admin' or request.form['password'] == 'admin':
         if login_form.validate_on_submit():
             user = User.query.filter_by(username=request.form['username']).first()
-            # DEBUGGING
-            # flash('test')
-            # user = User.query.filter_by(name=request.form['Username']).first()
-            # login_user(user)
-            # return redirect(url_for('index'))
-            # DEBUGGING
             if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
-                # session['logged_in'] = True
                 login_user(user)
                 flash(u'Logged in. Welcome back!', 'success')
                 return redirect(url_for('index'))
         else:
             errors.append('Invalid credentials. Please try again.')
             user = User.query.filter_by(username=request.form['username']).first()
-            # errors.append(request.form['username'])
-            # errors.append(request.form['password'])
             for error in errors:
                 flash(error, 'danger')
-            return render_template('core_modules/login/index.html',
-                                        icon="fa fa-dashboard",
-                                        module_abbreviation="Home",
-                                        module_name="Just-a-Dash Control Panel",
-                                        page_name="Login",
-                                        messages=db.session.query(Messages),
-                                        login_form=login_form,
-                                        user=user,
-                                        logged_in=logged_in)
-                                        # errors=errors)
-                                        # login_form=form)
-    else:
-        return render_template('core_modules/login/index.html',
-                                    icon="fa fa-dashboard",
-                                    module_abbreviation="Home",
-                                    module_name="Just-a-Dash Control Panel",
-                                    page_name="Login",
-                                    messages=db.session.query(Messages),
-                                    login_form=login_form,
-                                    register_form=register_form,
-                                    user=user,
-                                    logged_in=logged_in)
+    return render_template('core_modules/login/index.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="Home",
+                           module_name="Just-a-Dash Control Panel",
+                           page_name="Login",
+                           messages=db.session.query(Messages),
+                           login_form=login_form,
+                           register_form=register_form,
+                           user=user,
+                           logged_in=logged_in)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -228,21 +206,20 @@ def register():
     logged_in = current_user.is_authenticated()
     user = current_user
     login_form = LoginForm(request.form)
-    # if request.method == 'POST':
-    #     flash(u'Thank you for your submission. The site administrator will contact you when registration is complete.', 'success')
     register_form = RegisterForm()
     if request.method == 'POST':
         if register_form.validate_on_submit():
             new_user = User(
                 username=register_form.username.data,
                 email=register_form.email.data,
-                password=register_form.password.data
-            )
+                password=register_form.password.data)
             db.session.add(new_user)
+            for item in db.session:
+                item.password = item.password.decode("utf-8")
             db.session.commit()
             login_user(new_user)
             flash(u'Registration complete! You have been logged in.', 'success')
-            # return redirect(url_for('index'))
+            return redirect(url_for('index'))
         else:
             flash(u'Registration failed. Please try again, or contact the site administrator. Ensure that: (1) Username is between 3-25 characters, (2) E-mail is between 6-40 characters, (3) Password is beteen 6-25 characters, (4) Password and confirm password are matching.', 'warning')
 

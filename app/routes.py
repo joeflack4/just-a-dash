@@ -15,7 +15,7 @@ import nltk
 from .stop_words import stops
 
 try:
-    from .models import User, Messages, Result
+    from .models import User, Messages, Result, AppNotifications
 except:
     print("An error has occurred importing [Models].")
     print("")
@@ -77,6 +77,7 @@ def welcome():
                            icon="fa fa-star-o",
                            module_abbreviation="Home",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            register_form=register_form,
                            user=user,
@@ -97,6 +98,7 @@ def index():
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in)
@@ -116,6 +118,7 @@ def account_settings():
                            module_name="Account Settings",
                            page_name="Account Settings Home",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in)
@@ -133,6 +136,7 @@ def app_settings():
                            module_name="App Settings",
                            page_name="App Settings Home",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in)
@@ -154,6 +158,7 @@ def user_management():
                            module_name="App Settings",
                            page_name="User Management",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in,
@@ -195,6 +200,7 @@ def login():
                            module_name="Just-a-Dash Control Panel",
                            page_name="Login",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            register_form=register_form,
                            user=user,
@@ -229,6 +235,7 @@ def register():
                            module_name="Registration",
                            page_name="New Submission",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            register_form=register_form,
                            user=user,
@@ -247,6 +254,7 @@ def profile():
                            module_name="Profile",
                            page_name="Profile Home",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in)
@@ -279,6 +287,7 @@ def hrm():
                                 form_title="Personnel",
                                 personnel_data=personnel,
                                 messages=db.session.query(Messages),
+                                app_notifications=db.session.query(AppNotifications),
                                 login_form=login_form,
                                 user=user,
                                 logged_in=logged_in,
@@ -309,6 +318,7 @@ def crm():
                            form_title="Customer",
                            customer_data=customers,
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in,
@@ -343,6 +353,7 @@ def operations(*args):
                            page_name="OMS Home",
                            check_in_entries=check_in_entries,
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in)
@@ -381,6 +392,7 @@ def accounting():
                            module_name="Accounting Management",
                            page_name="AMS Home",
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in)
@@ -416,6 +428,7 @@ def marketing():
                                    page_name="MMS Home",
                                    errors=errors,
                                    messages=db.session.query(Messages),
+                                   app_notifications=db.session.query(AppNotifications),
                                    login_form=login_form,
                                    user=user,
                                    logged_in=logged_in)
@@ -447,8 +460,7 @@ def marketing():
                 result = Result(
                     url=url,
                     result_all=raw_word_count,
-                    result_no_stop_words=no_stop_words_count
-                )
+                    result_no_stop_words=no_stop_words_count)
                 db.session.add(result)
                 db.session.commit()
             except:
@@ -462,6 +474,7 @@ def marketing():
                            errors=errors,
                            results=results,
                            messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in)

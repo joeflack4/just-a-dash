@@ -3,6 +3,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
 
 db.Base = declarative_base()
 
@@ -59,18 +60,83 @@ class User(db.Model):
         return '<user id: {}>'.format(self.id)
 
 
+class Modules(db.Model):
+    __tablename__ = 'modules'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    abbreviation = db.Column(db.String(20), unique=True, nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, name, abbreviation, description, active):
+        self.name = name
+        self.abbreviation = abbreviation
+        self.description = description
+        self.active = active
+
+    def __repr__(self):
+        return '<module name: {}>'.format(self.id)
+
+
+class Roles(db.Model):
+    __tablename__ = 'roles'
+    # - admin role permissions
+    # 	- role (pk)  /  permission name / r / w / u / d
+    # - custom admin permissions
+    # 	- id # / permission name  / r / w / u / d
+    role = db.Column(db.String(20), primary_key=True)
+    module_abbreviation = db.Column(db.String(3), primary_key=True)
+
+    def __init__(self, role, module_abbreviation):
+        self.role = role
+        self.module_abbreviation = module_abbreviation
+
+    def __repr__(self):
+        return '<role/module: {}/{}>'.format(self.role, self.module_abbreviation)
+
+
+class Permissions(db.Model):
+    __tablename__ = 'permissions'
+    # 	- table (user id #  /  group name  /  read  /  write  /  update  / delete
+    # - need a relationship here with roles
+    id = db.Column(db.Integer, primary_key=True)
+    # role = db.Column(db.String(20), foreign_key=True)
+    # module = db.Column(db.String(3), foreign_key=True)
+    role = db.Column(db.String(20))
+    module = db.Column(db.String(3))
+    permission = db.Column(db.String(80), nullable=False)
+    read = db.Column(db.Boolean, nullable=False)
+    write = db.Column(db.Boolean, nullable=False)
+    update = db.Column(db.Boolean, nullable=False)
+    delete = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, role, module, permission, r, w, u, d):
+        self.role = role
+        self.module = module
+        self.permission = permission
+        self.read = r
+        self.write = w
+        self.update = u
+        self.delete = d
+
+    def __repr__(self):
+        return '<role/module permission: {}/{} {}>'.format(self.role, self.module, self.permission)
+
+
 class Messages(db.Model):
     __tablename__ = 'messages'
 
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String())
+    datetime = db.Column(db.DateTime)
+    type = db.Column(db.String(20))
     # Type examples: UserMessages, Notifications, Tasks, etc.
-    subcategory = db.Column(db.String())
+    subcategory = db.Column(db.String(20))
     # Subcategory examples: News, updates, etc.
-    title = db.Column(db.String())
-    body = db.Column(db.String())
-    author = db.Column(db.String())
-    delivery_methods = db.Column(db.String())
+    title = db.Column(db.String(30))
+    body = db.Column(db.String(1000))
+    author = db.Column(db.String(30))
+    delivery_methods = db.Column(db.String(200))
     # Delivery Method examples: To webapp, native app, push notification, SMS, e-mail, phone call, etc.
     notes = db.Column(db.String())
     # - To Do: Figure out relational mapping.
@@ -82,37 +148,88 @@ class Messages(db.Model):
     #     secondary=user_messages,
     #     back_populates="messages")
 
-    def __init__(self, type, subcategory, title, body, author, destinations, delivery_methods, notes):
-        self.type = type
+    def __init__(self, message_type, subcategory, title, body, author, destinations, delivery_methods):
+        self.datetime = datetime.now()
+        self.type = message_type
         self.subcategory = subcategory
         self.title = title
         self.body = body
         self.author = author
         self.destinations = destinations
         self.delivery_methods = delivery_methods
-        self.notes = notes
 
     def __repr__(self):
         return '<message id: {}>'.format(self.id)
 
 
-class Result(db.Model):
-    __tablename__ = 'results'
+class AppNotifications(db.Model):
+    __tablename__ = 'app_notifications'
 
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String())
-    result_all = db.Column(JSON)
-    result_no_stop_words = db.Column(JSON)
+    title = db.Column(db.String(30), unique=True)
+    datetime = db.Column(db.DateTime)
+    type = db.Column(db.String(20))
+    subcategory = db.Column(db.String(20))
+    body = db.Column(db.String(1000))
+    author = db.Column(db.String(30))
+    delivery_methods = db.Column(db.String(200))
+    notes = db.Column(db.String())
 
-    def __init__(self, url, result_all, result_no_stop_words):
-        self.url = url
-        self.result_all = result_all
-        self.result_no_stop_words = result_no_stop_words
+    def __init__(self, message_type, subcategory, title, body, author, destinations, delivery_methods):
+        self.datetime = datetime.now()
+        self.type = message_type
+        self.subcategory = subcategory
+        self.title = title
+        self.body = body
+        self.author = author
+        self.destinations = destinations
+        self.delivery_methods = delivery_methods
 
     def __repr__(self):
-        return '<result id: {}>'.format(self.id)
+        return '<message id: {}>'.format(self.id)
 
 
+class Contacts(db.Model):
+    __tablename__ = 'contacts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name_last = db.Column(db.String(80), nullable=False)
+    name_first = db.Column(db.String(80), nullable=False)
+    name_prefix = db.Column(db.String(80))
+    name_suffix = db.Column(db.String(80))
+    name_middle = db.Column(db.String(80))
+    email1 = db.Column(db.String(120))
+    email2 = db.Column(db.String(120))
+    phone1 = db.Column(db.String(20))
+    phone2 = db.Column(db.String(20))
+    phone3 = db.Column(db.String(20))
+    phone4 = db.Column(db.String(20))
+    phone5 = db.Column(db.String(20))
+    pii_dob = db.Column(db.String(10))
+    pii_other = db.Column(db.String(500))
+    phi = db.Column(db.String(500))
+    pfi = db.Column(db.String(500))
+    address_street = db.Column(db.String(50))
+    address_suite = db.Column(db.String(20))
+    address_state = db.Column(db.String(2))
+    address_county = db.Column(db.String(20))
+    address_zip = db.Column(db.String(5))
+    address_zip_extension = db.Column(db.String(4))
+    relation_1_name = db.Column(db.String(100))
+    relation_1_notes = db.Column(db.String(100))
+    relation_2_name = db.Column(db.String(100))
+    relation_2_notes = db.Column(db.String(100))
+    notes_other = db.Column(db.String(100))
+
+    def __init__(self, name_last, name_first):
+        self.last_name = name_last
+        self.first_name = name_first
+
+    def __repr__(self):
+        return '<contact id: {}>'.format(self.id)
+
+
+# # # CRM Models # # #
 class Customers(db.Model):
     __tablename__ = 'customers'
 
@@ -205,6 +322,21 @@ class Customers(db.Model):
         return '<customer id: {}>'.format(self.id)
 
 
+class Agencies(db.Model):
+    __tablename__ = 'agencies'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    abbreviation = db.Column(db.String(20), unique=True)
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '<agency name: {}>'.format(self.id)
+
+
+# # # HRM Models # # #
 class Personnel(db.Model):
     __tablename__ = 'personnel'
 
@@ -244,116 +376,22 @@ class Personnel(db.Model):
         return '<personnel id: {}>'.format(self.id)
 
 
-class Contacts(db.Model):
-    __tablename__ = 'contacts'
+# # # Marketing Models # # #
+# - Linguistic analysis sub-module models.
+class Result(db.Model):
+    __tablename__ = 'results'
 
     id = db.Column(db.Integer, primary_key=True)
-    name_last = db.Column(db.String(80), nullable=False)
-    name_first = db.Column(db.String(80), nullable=False)
-    name_prefix = db.Column(db.String(80))
-    name_suffix = db.Column(db.String(80))
-    name_middle = db.Column(db.String(80))
-    email1 = db.Column(db.String(120))
-    email2 = db.Column(db.String(120))
-    phone1 = db.Column(db.String(20))
-    phone2 = db.Column(db.String(20))
-    phone3 = db.Column(db.String(20))
-    phone4 = db.Column(db.String(20))
-    phone5 = db.Column(db.String(20))
-    pii_dob = db.Column(db.String(10))
-    pii_other = db.Column(db.String(500))
-    phi = db.Column(db.String(500))
-    pfi = db.Column(db.String(500))
-    address_street = db.Column(db.String(50))
-    address_suite = db.Column(db.String(20))
-    address_state = db.Column(db.String(2))
-    address_county = db.Column(db.String(20))
-    address_zip = db.Column(db.String(5))
-    address_zip_extension = db.Column(db.String(4))
-    relation_1_name = db.Column(db.String(100))
-    relation_1_notes = db.Column(db.String(100))
-    relation_2_name = db.Column(db.String(100))
-    relation_2_notes = db.Column(db.String(100))
-    notes_other = db.Column(db.String(100))
+    date = db.Column(db.DateTime)
+    url = db.Column(db.String(300))
+    result_all = db.Column(JSON)
+    result_no_stop_words = db.Column(JSON)
 
-    def __init__(self, name_last, name_first):
-        self.last_name = name_last
-        self.first_name = name_first
+    def __init__(self, url, result_all, result_no_stop_words):
+        self.url = url
+        self.datetime = datetime.now()
+        self.result_all = result_all
+        self.result_no_stop_words = result_no_stop_words
 
     def __repr__(self):
-        return '<contact id: {}>'.format(self.id)
-
-
-class Agencies(db.Model):
-    __tablename__ = 'agencies'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    abbreviation = db.Column(db.String(20))
-
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return '<agency name: {}>'.format(self.id)
-
-
-class Modules(db.Model):
-    __tablename__ = 'modules'
-
-    name = db.Column(db.String(80), primary_key=True, nullable=False)
-    abbreviation = db.Column(db.String(20), nullable=False)
-    description = db.Column(db.String(200), nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
-
-    def __init__(self, name, abbreviation, description, active):
-        self.name = name
-        self.abbreviation = abbreviation
-        self.description = description
-        self.active = active
-
-    def __repr__(self):
-        return '<module name: {}>'.format(self.id)
-
-
-class Roles(db.Model):
-    __tablename__ = 'roles'
-    # - admin role permissions
-    # 	- role (pk)  /  permission name / r / w / u / d
-    # - custom admin permissions
-    # 	- id # / permission name  / r / w / u / d
-    role = db.Column(db.String(20), primary_key=True)
-    module_abbreviation = db.Column(db.String(3), primary_key=True)
-
-    def __init__(self, role, module_abbreviation):
-        self.module_abbreviation = module_abbreviation
-
-    def __repr__(self):
-        return '<role/module: {}/{}>'.format(self.role, self.module_abbreviation)
-
-class Permissions(db.Model):
-    __tablename__ = 'permissions'
-    # 	- table (user id #  /  group name  /  read  /  write  /  update  / delete
-    # - need a relationship here with roles
-    id = db.Column(db.Integer, primary_key=True)
-    # role = db.Column(db.String(20), foreign_key=True)
-    # module = db.Column(db.String(3), foreign_key=True)
-    role = db.Column(db.String(20))
-    module = db.Column(db.String(3))
-    permission = db.Column(db.String(80), nullable=False)
-    read = db.Column(db.Boolean, nullable=False)
-    write = db.Column(db.Boolean, nullable=False)
-    update = db.Column(db.Boolean, nullable=False)
-    delete = db.Column(db.Boolean, nullable=False)
-
-    def __init__(self, role, module, permission, R, W, U, D):
-        self.role = role
-        self.module = module
-        self.permission = permission
-        self.read = R
-        self.write = W
-        self.update = U
-        self.delete = D
-
-    def __repr__(self):
-        return '<role/module permission: {}/{} {}>'.format(self.role, self.module, self.permission)
+        return '<result id: {}>'.format(self.id)

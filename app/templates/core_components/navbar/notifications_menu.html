@@ -12,6 +12,13 @@
         <li>
           <ul class="menu">
             <!-- inner menu: contains the actual data -->
+            {% for notification in app_notifications %}
+            <li>
+              <a href="#" data-toggle="modal" data-target="#Message{{ notification.id }}">
+                <i class="fa fa-paper-plane-o info"></i>{{ notification.title }}
+              </a>
+            </li>
+            {% endfor %}
             {% for message in messages %}
             <li>
               <a href="#" data-toggle="modal" data-target="#Message{{ message.id }}">

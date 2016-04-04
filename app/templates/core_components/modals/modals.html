@@ -2,26 +2,69 @@
 
 {% if modals %}
   {% for modal in modals.keys()|sort -%}
-        {# Variables #}
-        {% set form = forms[modals[modal]['form_id']] %}
+    {# Variables #}
+    {% set form = forms[modals[modal]['form_id']] %}
 
-        {# Modal #}
-        <div class="modal fade" id="{{ modals[modal]['id'] }}" tabindex="-1" role="dialog" aria-labelledby="{{ modals[modal]['aria_label'] }}">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="{{ modals[modal]['title_id'] }}">{{ modals[modal]['title'] }}</h4>
-              </div>
+    {# Modal #}
+    <div class="modal fade" id="{{ modals[modal]['id'] }}" tabindex="-1" role="dialog" aria-labelledby="{{ modals[modal]['aria_label'] }}">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="{{ modals[modal]['title_id'] }}">{{ modals[modal]['title'] }}</h4>
+          </div>
 
-              {# Form #}
-              <div class="modal-body" align="left">
-                <form id="{{ form.form_id }}" role="form" method='POST' action="">
-                    {{ form.csrf_token }}
+          {# Form #}
+          <div class="modal-body" align="left">
+            <form id="{{ form.form_id }}" role="form" method='POST' action="">
+                {{ form.csrf_token }}
 
+                {# User Add/Update Forms #}
+                {% if form.form_id == 'User-Add-Form' or 'User-Update-Form '%}
+                    <h4>Account Information</h4>
+                    {% for field in form %}
+                      {% if field.render_kw['section'] == 'account' %}
+                        <div class="form-group">
+                          {{ field(placeholder=field.render_kw['placeholder']) }}
+                          <p><span class="error">
+                            {% if field.errors %}
+                            {% for error in field.errors %} {{ error }} {% endfor %}
+                        {% endif %}</span></p></div>
+                      {% endif %}
+                    {% endfor %}
+                    <h4>Administrative Roles/Permissions</h4>
+                    {% for field in form %}
+                      {% if field.render_kw['section'] == 'admin' %}
+                        <div class="form-group">
+                          {{ field(placeholder=field.render_kw['placeholder']) }}
+                          <p><span class="error">
+                            {% if field.errors %}
+                            {% for error in field.errors %} {{ error }} {% endfor %}
+                        {% endif %}</span></p></div>
+                      {% endif %}
+                    {% endfor %}
+                    <h4>Group Roles/Permissions</h4>
+                    {% for field in form %}
+                      {% if field.render_kw['section'] == 'groups' %}
+                        {% if field.name == 'oms_role' %}Operations:
+                        {% elif field.name == 'crm_role' %}Customer Relations:
+                        {% elif field.name == 'hrm_role' %}Human Resources:
+                        {% elif field.name == 'ams_role' %}Accounting:
+                        {% elif field.name == 'mms_role' %}Marketing: {% endif %}
+                        <div class="form-group">
+                          {{ field(placeholder=field.render_kw['placeholder']) }}
+                          <p><span class="error">
+                            {% if field.errors %}
+                            {% for error in field.errors %} {{ error }} {% endfor %}
+                        {% endif %}</span></p></div>
+                      {% endif %}
+                    {% endfor %}
+
+                {# Other Forms #}
+                {% else %}
                     {% for field in form %}
                       <div class="form-group">
-                          <p>{{ field(placeholder=field.name) }}
+                          <p>{{ field(placeholder=field.render_kw['placeholder']) }}
                             <span class="error">
 {#                              {% if form.username.errors %}#}
 {#                                {% for error in form.username.errors %} {{ error }} {% endfor %}#}
@@ -31,19 +74,52 @@
                           </span></p>
                       </div>
                     {% endfor %}
+                {% endif %}
 
-                    <div class="modal-footer">
+                <div class="modal-footer">
+                  {% if form.crud_type == 'Update' or form.crud_type == 'Delete' %}
+                    <div style="float:left">
+                      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#ConfirmDelete{{ form.form_id }}">Delete</button>
+                    </div>
+                    <div style="float:right">
+                  {% else %}
+                    <div>
+                  {% endif %}
                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                       <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
-                </form>
-              </div>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation -->
+    <div class="modal fade" id="ConfirmDelete{{ form.form_id }}" tabindex="-1" role="dialog" aria-labelledby="ConfirmDelete{{ form.form_id }}">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="ConfirmDelete{{ form.form_id }}Title">Confirm Delete</h4>
+          </div>
+          <div class="modal-body" align="center">
+            Are you sure?
+          </div>
+          <div class="modal-footer">
+            <div style="float:left">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Don't delete.</button>
+            </div>
+            <div style="float:right">
+              <button type="submit" class="btn btn-danger">Yes, I'm sure.</button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
   {% endfor %}
 {% endif %}
-
 
 <!-- Message Popup -->
     {% for message in messages %}
@@ -110,7 +186,7 @@
 {#                <label for="username-email">Username / E-mail</label>#}
 {#                <input type="text" class="form-control" id="username-email" placeholder="Username/E-mail" name="username" value="{{ request.form.username }}">#}
                   <p>
-                    {{ login_form.username(placeholder="username") }}
+                    {{ login_form.username(placeholder=login_form.username.render_kw['placeholder']) }}
                     <span class="error">
                       {% if login_form.username.errors %}
                         {% for error in login_form.username.errors %}
@@ -124,7 +200,7 @@
 {#                <label for="password">Password</label>#}
 {#                <input type="password" class="form-control" id="password" placeholder="Password" name="password" value="{{ request.form.password }}">#}
                   <p>
-                  {{ login_form.password(placeholder="password") }}
+                  {{ login_form.password(placeholder=login_form.password.render_kw['placeholder']) }}
                     <span class="error">
                       {% if login_form.password.errors %}
                         {% for error in login_form.password.errors %}
@@ -168,7 +244,7 @@
                 {{ register_form.csrf_token }}
                 <div class="modal-body" align="left">
                   <div class="form-group">
-                      <p>{{ register_form.username(placeholder="username") }}
+                      <p>{{ register_form.username(placeholder=register_form.username.render_kw['placeholder']) }}
                         <span class="error">
                           {% if register_form.username.errors %}
                             {% for error in register_form.username.errors %}
@@ -178,7 +254,7 @@
                         </span></p>
                   </div>
                   <div class="form-group">
-                      <p>{{ register_form.email(placeholder="email") }}
+                      <p>{{ register_form.email(placeholder=register_form.email.render_kw['placeholder']) }}
                         <span class="error">
                           {% if register_form.password.errors %}
                             {% for error in register_form.email.errors %}
@@ -188,7 +264,7 @@
                         </span></p>
                   </div>
                   <div class="form-group">
-                      <p>{{ register_form.password(placeholder="password") }}
+                      <p>{{ register_form.password(placeholder=register_form.password.render_kw['placeholder']) }}
                         <span class="error">
                           {% if register_form.password.errors %}
                             {% for error in register_form.password.errors %}
@@ -198,7 +274,7 @@
                         </span></p>
                   </div>
                   <div class="form-group">
-                      <p>{{ register_form.confirm(placeholder="confirm password") }}
+                      <p>{{ register_form.confirm(placeholder=register_form.confirm.render_kw['placeholder']) }}
                         <span class="error">
                           {% if register_form.confirm.errors %}
                             {% for error in register_form.confirm.errors %}

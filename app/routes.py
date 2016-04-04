@@ -1,6 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from app import app, db, bcrypt
+
+# from wtforms import SelectField
+# from collections import namedtuple
+
 # Unused -> from flask_table import Table, Col
 # from functools import wraps
 
@@ -149,8 +153,15 @@ def user_management():
     user = current_user
     login_form = LoginForm(request.form)
     modals = {'UserAddModal': user_add_modal, 'UserUpdateModal': user_update_modal}
-    forms = {'User-Add-Form': UserAddForm(request.form),
-             'User-Update-Form': UserUpdateForm(request.form)}
+
+    # To do: Need to fix this so that my forms are able to create fields dynamically based on database values.
+    # The code below doesn't seem to break app, but does not seem to have an effect.
+    add_form = UserAddForm(request.form)
+    update_form = UserUpdateForm(request.form)
+    # db_populate_object = namedtuple('literal', 'name age')(**{'name': 'John Smith', 'age': 23})
+    # add_form.append_field("test", SelectField('test'))(obj=db_populate_object)
+    forms = {'User-Add-Form': add_form,
+             'User-Update-Form': update_form}
 
     return render_template('core_modules/app_settings/user_management.html',
                            icon="fa fa-dashboard",

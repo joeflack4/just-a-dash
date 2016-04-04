@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request, get_flashed_messages
+from flask import render_template, url_for, flash, redirect, request
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from app import app, db, bcrypt
 
@@ -74,7 +74,8 @@ def welcome():
     logged_in = current_user.is_authenticated()
     user = current_user
     login_form = LoginForm(request.form)
-    register_form = RegisterForm()
+    register_form = RegisterForm(request.form)
+
     return render_template('core_modules/welcome/index.html',
                            module_name="Just-a-Dash Control Panel",
                            page_name="Welcome",
@@ -172,7 +173,8 @@ def user_management():
         else:
             flash('Whoaaa, buddy. Fix yer form submission.', 'danger')
             flash(update_form.validate_on_submit())
-            flash(request.form['User-Update-Form_Submission'])
+            flash(request.form)
+
 
         # if register_form.validate_on_submit():
         #     new_user = User(

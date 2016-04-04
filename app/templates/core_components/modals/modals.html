@@ -16,43 +16,46 @@
 
           {# Form #}
           <div class="modal-body" align="left">
-            <form id="{{ form.form_id }}" role="form" method='POST' action="">
+            <form id="{{ form.form_id }}" role="form" method='POST' action="{{ form.action }}">
                 {{ form.csrf_token }}
 
                 {# User Add/Update Forms #}
                 {% if form.form_id == 'User-Add-Form' or 'User-Update-Form '%}
-                    <h4>Account Information</h4>
+                    <h3>Account Information</h3>
                     {% for field in form %}
                       {% if field.render_kw['section'] == 'account' %}
                         <div class="form-group">
-                          {{ field(placeholder=field.render_kw['placeholder']) }}
+                          <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+                          {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
                           <p><span class="error">
                             {% if field.errors %}
                             {% for error in field.errors %} {{ error }} {% endfor %}
                         {% endif %}</span></p></div>
                       {% endif %}
                     {% endfor %}
-                    <h4>Administrative Roles/Permissions</h4>
+                    <h3>Administrative Roles/Permissions</h3>
                     {% for field in form %}
                       {% if field.render_kw['section'] == 'admin' %}
                         <div class="form-group">
-                          {{ field(placeholder=field.render_kw['placeholder']) }}
+                          <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+                          {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
                           <p><span class="error">
                             {% if field.errors %}
                             {% for error in field.errors %} {{ error }} {% endfor %}
                         {% endif %}</span></p></div>
                       {% endif %}
                     {% endfor %}
-                    <h4>Group Roles/Permissions</h4>
+                    <h3>Group Roles/Permissions</h3>
                     {% for field in form %}
                       {% if field.render_kw['section'] == 'groups' %}
-                        {% if field.name == 'oms_role' %}Operations:
-                        {% elif field.name == 'crm_role' %}Customer Relations:
-                        {% elif field.name == 'hrm_role' %}Human Resources:
-                        {% elif field.name == 'ams_role' %}Accounting:
-                        {% elif field.name == 'mms_role' %}Marketing: {% endif %}
+                        <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+{#                        {% if field.name == 'oms_role' %}Operations:#}
+{#                        {% elif field.name == 'crm_role' %}Customer Relations:#}
+{#                        {% elif field.name == 'hrm_role' %}Human Resources:#}
+{#                        {% elif field.name == 'ams_role' %}Accounting:#}
+{#                        {% elif field.name == 'mms_role' %}Marketing: {% endif %}#}
                         <div class="form-group">
-                          {{ field(placeholder=field.render_kw['placeholder']) }}
+                          {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
                           <p><span class="error">
                             {% if field.errors %}
                             {% for error in field.errors %} {{ error }} {% endfor %}
@@ -64,7 +67,7 @@
                 {% else %}
                     {% for field in form %}
                       <div class="form-group">
-                          <p>{{ field(placeholder=field.render_kw['placeholder']) }}
+                          <p>{{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
                             <span class="error">
 {#                              {% if form.username.errors %}#}
 {#                                {% for error in form.username.errors %} {{ error }} {% endfor %}#}
@@ -178,15 +181,13 @@
           </div>
 
           <form id=LoginForm" role="form" method='POST' action={{ url_for('login') }}>
-{#          <form id=LoginForm" role="form" method='POST'>#}
-{#            {{ login_form.hidden_tag() }}#}
+            {{ login_form.hidden_tag() }}
             {{ login_form.csrf_token }}
             <div class="modal-body" align="left">
               <div class="form-group">
-{#                <label for="username-email">Username / E-mail</label>#}
-{#                <input type="text" class="form-control" id="username-email" placeholder="Username/E-mail" name="username" value="{{ request.form.username }}">#}
+                <label for="username">Username / E-mail</label>
                   <p>
-                    {{ login_form.username(placeholder=login_form.username.render_kw['placeholder']) }}
+                    {{ login_form.username(placeholder=login_form.username.render_kw['placeholder'], class="form-control") }}
                     <span class="error">
                       {% if login_form.username.errors %}
                         {% for error in login_form.username.errors %}
@@ -197,10 +198,9 @@
                   </p>
               </div>
               <div class="form-group">
-{#                <label for="password">Password</label>#}
-{#                <input type="password" class="form-control" id="password" placeholder="Password" name="password" value="{{ request.form.password }}">#}
+                <label for="password">Password</label>
                   <p>
-                  {{ login_form.password(placeholder=login_form.password.render_kw['placeholder']) }}
+                  {{ login_form.password(placeholder=login_form.password.render_kw['placeholder'], class="form-control") }}
                     <span class="error">
                       {% if login_form.password.errors %}
                         {% for error in login_form.password.errors %}
@@ -210,12 +210,9 @@
                     </span>
                   </p>
               </div>
-{#              <div class="checkbox">#}
-{#                <label>#}
-{#                  <input type="checkbox"> Remember Me#}
-{#                  {{ login_form.remember_me }} Remember Me#}
-{#                </label>#}
-{#              </div>#}
+              <div class="checkbox" for="remember_me">
+                <label>{{ login_form.remember_me }} Remember Me</label>
+              </div>
             </div>
 
             <div class="modal-footer">
@@ -228,10 +225,9 @@
       </div>
     </div>
 
-{#{% if register_form %}#}
-
-<!-- Register Modal -->
-    <div class="modal fade" id="RegisterForm" tabindex="-1" role="dialog" aria-labelledby="RegisterForm">
+  <!-- Register Modal -->
+  {% if register_form %}
+      <div class="modal fade" id="RegisterForm" tabindex="-1" role="dialog" aria-labelledby="RegisterForm">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -244,7 +240,8 @@
                 {{ register_form.csrf_token }}
                 <div class="modal-body" align="left">
                   <div class="form-group">
-                      <p>{{ register_form.username(placeholder=register_form.username.render_kw['placeholder']) }}
+                      <label for="username">Username</label>
+                      <p>{{ register_form.username(placeholder=register_form.username.render_kw['placeholder'], class="form-control") }}
                         <span class="error">
                           {% if register_form.username.errors %}
                             {% for error in register_form.username.errors %}
@@ -254,7 +251,8 @@
                         </span></p>
                   </div>
                   <div class="form-group">
-                      <p>{{ register_form.email(placeholder=register_form.email.render_kw['placeholder']) }}
+                      <label for="email">E-mail</label>
+                      <p>{{ register_form.email(placeholder=register_form.email.render_kw['placeholder'], class="form-control") }}
                         <span class="error">
                           {% if register_form.password.errors %}
                             {% for error in register_form.email.errors %}
@@ -264,7 +262,8 @@
                         </span></p>
                   </div>
                   <div class="form-group">
-                      <p>{{ register_form.password(placeholder=register_form.password.render_kw['placeholder']) }}
+                      <label for="password">Password</label>
+                      <p>{{ register_form.password(placeholder=register_form.password.render_kw['placeholder'], class="form-control") }}
                         <span class="error">
                           {% if register_form.password.errors %}
                             {% for error in register_form.password.errors %}
@@ -274,7 +273,8 @@
                         </span></p>
                   </div>
                   <div class="form-group">
-                      <p>{{ register_form.confirm(placeholder=register_form.confirm.render_kw['placeholder']) }}
+                      <label for="confirm">Confirm Password</label>
+                      <p>{{ register_form.confirm(placeholder=register_form.confirm.render_kw['placeholder'], class="form-control") }}
                         <span class="error">
                           {% if register_form.confirm.errors %}
                             {% for error in register_form.confirm.errors %}
@@ -294,5 +294,6 @@
         </div>
       </div>
     </div>
+  {% endif %}
 
 {% endif %}

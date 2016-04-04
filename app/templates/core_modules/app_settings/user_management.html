@@ -31,22 +31,15 @@
           <th>Admin Role</th>
           <th>Group Roles</th>
       </tr>
-      <tr data-toggle="modal" data-id="" data-target="#User-Update-Modal">
-        <td>test</td>
-        <td>test</td>
-        <td>test</td>
-        <td>test</td>
-        <td>test</td>
-      </tr>
-{#      {% for key, value in user.items() %}#}
-{#        <tr data-toggle="modal" data-id="{{ value.id }}" data-target="#User-Update-Modal">#}
-{#          <td>{{ loop.index }}</td>#}
-{#          <td>{{ value.username }}</td>#}
-{#          <td>{{ value.email }}</td>#}
-{#          <td>{{ value.groups }}</td>#}
-{#          <td>{{ value.phone_number }}</td>#}
-{#        </tr>#}
-{#      {% endfor %}#}
+      {% for user in users %}
+        <tr data-toggle="modal" data-id="{{ user.id }}" data-target="#User-Update-Modal">
+          <td>{{ loop.index }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.admin_role }}</td>
+          <td>{{ user.group_roles }}</td>
+        </tr>
+      {% endfor %}
     </table>
   </div>
 

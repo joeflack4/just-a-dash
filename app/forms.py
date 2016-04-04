@@ -10,6 +10,7 @@
 # - This is from RealPython
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, SelectField
+# from wtforms import SubmitField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 
@@ -18,6 +19,7 @@ class BaseForm(Form):
     def append_field(cls, name, field):
         setattr(cls, name, field)
         return cls
+    # submit = SubmitField('Submit')
 
 
 class LoginForm(Form):
@@ -49,34 +51,28 @@ class UserAddForm(BaseForm):
     confirm = PasswordField('confirm password', render_kw={"placeholder": "confirm password", "section": "account"},
         validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
     admin_role = SelectField('admin role', render_kw={"placeholder": "administrative role", "section": "admin"},
-        choices=[('super', 'Super Admin'), ('basic', 'Basic Admin')],
-        validators=[Length(max=500)])
+        choices=[('super', 'Super Admin'), ('basic', 'Basic Admin')])
 
     # - Need to fix this so that this isn't even needed. Unfortunately WTForms doesn't support dynamic field addition.
     # The code to dynamically add fields is in the 'BaseForm' class, and in the route in routes.py.
     oms_role = SelectField('oms role',
                            render_kw={"placeholder": "oms role", "section": "groups", "field_name": "Operations"}, description="Operations",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
     crm_role = SelectField('crm role',
                            render_kw={"placeholder": "crm role", "section": "groups", "field_name": "Customer Relations"}, description="Customer Relations",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
     hrm_role = SelectField('hrm role',
                            render_kw={"placeholder": "hrm role", "section": "groups", "field_name": "Human Resources"}, description="Human Resources",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
     ams_role = SelectField('ams role',
                            render_kw={"placeholder": "ams role", "section": "groups", "field_name": "Accounting"}, description="Accounting",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
     mms_role = SelectField('mms role',
                            render_kw={"placeholder": "mms role", "section": "groups", "field_name": "Marketing"}, description="Marketing",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
 
 
-class UserUpdateForm(Form):
+class UserUpdateForm(BaseForm):
     form_id = 'User-Update-Form'
     crud_type = "Update"
 
@@ -89,26 +85,20 @@ class UserUpdateForm(Form):
     confirm = PasswordField('confirm password', render_kw={"placeholder": "confirm password", "section": "account"},
                             validators=[EqualTo('password', message='Passwords must match.')])
     admin_role = SelectField('admin role', render_kw={"placeholder": "administrative role", "section": "admin"},
-                            choices=[('super', 'Super Admin'), ('basic', 'Basic Admin')],
-                            validators=[Length(max=500)])
+                            choices=[('super', 'Super Admin'), ('basic', 'Basic Admin')])
 
     # - Need to fix this so that this isn't even needed. Unfortunately WTForms doesn't support dynamic field addition.
     # The code to dynamically add fields is in the 'BaseForm' class, and in the route in routes.py.
     oms_role = SelectField('oms role', render_kw={"placeholder": "oms role", "section": "groups", "field_name": "Operations"}, description="Operations",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
     crm_role = SelectField('crm role', render_kw={"placeholder": "crm role", "section": "groups", "field_name": "Customer Relations"}, description="Customer Relations",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
     hrm_role = SelectField('hrm role', render_kw={"placeholder": "hrm role", "section": "groups", "field_name": "Human Resources"}, description="Human Resources",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
     ams_role = SelectField('ams role', render_kw={"placeholder": "ams role", "section": "groups", "field_name": "Accounting"}, description="Accounting",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
     mms_role = SelectField('mms role', render_kw={"placeholder": "mms role", "section": "groups", "field_name": "Marketing"}, description="Marketing",
-                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')],
-                           validators=[Length(max=500)])
+                           choices=[('None', 'Not a Member'), ('basic', 'Basic Group Admin'), ('super', 'Super Group Admin')])
 
 
 class CustomerAddForm(Form):

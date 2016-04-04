@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, get_flashed_messages
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from app import app, db, bcrypt
 
@@ -163,6 +163,34 @@ def user_management():
     forms = {'User-Add-Form': add_form,
              'User-Update-Form': update_form}
 
+    if request.method == 'POST':
+        if add_form.validate_on_submit() and request.form['User-Add-Form_Submission'] == 'True':
+            flash('Hurrah for Add Form!', 'success')
+            flash(add_form)
+        elif update_form.validate_on_submit() and request.form['User-Update-Form_Submission'] == 'True':
+            flash('Hurrah for Update Form!', 'success')
+        else:
+            flash('Whoaaa, buddy. Fix yer form submission.', 'danger')
+            flash(update_form.validate_on_submit())
+            flash(request.form['User-Update-Form_Submission'])
+
+        # if register_form.validate_on_submit():
+        #     new_user = User(
+        #         username=register_form.username.data,
+        #         email=register_form.email.data,
+        #         password=register_form.password.data)
+        #     db.session.add(new_user)
+        #     for item in db.session:
+        #         item.password = item.password.decode("utf-8")
+        #     db.session.commit()
+        #     login_user(new_user)
+        #     flash(u'Registration complete! You have been logged in.', 'success')
+        #     return redirect(url_for('index'))
+        # else:
+        #     flash(
+        #         u'Registration failed. Please try again, or contact the site administrator. Ensure that: (1) Username is between 3-25 characters, (2) E-mail is between 6-40 characters, (3) Password is beteen 6-25 characters, (4) Password and confirm password are matching.',
+        #         'warning')
+
     return render_template('core_modules/app_settings/user_management.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="App Settings",
@@ -170,6 +198,7 @@ def user_management():
                            page_name="User Management",
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
+                           users=db.session.query(User),
                            login_form=login_form,
                            user=user,
                            logged_in=logged_in,

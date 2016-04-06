@@ -16,11 +16,11 @@
 
           {# Form #}
           <div class="modal-body" align="left">
-            <form id="{{ form.form_id }}" role="form" method='POST' action="{{ form.action }}">
+            <form id="{{ form.form_id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
                 {{ form.csrf_token }}
 
                 {# User Add/Update Forms #}
-                {% if form.form_id == 'User-Add-Form' or 'User-Update-Form '%}
+                {% if form.form_id == 'User-Add-Form' or 'User-Update-Form'%}
                     <h3>Account Information</h3>
                     {% for field in form %}
                       {% if field.render_kw['section'] == 'account' %}
@@ -89,7 +89,7 @@
                     <div>
                   {% endif %}
                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="submit" name="{{ form.form_id }}_Submission" value="True" class="btn btn-primary">Submit</button>
+                      <button type="submit" name="form_submit" value="{{ form.form_id }}" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </form>

@@ -22,7 +22,12 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(500), nullable=False)
     admin_role = db.Column(db.String(20))
-    group_roles = db.Column(db.String(500))
+    oms_role = db.Column(db.String(20))
+    crm_role = db.Column(db.String(20))
+    hrm_role = db.Column(db.String(20))
+    ams_role = db.Column(db.String(20))
+    mms_role = db.Column(db.String(20))
+
     # - To Do: Figure out relational mapping.
     # http: // docs.sqlalchemy.org / en / latest / orm / basic_relationships.html  # many-to-many
     # sent_messages = relationship("Messages", backref="user")
@@ -32,7 +37,7 @@ class User(db.Model):
     #     secondary=user_messages,
     #     back_populates="user")
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, admin_role, oms_role, crm_role, hrm_role, ams_role, mms_role):
         self.username = username
         self.email = email
         # self.password = bcrypt.generate_password_hash(str(password).encode('utf-8'))
@@ -42,6 +47,12 @@ class User(db.Model):
         # print(self.password)
         # self.password = password
         # print(self.password)
+        self.admin_role
+        self.oms_role
+        self.crm_role
+        self.hrm_role
+        self.ams_role
+        self.mms_role
 
     def is_authenticated(self):
         return True

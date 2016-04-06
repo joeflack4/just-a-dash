@@ -165,17 +165,28 @@ def user_management():
              'User-Update-Form': update_form}
 
     if request.method == 'POST':
-        if add_form.validate_on_submit() and request.form['User-Add-Form_Submission'] == 'True':
-            flash('Hurrah for Add Form!', 'success')
-            flash(add_form)
-        elif update_form.validate_on_submit() and request.form['User-Update-Form_Submission'] == 'True':
-            flash('Hurrah for Update Form!', 'success')
-        else:
-            flash('Whoaaa, buddy. Fix yer form submission.', 'danger')
-            flash(update_form.validate_on_submit())
-            flash(request.form)
+        if request.form['form_submit']:
+            if add_form.validate_on_submit() and request.form['form_submit'] == 'User-Add-Form':
+                flash('User successfully added!', 'success')
+                new_user = User(
+                    username=add_form.username.data,
+                    email=add_form.email.data,
+                    password=add_form.password.data.decode("utf-8"),
+                    admin_role=add_form.admin_role.data,
+                    oms_role=add_form.oms_role.data,
+                    crm_role=add_form.crm_role.data,
+                    hrm_role=add_form.hrm_role.data,
+                    ams_role=add_form.ams_role.data,
+                    mms_role=add_form.mms_role.data)
+                # new_user.password = new_user.password.decode("utf-8")
+                db.session.add(new_user)
+                db.session.commit()
+            elif update_form.validate_on_submit() and request.form['form_submit'] == 'User-Update-Form':
+                flash('User successfully updated!', 'success')
+            else:
+                flash('Please correct the errors in your form submission.', 'danger')
 
-
+    # this is for reference #####################
         # if register_form.validate_on_submit():
         #     new_user = User(
         #         username=register_form.username.data,
@@ -260,7 +271,13 @@ def register():
             new_user = User(
                 username=register_form.username.data,
                 email=register_form.email.data,
-                password=register_form.password.data)
+                password=register_form.password.data,
+                admin_role='None',
+                oms_role='None',
+                crm_role='None',
+                hrm_role='None',
+                ams_role='None',
+                mms_role='None')
             db.session.add(new_user)
             for item in db.session:
                 item.password = item.password.decode("utf-8")

@@ -43,7 +43,9 @@ class RegisterForm(Form):
 
 class UserAddForm(BaseForm):
     form_id = 'User-Add-Form'
-    action = "url_for('user_management')"
+    crud_type = "Add"
+    module = "App Administration"
+    sub_module = "User Management"
 
     username = StringField('username', render_kw={"placeholder": "Username", "section": "account"},
         validators=[DataRequired(), Length(min=3, max=25)])
@@ -54,7 +56,7 @@ class UserAddForm(BaseForm):
     confirm = PasswordField('confirm password', render_kw={"placeholder": "Confirm Password", "section": "account"},
         validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
     admin_role = SelectField('admin role', render_kw={"placeholder": "User/App Administration", "section": "admin"},
-        choices=[('super', 'Super Admin'), ('basic', 'Basic Admin')])
+        choices=[('super', 'Super Admin'), ('basic', 'Basic Admin'), ('None', 'Normal User')], default='None')
 
     # - Need to fix this so that this isn't even needed. Unfortunately WTForms doesn't support dynamic field addition.
     # The code to dynamically add fields is in the 'BaseForm' class, and in the route in routes.py.
@@ -78,6 +80,8 @@ class UserAddForm(BaseForm):
 class UserUpdateForm(BaseForm):
     form_id = 'User-Update-Form'
     crud_type = "Update"
+    module = "App Administration"
+    sub_module = "User Management"
 
     username = StringField('username', render_kw={"placeholder": "Username", "section": "account"},
                             validators=[Length(min=3, max=25)])
@@ -88,7 +92,7 @@ class UserUpdateForm(BaseForm):
     confirm = PasswordField('confirm password', render_kw={"placeholder": "Confirm Password", "section": "account"},
                             validators=[EqualTo('password', message='Passwords must match.')])
     admin_role = SelectField('admin role', render_kw={"placeholder": "User/App Administration", "section": "admin"},
-                            choices=[('super', 'Super Admin'), ('basic', 'Basic Admin')])
+                             choices=[('super', 'Super Admin'), ('basic', 'Basic Admin'), ('None', 'Normal User')])
 
     # - Need to fix this so that this isn't even needed. Unfortunately WTForms doesn't support dynamic field addition.
     # The code to dynamically add fields is in the 'BaseForm' class, and in the route in routes.py.
@@ -106,6 +110,10 @@ class UserUpdateForm(BaseForm):
 
 class CustomerAddForm(Form):
     form_id = 'Customer-Add-Form'
+    crud_type = "Add"
+    module = "Customer Relations"
+    sub_module = "Customer Management"
+
     first_name = StringField('first name', render_kw={"placeholder": "first name"},
                              validators=[DataRequired(), Length(min=3, max=25)])
     last_name = StringField('last name', render_kw={"placeholder": "last name"},
@@ -118,6 +126,10 @@ class CustomerAddForm(Form):
 
 class CustomerUpdateForm(Form):
     form_id = 'Customer-Update-Form'
+    crud_type = "Update"
+    module = "Customer Relations"
+    sub_module = "Customer Management"
+
     first_name = StringField('first_name', render_kw={"placeholder": "first name"},
                              validators=[Length(min=3, max=25)])
     last_name = StringField('last_name', render_kw={"placeholder": "last name"},
@@ -130,6 +142,10 @@ class CustomerUpdateForm(Form):
 
 class PersonnelAddForm(Form):
     form_id = 'Personnel-Add-Form'
+    crud_type = "Add"
+    module = "Human Resources"
+    sub_module = "HR Management"
+
     first_name = StringField('first_name', render_kw={"placeholder": "first name"},
                              validators=[DataRequired(), Length(min=3, max=25)])
     last_name = StringField('last_name', render_kw={"placeholder": "last name"},
@@ -142,6 +158,10 @@ class PersonnelAddForm(Form):
 
 class PersonnelUpdateForm(Form):
     form_id = 'Personnel-Update-Form'
+    crud_type = "Update"
+    module = "Human Resources"
+    sub_module = "HR Management"
+
     first_name = StringField('first_name', render_kw={"placeholder": "first name"},
                              validators=[Length(min=3, max=25)])
     last_name = StringField('last_name', render_kw={"placeholder": "last name"},

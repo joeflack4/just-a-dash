@@ -39,7 +39,7 @@ def app_master_admin_required(f):
             return redirect(request.referrer)
     return wrap
 
-######
+
 def oms_basic_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):

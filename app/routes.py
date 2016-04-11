@@ -14,12 +14,19 @@ import nltk
 from .stop_words import stops
 
 from .models import User, Messages, Result, AppNotifications
-from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDeleteForm, CustomerAddForm, CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm
-from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, personnel_update_modal
+from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDeleteForm, CustomerAddForm, \
+    CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm
+from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, \
+    personnel_update_modal
 from .services.telephony.contacts import CompanyContacts
 from .services.telephony.sms import sms_response, sms_check_in_data
 from .services.telephony.calls import call_response, call_check_in_data
-from .includes import add_user, update_user, delete_user, check_permissions_to_update_user, check_permissions_to_assign_user_role, check_permissions_to_delete_user
+from .includes import add_user, update_user, delete_user, check_permissions_to_update_user, \
+    check_permissions_to_assign_user_role, check_permissions_to_delete_user
+from .route_decorators import app_basic_admin_required, app_super_admin_required, oms_basic_admin_required, \
+    oms_super_admin_required, crm_basic_admin_required, crm_super_admin_required, hrm_basic_admin_required, \
+    hrm_super_admin_required, ams_basic_admin_required, ams_super_admin_required, mms_basic_admin_required, \
+    mms_super_admin_required
 
 
 ##############
@@ -31,7 +38,7 @@ from .includes import add_user, update_user, delete_user, check_permissions_to_u
 
 
 ##############
-# - Root Path
+# - App Core - Root Pathing
 @app.route('/')
 def root_path():
     if current_user.is_authenticated():
@@ -90,116 +97,7 @@ def dashboard():
 
 
 ################
-# - Core Modules
-@app.route('/account-settings')
-@login_required
-def account_settings():
-    logged_in = current_user.is_authenticated()
-    login_form = LoginForm(request.form)
-    return render_template('core_modules/account_settings/index.html',
-                           icon="fa fa-dashboard",
-                           module_abbreviation="Account Settings",
-                           module_name="Account Settings",
-                           page_name="Account Settings Home",
-                           messages=db.session.query(Messages),
-                           app_notifications=db.session.query(AppNotifications),
-                           login_form=login_form,
-                           current_user=current_user,
-                           logged_in=logged_in)
-
-
-@app.route('/config')
-@app.route('/app-config')
-@app.route('/app-settings')
-@login_required
-def app_settings():
-    logged_in = current_user.is_authenticated()
-    login_form = LoginForm(request.form)
-    return render_template('core_modules/app_settings/index.html',
-                           icon="fa fa-dashboard",
-                           module_abbreviation="App Settings",
-                           module_name="App Settings",
-                           page_name="App Settings Home",
-                           messages=db.session.query(Messages),
-                           app_notifications=db.session.query(AppNotifications),
-                           login_form=login_form,
-                           current_user=current_user,
-                           logged_in=logged_in)
-
-
-@app.route('/user-management', methods=['GET', 'POST'])
-@login_required
-def user_management():
-    logged_in = current_user.is_authenticated()
-    login_form = LoginForm(request.form)
-    modals = {'UserAddModal': user_add_modal, 'UserUpdateModal': user_update_modal}
-
-    # To do: Need to fix this so that my forms are able to create fields dynamically based on database values.
-    # The code below doesn't seem to break app, but does not seem to have an effect.
-    add_form = UserAddForm(request.form)
-    update_form = UserUpdateForm(request.form)
-    delete_form = UserDeleteForm(request.form)
-    # db_populate_object = namedtuple('literal', 'name age')(**{'name': 'John Smith', 'age': 23})
-    # add_form.append_field("test", SelectField('test'))(obj=db_populate_object)
-
-    forms = {'User-Add-Form': add_form,
-             'User-Update-Form': update_form,
-             'User-Delete-Form': delete_form}
-
-    if request.method == 'POST':
-
-        if request.form['form_submit']:
-
-            if request.form['form_submit'] == 'User-Add-Form':
-                if add_form.validate_on_submit():
-                    # NEED TO CHECK AUTHORITY TO ASSIGN
-                    add_user(add_form)
-                else:
-                    flash('Attempted to add record, but form submission failed validation. Please ensure that all of the non-blank fields submitted pass validation.','danger')
-
-            elif request.form['form_submit'] == 'User-Delete-Form':
-                superiority = check_permissions_to_delete_user(delete_form, current_user)
-                if superiority == False:
-                    flash('Failed to delete user. Your administrative role must to be higher than another\'s in order to delete.','danger')
-                elif superiority == True:
-                    if delete_form.validate_on_submit():
-                        delete_user(update_form)
-                    else:
-                        flash('Attempted to delete record, but an unexpected error occurred. Please contact the application administrator', 'danger')
-                else:
-                    flash('One or more errors occurred while attempting to determine user permissions. Please contact the application administrator.', 'danger')
-
-            elif request.form['form_submit'] == 'User-Update-Form':
-                # may need to change the following line, as it might deny all.
-                authority = check_permissions_to_assign_user_role(update_form, current_user)
-                if authority == True:
-                    role_superiorities = check_permissions_to_update_user(update_form, current_user)
-                    if update_form.validate_on_submit():
-                        update_user(update_form, role_superiorities)
-                    else:
-                        flash('Attempted to update record, but form submission failed validation. Please ensure that all of the non-blank fields submitted pass validation.', 'danger')
-            else:
-                flash('An error occurred while processing the submitted form. Please correct the errors in your form submission. If you feel this message is in error, please contact the application administrator.', 'danger')
-        else:
-            flash('Error. Data appears to have been posted to the server, but could not determine type of form submission. Please contact the application administrator.', 'danger')
-
-        return redirect((url_for('user_management')))
-
-    return render_template('core_modules/app_settings/user_management.html',
-                           icon="fa fa-dashboard",
-                           module_abbreviation="App Settings",
-                           module_name="App Settings",
-                           page_name="User Management",
-                           messages=db.session.query(Messages),
-                           app_notifications=db.session.query(AppNotifications),
-                           users=db.session.query(User),
-                           login_form=login_form,
-                           current_user=current_user,
-                           logged_in=logged_in,
-                           modals=modals,
-                           forms=forms)
-
-
+# - App Core - Standard Routes
 @app.route('/logout')
 def logout():
     logged_in = current_user.is_authenticated()
@@ -286,6 +184,25 @@ def register():
                            logged_in=logged_in)
 
 
+################
+# - App Core - Personal Routes
+@app.route('/account-settings')
+@login_required
+def account_settings():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('core_modules/account_settings/index.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="Account Settings",
+                           module_name="Account Settings",
+                           page_name="Account Settings Home",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
 @app.route('/profile')
 @login_required
 def profile():
@@ -339,10 +256,107 @@ def tasks():
                            logged_in=logged_in)
 
 
+################
+# - App Core - Administrative Routes
+@app.route('/config')
+@app.route('/app-config')
+@app.route('/app-settings')
+@login_required
+@app_super_admin_required
+def app_settings():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('core_modules/app_settings/index.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="App Settings",
+                           module_name="App Settings",
+                           page_name="App Settings Home",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
+@app.route('/user-management', methods=['GET', 'POST'])
+@login_required
+@app_basic_admin_required
+def user_management():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    modals = {'UserAddModal': user_add_modal, 'UserUpdateModal': user_update_modal}
+
+    # To do: Need to fix this so that my forms are able to create fields dynamically based on database values.
+    # The code below doesn't seem to break app, but does not seem to have an effect.
+    add_form = UserAddForm(request.form)
+    update_form = UserUpdateForm(request.form)
+    delete_form = UserDeleteForm(request.form)
+    # db_populate_object = namedtuple('literal', 'name age')(**{'name': 'John Smith', 'age': 23})
+    # add_form.append_field("test", SelectField('test'))(obj=db_populate_object)
+
+    forms = {'User-Add-Form': add_form,
+             'User-Update-Form': update_form,
+             'User-Delete-Form': delete_form}
+
+    if request.method == 'POST':
+
+        if request.form['form_submit']:
+
+            if request.form['form_submit'] == 'User-Add-Form':
+                if add_form.validate_on_submit():
+                    # NEED TO CHECK AUTHORITY TO ASSIGN
+                    add_user(add_form)
+                else:
+                    flash('Attempted to add record, but form submission failed validation. Please ensure that all of the non-blank fields submitted pass validation.','danger')
+
+            elif request.form['form_submit'] == 'User-Delete-Form':
+                superiority = check_permissions_to_delete_user(delete_form, current_user)
+                if superiority == False:
+                    flash('Failed to delete user. Your administrative role must to be higher than another\'s in order to delete.','danger')
+                elif superiority == True:
+                    if delete_form.validate_on_submit():
+                        delete_user(update_form)
+                    else:
+                        flash('Attempted to delete record, but an unexpected error occurred. Please contact the application administrator', 'danger')
+                else:
+                    flash('One or more errors occurred while attempting to determine user permissions. Please contact the application administrator.', 'danger')
+
+            elif request.form['form_submit'] == 'User-Update-Form':
+                # may need to change the following line, as it might deny all.
+                authority = check_permissions_to_assign_user_role(update_form, current_user)
+                if authority == True:
+                    role_superiorities = check_permissions_to_update_user(update_form, current_user)
+                    if update_form.validate_on_submit():
+                        update_user(update_form, role_superiorities)
+                    else:
+                        flash('Attempted to update record, but form submission failed validation. Please ensure that all of the non-blank fields submitted pass validation.', 'danger')
+            else:
+                flash('An error occurred while processing the submitted form. Please correct the errors in your form submission. If you feel this message is in error, please contact the application administrator.', 'danger')
+        else:
+            flash('Error. Data appears to have been posted to the server, but could not determine type of form submission. Please contact the application administrator.', 'danger')
+
+        return redirect((url_for('user_management')))
+
+    return render_template('core_modules/app_settings/user_management.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="App Settings",
+                           module_name="App Settings",
+                           page_name="User Management",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           users=db.session.query(User),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in,
+                           modals=modals,
+                           forms=forms)
+
+
 ############
 # - Modules - OMS
 @app.route('/operations')
 @login_required
+@oms_basic_admin_required
 def operations(*args):
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -378,6 +392,7 @@ def operations(*args):
 @app.route('/callin')
 @app.route('/call-in')
 @login_required
+@oms_basic_admin_required
 def call_check_in():
     return operations("call_check_in")
 
@@ -387,28 +402,14 @@ def call_check_in():
 @app.route('/text-checkin')
 @app.route('/sms-checkin')
 @login_required
+@oms_basic_admin_required
 def sms_check_in():
     return operations("sms_check_in")
 
 
-# - Services
-@app.route('/sms')
-@app.route('/sms_send')
-@app.route('/sms_receive')
-def sms():
-    return sms_response()
-
-
-@app.route('/call', methods=['GET', 'POST'])
-@app.route('/calls', methods=['GET', 'POST'])
-@app.route('/call_send', methods=['GET', 'POST'])
-@app.route('/call_receive', methods=['GET', 'POST'])
-def call():
-    return call_response()
-
-
 @app.route('/oms-settings')
 @login_required
+@oms_super_admin_required
 def oms_settings():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -425,10 +426,27 @@ def oms_settings():
                            logged_in=logged_in)
 
 
+# - OMS Services
+@app.route('/sms')
+@app.route('/sms_send')
+@app.route('/sms_receive')
+def sms():
+    return sms_response()
+
+
+@app.route('/call', methods=['GET', 'POST'])
+@app.route('/calls', methods=['GET', 'POST'])
+@app.route('/call_send', methods=['GET', 'POST'])
+@app.route('/call_receive', methods=['GET', 'POST'])
+def call():
+    return call_response()
+
+
 ############
 # - Modules - CRM
 @app.route('/crm', methods=['GET', 'POST'])
 @login_required
+@crm_basic_admin_required
 def crm():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -459,6 +477,7 @@ def crm():
 
 @app.route('/crm-settings')
 @login_required
+@crm_super_admin_required
 def crm_settings():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -480,6 +499,7 @@ def crm_settings():
 @app.route('/hr', methods=['GET', 'POST'])
 @app.route('/hrm', methods=['GET', 'POST'])
 @login_required
+@hrm_basic_admin_required
 def hrm():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -511,6 +531,7 @@ def hrm():
 
 @app.route('/hrm-settings')
 @login_required
+@hrm_super_admin_required
 def hrm_settings():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -534,6 +555,7 @@ def hrm_settings():
 @app.route('/ams')
 @app.route('/accounting')
 @login_required
+@ams_basic_admin_required
 def accounting():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -551,6 +573,7 @@ def accounting():
 
 @app.route('/ams-settings')
 @login_required
+@ams_super_admin_required
 def ams_settings():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -572,6 +595,7 @@ def ams_settings():
 @app.route('/mms', methods=['GET', 'POST'])
 @app.route('/marketing', methods=['GET', 'POST'])
 @login_required
+@mms_basic_admin_required
 def marketing():
     logged_in = current_user.is_authenticated()
     errors = []
@@ -652,6 +676,7 @@ def marketing():
 
 @app.route('/mms-settings')
 @login_required
+@mms_super_admin_required
 def mms_settings():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)

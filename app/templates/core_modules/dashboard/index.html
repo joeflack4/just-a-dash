@@ -6,11 +6,11 @@
   {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
 {%- endblock content_header %}
 {% block content -%}
-  <div page-header>
+{#  <div page-header>#}
     <h4 class="page-header">Welcome{% if current_user.is_authenticated %}, {{ current_user.username }}.
       {% else %} ~{% endif %}
     </h4>
-  </div>
+{#  </div>#}
 
     {# - Use html of super-block template.#}
     {{ super() }}

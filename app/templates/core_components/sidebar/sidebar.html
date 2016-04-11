@@ -1,71 +1,105 @@
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
+{#          <!-- user panel (Optional) -->#}
+{#          <div class="user-panel">#}
+{#              <div class="pull-left image">#}
+{#                <img src="avatar3.png" class="img-circle" alt="User Image">#}
+{#              </div>#}
+{#              <div class="pull-left info">#}
+{#                <p>User Name</p>#}
+{##}
+{#                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>#}
+{#              </div>#}
+{#          </div><!-- /.user-panel -->#}
+
+          <!-- Search Form (Optional) -->
+          {% if logged_in == True %}
+          <form action="#" method="get" class="sidebar-form">
+              <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                  <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                </span>
+              </div>
+          </form><!-- /.sidebar-form -->
+          {% endif %}
+
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
-            <li class="header"><span>Home</span></li>
-            <li>
-              <a href="{{ url_for('root_path') }}">
-                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-              </a>
-            </li>
+            <li class="header"></li><li class="header"></li>
+
+            <li><a href="{{ url_for('root_path') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+
             <li class="treeview">
               <a href="#"><i class="fa fa-cogs"></i> <span>Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li class="header"><i class="fa fa-cog"></i> <span>Account Settings</span></li>
-                <li><a href="{{ url_for('account_settings') }}"><span>Account</span></a></li>
-                <li><a href="{{ url_for('profile') }}"><span>Profile</span></a></li>
-                <li class="header"><i class="fa fa-cogs"></i> <span>Application Settings</span></li>
-                <li><a href="{{ url_for('user_management') }}"><span>User Management</span></a></li>
-                <li><a href="{{ url_for('app_settings') }}"><span>App Config</span></a></li>
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-cog"></i> <span>Personal Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                      <li><a href="{{ url_for('account_settings') }}"><i class="fa fa-genderless"></i> <span>Account</span></a></li>
+                      <li><a href="{{ url_for('profile') }}"><i class="fa fa-genderless"></i> <span>Profile</span></a></li>
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-cogs"></i> <span>Application Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                      <li><a href="{{ url_for('user_management') }}"><i class="fa fa-genderless"></i> <span>User Management</span></a></li>
+                      <li><a href="{{ url_for('app_settings') }}"><i class="fa fa-genderless"></i> <span>App Config</span></a></li>
+                    </ul>
+                </li>
               </ul>
             </li>
 
-            <li class="header"><span>Modules</span></li>
+            <li class="header"></li><li class="header"></li>
+
             <li class="treeview">
               <a href="#"><i class="fa fa-fort-awesome"></i> <span>Operations</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('operations') }}"><span>OMS Home</span></a></li>
-                <li><a href="{{ url_for('operations') }}"><span>Personnel Check-in</span></a></li>
-                <li><a href="{{ url_for('operations') }}"><span>Scheduling</span></a></li>
-                <li><a href="{{ url_for('oms_settings') }}"><span>OMS Settings</span></a></li>
+                <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>OMS Home</span></a></li>
+                <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Personnel Check-in</span></a></li>
+                <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Scheduling</span></a></li>
+                <li><a href="{{ url_for('oms_settings') }}"><i class="fa fa-cog"></i> <span>OMS Settings</span></a></li>
               </ul>
             </li>
             <li class="treeview">
               <a href="#"><i class="ion-person-stalker"></i> <span>Customer Relations</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('crm') }}"><span>CRM Home</span></a></li>
-                <li><a href="{{ url_for('crm') }}"><span>Customer List</span></a></li>
-                <li><a href="{{ url_for('crm_settings') }}"><span>CRM Settings</span></a></li>
+                <li><a href="{{ url_for('crm') }}">  <i class="fa fa-chevron-circle-right"></i> <span>CRM Home</span></a></li>
+                <li><a href="{{ url_for('crm') }}">  <i class="fa fa-chevron-circle-right"></i> <span>Customer List</span></a></li>
+                <li><a href="{{ url_for('crm_settings') }}"><i class="fa fa-cog"></i> <span>CRM Settings</span></a></li>
               </ul>
             </li>
             <li class="treeview">
               <a href="#"><i class="fa fa-users"></i> <span>Human Resources</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('hrm') }}"><span>HRM Home</span></a></li>
-                <li><a href="{{ url_for('hrm') }}"><span>Personnel List</span></a></li>
-                <li><a href="{{ url_for('hrm_settings') }}"><span>HRM Settings</span></a></li>
+                <li><a href="{{ url_for('hrm') }}"><i class="fa fa-chevron-circle-right"></i> <span>HRM Home</span></a></li>
+                <li><a href="{{ url_for('hrm') }}"><i class="fa fa-chevron-circle-right"></i> <span>Personnel List</span></a></li>
+                <li><a href="{{ url_for('hrm_settings') }}"><i class="fa fa-cog"></i> <span>HRM Settings</span></a></li>
               </ul>
             </li>
             <li class="treeview">
               <a href="#"><i class="fa fa-bar-chart"></i> <span>Accounting</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('accounting') }}"><span>AMS Home</span></a></li>
-                <li><a href="{{ url_for('accounting') }}"><span>Billing Reports</span></a></li>
-                <li><a href="{{ url_for('accounting') }}"><span>Financial Reports</span></a></li>
-                <li><a href="{{ url_for('ams_settings') }}"><span>AMS Settings</span></a></li>
+                <li><a href="{{ url_for('accounting') }}"><i class="fa fa-chevron-circle-right"></i> <span>AMS Home</span></a></li>
+                <li><a href="{{ url_for('accounting') }}"><i class="fa fa-chevron-circle-right"></i> <span>Billing Reports</span></a></li>
+                <li><a href="{{ url_for('accounting') }}"><i class="fa fa-chevron-circle-right"></i> <span>Financial Reports</span></a></li>
+                <li><a href="{{ url_for('ams_settings') }}"><i class="fa fa-cog"></i> <span>AMS Settings</span></a></li>
               </ul>
             </li>
             <li class="treeview">
               <a href="#"><i class="fa fa-line-chart"></i> <span>Marketing</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('marketing') }}"><span>Marketing Home</span></a></li>
-                <li><a href="{{ url_for('marketing') }}"><span>Keyword Analytics</span></a></li>
-                <li><a href="{{ url_for('marketing') }}"><span>Internal Metrics</span></a></li>
-                <li><a href="{{ url_for('marketing') }}"><span>A/B Testing Studies</span></a></li>
-                <li><a href="{{ url_for('marketing') }}"><span>Market Statistics</span></a></li>
-                <li><a href="{{ url_for('mms_settings') }}"><span>MMS Settings</span></a></li>
+                <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Marketing Home</span></a></li>
+                <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Keyword Analytics</span></a></li>
+                <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Internal Metrics</span></a></li>
+                <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>A/B Testing Studies</span></a></li>
+                <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Market Statistics</span></a></li>
+                <li><a href="{{ url_for('mms_settings') }}"><i class="fa fa-cog"></i> <span>MMS Settings</span></a></li>
               </ul>
             </li>
+
+            <li class="header"></li>
+
           </ul>
         </section>
         <!-- /.sidebar -->

@@ -108,6 +108,8 @@ def account_settings():
                            logged_in=logged_in)
 
 
+@app.route('/config')
+@app.route('/app-config')
 @app.route('/app-settings')
 @login_required
 def app_settings():
@@ -338,69 +340,7 @@ def tasks():
 
 
 ############
-# - Modules
-@app.route('/hr', methods=['GET', 'POST'])
-@app.route('/hrm', methods=['GET', 'POST'])
-@login_required
-def hrm():
-    logged_in = current_user.is_authenticated()
-    login_form = LoginForm(request.form)
-    modals = {'PersonnelAddModal': personnel_add_modal, 'PersonnelUpdateModal': personnel_update_modal}
-    forms = {'Personnel-Add-Form': PersonnelAddForm(request.form),
-             'Personnel-Update-Form': PersonnelUpdateForm(request.form)}
-
-    try:
-        personnel = CompanyContacts.get_contacts()
-    except:
-        personnel = CompanyContacts.get_contacts()
-        # personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
-
-    return render_template('modules/hrm/index.html',
-                                icon="fa fa-users",
-                                module_abbreviation="HRM",
-                                module_name="Human Resource Management",
-                                page_name="HRM Home",
-                                form_title="Personnel",
-                                personnel_data=personnel,
-                                messages=db.session.query(Messages),
-                                app_notifications=db.session.query(AppNotifications),
-                                login_form=login_form,
-                                current_user=current_user,
-                                logged_in=logged_in,
-                                modals=modals,
-                                forms=forms)
-
-
-@app.route('/crm', methods=['GET', 'POST'])
-@login_required
-def crm():
-    logged_in = current_user.is_authenticated()
-    login_form = LoginForm(request.form)
-    modals = {'CustomerAddModal': customer_add_modal, 'CustomerUpdateModal': customer_update_modal}
-    forms = {'Customer-Add-Form': CustomerAddForm(request.form),
-             'Customer-Update-Form': CustomerUpdateForm(request.form)}
-
-    try:
-        customers = CompanyContacts.get_customer_contacts()
-    except:
-        customers = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
-
-    return render_template('modules/crm/index.html',
-                           icon="ion-person-stalker",
-                           module_abbreviation="CRM",
-                           module_name="Customer Relationship Management",
-                           page_name="CRM Home",
-                           form_title="Customer",
-                           customer_data=customers,
-                           messages=db.session.query(Messages),
-                           app_notifications=db.session.query(AppNotifications),
-                           login_form=login_form,
-                           current_user=current_user,
-                           logged_in=logged_in,
-                           modals=modals,
-                           forms=forms)
-
-
+# - Modules - OMS
 @app.route('/operations')
 @login_required
 def operations(*args):
@@ -451,6 +391,144 @@ def sms_check_in():
     return operations("sms_check_in")
 
 
+# - Services
+@app.route('/sms')
+@app.route('/sms_send')
+@app.route('/sms_receive')
+def sms():
+    return sms_response()
+
+
+@app.route('/call', methods=['GET', 'POST'])
+@app.route('/calls', methods=['GET', 'POST'])
+@app.route('/call_send', methods=['GET', 'POST'])
+@app.route('/call_receive', methods=['GET', 'POST'])
+def call():
+    return call_response()
+
+
+@app.route('/oms-settings')
+@login_required
+def oms_settings():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('modules/operations/settings.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="OMS",
+                           module_name="Operations Management",
+                           page_name="OMS Settings",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
+############
+# - Modules - CRM
+@app.route('/crm', methods=['GET', 'POST'])
+@login_required
+def crm():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    modals = {'CustomerAddModal': customer_add_modal, 'CustomerUpdateModal': customer_update_modal}
+    forms = {'Customer-Add-Form': CustomerAddForm(request.form),
+             'Customer-Update-Form': CustomerUpdateForm(request.form)}
+
+    try:
+        customers = CompanyContacts.get_customer_contacts()
+    except:
+        customers = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+
+    return render_template('modules/crm/index.html',
+                           icon="ion-person-stalker",
+                           module_abbreviation="CRM",
+                           module_name="Customer Relationship Management",
+                           page_name="CRM Home",
+                           form_title="Customer",
+                           customer_data=customers,
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in,
+                           modals=modals,
+                           forms=forms)
+
+
+@app.route('/crm-settings')
+@login_required
+def crm_settings():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('modules/crm/settings.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="CRM",
+                           module_name="Customer Relationship Management",
+                           page_name="CRM Settings",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
+############
+# - Modules - HRM
+@app.route('/hr', methods=['GET', 'POST'])
+@app.route('/hrm', methods=['GET', 'POST'])
+@login_required
+def hrm():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    modals = {'PersonnelAddModal': personnel_add_modal, 'PersonnelUpdateModal': personnel_update_modal}
+    forms = {'Personnel-Add-Form': PersonnelAddForm(request.form),
+             'Personnel-Update-Form': PersonnelUpdateForm(request.form)}
+
+    try:
+        personnel = CompanyContacts.get_contacts()
+    except:
+        personnel = CompanyContacts.get_contacts()
+        # personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+
+    return render_template('modules/hrm/index.html',
+                                icon="fa fa-users",
+                                module_abbreviation="HRM",
+                                module_name="Human Resource Management",
+                                page_name="HRM Home",
+                                form_title="Personnel",
+                                personnel_data=personnel,
+                                messages=db.session.query(Messages),
+                                app_notifications=db.session.query(AppNotifications),
+                                login_form=login_form,
+                                current_user=current_user,
+                                logged_in=logged_in,
+                                modals=modals,
+                                forms=forms)
+
+
+@app.route('/hrm-settings')
+@login_required
+def hrm_settings():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('modules/hrm/settings.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="HRM",
+                           module_name="Human Resources Management",
+                           page_name="HRM Settings",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
+############
+# - Modules - AMS
 @app.route('/bms')
 @app.route('/billing')
 @app.route('/ams')
@@ -471,6 +549,26 @@ def accounting():
                            logged_in=logged_in)
 
 
+@app.route('/ams-settings')
+@login_required
+def ams_settings():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('modules/accounting/settings.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="AMS",
+                           module_name="Accounting Management",
+                           page_name="AMS Settings",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
+############
+# - Modules - MMS
 @app.route('/mms', methods=['GET', 'POST'])
 @app.route('/marketing', methods=['GET', 'POST'])
 @login_required
@@ -552,20 +650,22 @@ def marketing():
                            logged_in=logged_in)
 
 
-# - Services
-@app.route('/sms')
-@app.route('/sms_send')
-@app.route('/sms_receive')
-def sms():
-    return sms_response()
-
-
-@app.route('/call', methods=['GET', 'POST'])
-@app.route('/calls', methods=['GET', 'POST'])
-@app.route('/call_send', methods=['GET', 'POST'])
-@app.route('/call_receive', methods=['GET', 'POST'])
-def call():
-    return call_response()
+@app.route('/mms-settings')
+@login_required
+def mms_settings():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('modules/marketing/settings.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="MMS",
+                           module_name="Marketing Management",
+                           page_name="MMS Settings",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
 
 
 if __name__ == "__main__":

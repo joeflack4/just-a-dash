@@ -1,9 +1,12 @@
-from app import db, bcrypt
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
+# from flask import flash
+from app import db
+# from sqlalchemy import ForeignKey
+# from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 db.Base = declarative_base()
 
@@ -42,17 +45,28 @@ class User(db.Model):
         self.email = email
         # self.password = bcrypt.generate_password_hash(str(password).encode('utf-8'))
         # print(self.password)
-        self.password = bcrypt.generate_password_hash(password)
+
+        # - worked with db_create.py / but switched to werkzeug security
+        # self.password = bcrypt.generate_password_hash(password)
+
         # self.password = bcrypt.generate_password_hash(str(password))
         # print(self.password)
         # self.password = password
         # print(self.password)
-        self.admin_role
-        self.oms_role
-        self.crm_role
-        self.hrm_role
-        self.ams_role
-        self.mms_role
+
+        self.set_password(password)
+        self.admin_role = admin_role
+        self.oms_role = oms_role
+        self.crm_role = crm_role
+        self.hrm_role = hrm_role
+        self.ams_role = ams_role
+        self.mms_role = mms_role
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def is_authenticated(self):
         return True
@@ -66,6 +80,47 @@ class User(db.Model):
     def get_id(self):
         # Due to a weird pycharm bug, or perhaps dependency issue with python environment, it may sometimes falseley state that 'unicode' is not a valid reference.
         return self.id
+
+    def check_administrative_superiority(self, role, role_value):
+        user_rank = int
+
+        def determine_rank(role_value):
+            rank = int
+            if role_value == 'master':
+                rank = 0
+            elif role_value == 'super':
+                rank = 1
+            elif role_value == 'basic':
+                rank = 2
+            elif role_value == 'None':
+                rank = 3
+            return rank
+
+        if role == 'admin_role':
+            user_rank = determine_rank(self.admin_role)
+        elif role == 'oms_role':
+            user_rank = determine_rank(self.oms_role)
+        elif role == 'crm_role':
+            user_rank = determine_rank(self.crm_role)
+        elif role == 'hrm_role':
+            user_rank = determine_rank(self.hrm_role)
+        elif role == 'ams_role':
+            user_rank = determine_rank(self.ams_role)
+        elif role == 'mms_role':
+            user_rank = determine_rank(self.mms_role)
+
+        user_to_compare_rank = determine_rank(role_value)
+
+        is_superior = bool
+        if user_rank < user_to_compare_rank:
+            is_superior = True
+        elif user_to_compare_rank <= user_rank:
+           is_superior = False
+        return is_superior
+
+    def check_administrative_authority(self, role, role_values_to_assign):
+        authority = self.check_administrative_superiority(role, role_values_to_assign)
+        return authority
 
     def __repr__(self):
         return '<user id: {}>'.format(self.id)

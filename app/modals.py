@@ -45,7 +45,7 @@ class UserAddModal:
     id = 'User-Add-Modal'
     aria_label = 'User-Add-Modal'
     title_id = 'User-Add-Modal'
-    title = 'Add User'
+    title = 'Add New User'
 
 
 class UserUpdateModal:

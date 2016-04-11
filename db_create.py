@@ -32,12 +32,15 @@ except:
 # - Initalizes the app with a user with master permissions. The app administrator should change the e-mail/password immediately. Also adds a basic admin and a basic user.
 # - The domain shown here is simply a randomly generated 10-digit string.
 try:
-    db.session.add(User("master", "master@not-a-real-email.com", "master"))
-    db.session.add(User("super_admin", "super@not-a-real-email.com", "super_admin"))
-    db.session.add(User("admin", "admin@not-a-real-email.com", "admin"))
-    db.session.add(User("user", "user@not-a-real-email.com", "user"))
-    for item in db.session:
-        item.password = item.password.decode("utf-8")
+    db.session.add(User("master", "master@not-a-real-email.com", "master", "master", "super", "super", "super", "super", "super"))
+    db.session.add(User("super_admin", "super@not-a-real-email.com", "super_admin", "super", "super", "super", "super", "super", "super"))
+    db.session.add(User("admin", "admin@not-a-real-email.com", "admin", "basic", "basic", "basic", "basic", "basic", "basic"))
+    db.session.add(User("user", "user@not-a-real-email.com", "user", "None", "None", "None", "None", "None", "None"))
+
+    # - The below code seemed necessary when using Bcrypt, but am not using Werkzeug Security.
+    # for item in db.session:
+    #     item.password = item.password.decode("utf-8")
+
     db.session.commit()
 # except IntegrityError as e:
 except:

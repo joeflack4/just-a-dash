@@ -1,45 +1,25 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, Markup
 from flask.ext.login import login_required, login_user, logout_user, current_user
-from app import app, db, bcrypt
+from app import app, db
 
-# from wtforms import SelectField
-# from collections import namedtuple
-
-# Unused -> from flask_table import Table, Col
-# from functools import wraps
-
-# Imports to be ported to eventual Marketing blueprint module.
+# - Marketing Moduel Imports -- Move these to blueprint.
+# Marketing Module imports - dependencies.
 import requests
 from collections import Counter
 from bs4 import BeautifulSoup
 import operator
 import re
 import nltk
-# more
+# Marketing Module imports - from w/in app.
 from .stop_words import stops
 
-try:
-    from .models import User, Messages, Result, AppNotifications
-except:
-    print("An error has occurred importing [Models].")
-    print("")
-try:
-    from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, CustomerAddForm, CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm
-except:
-    print("An error has occurred importing [Forms].")
-    print("")
-try:
-    from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, personnel_update_modal
-except:
-    print("An error has occurred importing [Modals].")
-    print("")
-try:
-    from .services.telephony.contacts import CompanyContacts
-    from .services.telephony.sms import sms_response, sms_check_in_data
-    from .services.telephony.calls import call_response, call_check_in_data
-except:
-    print("An error has occurred importing [Telephony] module.")
-    print("")
+from .models import User, Messages, Result, AppNotifications
+from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDeleteForm, CustomerAddForm, CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm
+from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, personnel_update_modal
+from .services.telephony.contacts import CompanyContacts
+from .services.telephony.sms import sms_response, sms_check_in_data
+from .services.telephony.calls import call_response, call_check_in_data
+from .includes import add_user, update_user, delete_user, check_permissions_to_update_user, check_permissions_to_assign_user_role, check_permissions_to_delete_user
 
 
 ##############
@@ -48,15 +28,6 @@ except:
 
 ##############
 # - Decorators
-# def login_required(f):
-#     @wraps(f)
-#     def wrap(*args, **kwargs):
-#         if 'logged_in' in session:
-#             return f(*args, **kwargs)
-#         else:
-#             flash('Please log in before proceeding.', 'warning')
-#             return redirect(url_for('login'))
-#     return wrap
 
 
 ##############
@@ -85,17 +56,14 @@ def welcome():
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            register_form=register_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 
 @app.route('/index')
-@app.route('/dashboard')
-@app.route('/home')
 @login_required
 def index():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     return render_template('core_modules/dashboard/index.html',
                            module_name="Just-a-Dash Control Panel",
@@ -105,8 +73,20 @@ def index():
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
+
+
+@app.route('/home')
+@login_required
+def home():
+    return redirect(url_for('root_path'))
+
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return redirect(url_for('root_path'))
 
 
 ################
@@ -115,7 +95,6 @@ def index():
 @login_required
 def account_settings():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     return render_template('core_modules/account_settings/index.html',
                            icon="fa fa-dashboard",
@@ -125,7 +104,7 @@ def account_settings():
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 
@@ -133,7 +112,6 @@ def account_settings():
 @login_required
 def app_settings():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     return render_template('core_modules/app_settings/index.html',
                            icon="fa fa-dashboard",
@@ -143,7 +121,7 @@ def app_settings():
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 
@@ -151,7 +129,6 @@ def app_settings():
 @login_required
 def user_management():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     modals = {'UserAddModal': user_add_modal, 'UserUpdateModal': user_update_modal}
 
@@ -159,50 +136,52 @@ def user_management():
     # The code below doesn't seem to break app, but does not seem to have an effect.
     add_form = UserAddForm(request.form)
     update_form = UserUpdateForm(request.form)
+    delete_form = UserDeleteForm(request.form)
     # db_populate_object = namedtuple('literal', 'name age')(**{'name': 'John Smith', 'age': 23})
     # add_form.append_field("test", SelectField('test'))(obj=db_populate_object)
+
     forms = {'User-Add-Form': add_form,
-             'User-Update-Form': update_form}
+             'User-Update-Form': update_form,
+             'User-Delete-Form': delete_form}
 
     if request.method == 'POST':
-        if request.form['form_submit']:
-            if add_form.validate_on_submit() and request.form['form_submit'] == 'User-Add-Form':
-                flash('User successfully added!', 'success')
-                new_user = User(
-                    username=add_form.username.data,
-                    email=add_form.email.data,
-                    password=add_form.password.data.decode("utf-8"),
-                    admin_role=add_form.admin_role.data,
-                    oms_role=add_form.oms_role.data,
-                    crm_role=add_form.crm_role.data,
-                    hrm_role=add_form.hrm_role.data,
-                    ams_role=add_form.ams_role.data,
-                    mms_role=add_form.mms_role.data)
-                # new_user.password = new_user.password.decode("utf-8")
-                db.session.add(new_user)
-                db.session.commit()
-            elif update_form.validate_on_submit() and request.form['form_submit'] == 'User-Update-Form':
-                flash('User successfully updated!', 'success')
-            else:
-                flash('Please correct the errors in your form submission.', 'danger')
 
-    # this is for reference #####################
-        # if register_form.validate_on_submit():
-        #     new_user = User(
-        #         username=register_form.username.data,
-        #         email=register_form.email.data,
-        #         password=register_form.password.data)
-        #     db.session.add(new_user)
-        #     for item in db.session:
-        #         item.password = item.password.decode("utf-8")
-        #     db.session.commit()
-        #     login_user(new_user)
-        #     flash(u'Registration complete! You have been logged in.', 'success')
-        #     return redirect(url_for('index'))
-        # else:
-        #     flash(
-        #         u'Registration failed. Please try again, or contact the site administrator. Ensure that: (1) Username is between 3-25 characters, (2) E-mail is between 6-40 characters, (3) Password is beteen 6-25 characters, (4) Password and confirm password are matching.',
-        #         'warning')
+        if request.form['form_submit']:
+
+            if request.form['form_submit'] == 'User-Add-Form':
+                if add_form.validate_on_submit():
+                    # NEED TO CHECK AUTHORITY TO ASSIGN
+                    add_user(add_form)
+                else:
+                    flash('Attempted to add record, but form submission failed validation. Please ensure that all of the non-blank fields submitted pass validation.','danger')
+
+            elif request.form['form_submit'] == 'User-Delete-Form':
+                superiority = check_permissions_to_delete_user(delete_form, current_user)
+                if superiority == False:
+                    flash('Failed to delete user. Your administrative role must to be higher than another\'s in order to delete.','danger')
+                elif superiority == True:
+                    if delete_form.validate_on_submit():
+                        delete_user(update_form)
+                    else:
+                        flash('Attempted to delete record, but an unexpected error occurred. Please contact the application administrator', 'danger')
+                else:
+                    flash('One or more errors occurred while attempting to determine user permissions. Please contact the application administrator.', 'danger')
+
+            elif request.form['form_submit'] == 'User-Update-Form':
+                # may need to change the following line, as it might deny all.
+                authority = check_permissions_to_assign_user_role(update_form, current_user)
+                if authority == True:
+                    role_superiorities = check_permissions_to_update_user(update_form, current_user)
+                    if update_form.validate_on_submit():
+                        update_user(update_form, role_superiorities)
+                    else:
+                        flash('Attempted to update record, but form submission failed validation. Please ensure that all of the non-blank fields submitted pass validation.', 'danger')
+            else:
+                flash('An error occurred while processing the submitted form. Please correct the errors in your form submission. If you feel this message is in error, please contact the application administrator.', 'danger')
+        else:
+            flash('Error. Data appears to have been posted to the server, but could not determine type of form submission. Please contact the application administrator.', 'danger')
+
+        return redirect((url_for('user_management')))
 
     return render_template('core_modules/app_settings/user_management.html',
                            icon="fa fa-dashboard",
@@ -213,7 +192,7 @@ def user_management():
                            app_notifications=db.session.query(AppNotifications),
                            users=db.session.query(User),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in,
                            modals=modals,
                            forms=forms)
@@ -230,7 +209,6 @@ def logout():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     logged_in = current_user.is_authenticated()
-    user = current_user
     errors = []
     login_form = LoginForm(request.form)
     register_form = RegisterForm()
@@ -238,15 +216,19 @@ def login():
     if request.method == 'POST':
         if login_form.validate_on_submit():
             user = User.query.filter_by(username=request.form['username']).first()
-            if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
+            # - This one is for bcrypt. Right now I'm using PBKDF2 a la Werkeug Security.
+            # if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
+            if user is not None and user.check_password(request.form['password']):
                 login_user(user)
                 flash(u'Logged in. Welcome back!', 'success')
                 return redirect(url_for('index'))
+            else:
+                errors.append('Login failed. Please check that your credentials are correct, and try again.')
+                user = User.query.filter_by(username=request.form['username']).first()
+                for error in errors:
+                    flash(error, 'danger')
         else:
-            errors.append('Invalid credentials. Please try again.')
-            user = User.query.filter_by(username=request.form['username']).first()
-            for error in errors:
-                flash(error, 'danger')
+            flash('Login failed. Please make sure to to fill out all fields before submitting.', 'danger')
     return render_template('core_modules/login/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",
@@ -256,14 +238,13 @@ def login():
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            register_form=register_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     register_form = RegisterForm()
     if request.method == 'POST':
@@ -279,14 +260,16 @@ def register():
                 ams_role='None',
                 mms_role='None')
             db.session.add(new_user)
-            for item in db.session:
-                item.password = item.password.decode("utf-8")
             db.session.commit()
             login_user(new_user)
-            flash(u'Registration complete! You have been logged in.', 'success')
+            flash('Registration complete! You have been logged in.', 'success')
+            flash(Markup('<strong>Info! -</strong> '), 'info')
             return redirect(url_for('index'))
         else:
-            flash(u'Registration failed. Please try again, or contact the site administrator. Ensure that: (1) Username is between 3-25 characters, (2) E-mail is between 6-40 characters, (3) Password is beteen 6-25 characters, (4) Password and confirm password are matching.', 'warning')
+            flash('Registration failed, please try again.', 'warning')
+            flash('When registering, ensure the following conditions are all met. (1) Username is between 3-25 '
+                  'characters, (2) E-mail is between 6-40 characters, (3) Password is beteen 6-25 characters, '
+                  '(4) Password and confirm password are matching.', 'info')
 
     return render_template('core_modules/register/index.html',
                            icon="fa fa-pencil-square-o",
@@ -297,7 +280,7 @@ def register():
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            register_form=register_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 
@@ -305,8 +288,8 @@ def register():
 @login_required
 def profile():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
+
     return render_template('core_modules/profile/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Profile",
@@ -314,8 +297,43 @@ def profile():
                            page_name="Profile Home",
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
+@app.route('/notifications')
+@login_required
+def notifications():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('core_modules/profile/notifications.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="Profile",
+                           module_name="Profile",
+                           page_name="Notifications",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
+@app.route('/tasks')
+@login_required
+def tasks():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    return render_template('core_modules/profile/tasks.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="Profile",
+                           module_name="Profile",
+                           page_name="Tasks",
+                           messages=db.session.query(Messages),
+                           app_notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 
@@ -326,7 +344,6 @@ def profile():
 @login_required
 def hrm():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     modals = {'PersonnelAddModal': personnel_add_modal, 'PersonnelUpdateModal': personnel_update_modal}
     forms = {'Personnel-Add-Form': PersonnelAddForm(request.form),
@@ -348,7 +365,7 @@ def hrm():
                                 messages=db.session.query(Messages),
                                 app_notifications=db.session.query(AppNotifications),
                                 login_form=login_form,
-                                user=user,
+                                current_user=current_user,
                                 logged_in=logged_in,
                                 modals=modals,
                                 forms=forms)
@@ -358,7 +375,6 @@ def hrm():
 @login_required
 def crm():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     modals = {'CustomerAddModal': customer_add_modal, 'CustomerUpdateModal': customer_update_modal}
     forms = {'Customer-Add-Form': CustomerAddForm(request.form),
@@ -379,7 +395,7 @@ def crm():
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in,
                            modals=modals,
                            forms=forms)
@@ -389,7 +405,6 @@ def crm():
 @login_required
 def operations(*args):
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     try:
         check_in_type = args[0]
@@ -414,7 +429,7 @@ def operations(*args):
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 
@@ -443,7 +458,6 @@ def sms_check_in():
 @login_required
 def accounting():
     logged_in = current_user.is_authenticated()
-    user = current_user
     login_form = LoginForm(request.form)
     return render_template('modules/accounting/index.html',
                            icon="fa fa-bar-chart",
@@ -453,7 +467,7 @@ def accounting():
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 
@@ -462,7 +476,6 @@ def accounting():
 @login_required
 def marketing():
     logged_in = current_user.is_authenticated()
-    user = current_user
     errors = []
     results = {}
     login_form = LoginForm(request.form)
@@ -489,7 +502,7 @@ def marketing():
                                    messages=db.session.query(Messages),
                                    app_notifications=db.session.query(AppNotifications),
                                    login_form=login_form,
-                                   user=user,
+                                   current_user=current_user,
                                    logged_in=logged_in)
 
         if r:
@@ -535,7 +548,7 @@ def marketing():
                            messages=db.session.query(Messages),
                            app_notifications=db.session.query(AppNotifications),
                            login_form=login_form,
-                           user=user,
+                           current_user=current_user,
                            logged_in=logged_in)
 
 

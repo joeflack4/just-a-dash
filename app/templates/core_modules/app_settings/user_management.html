@@ -29,15 +29,25 @@
           <th>Username</th>
           <th>E-mail</th>
           <th>Admin Role</th>
-          <th>Group Roles</th>
+          <th>Module Roles</th>
       </tr>
       {% for user in users %}
-        <tr data-toggle="modal" data-id="{{ user.id }}" data-target="#User-Update-Modal">
+        <tr data-toggle="modal" data-id="{{ user.id }}" data-target="#User-Update-Modal{{ user.id }}">
           <td>{{ loop.index }}</td>
           <td>{{ user.username }}</td>
           <td>{{ user.email }}</td>
-          <td>{{ user.admin_role }}</td>
-          <td>{{ user.group_roles }}</td>
+          <td>
+            {% if user.admin_role == 'None' %}Normal User
+            {% elif user.admin_role == 'basic' %}Basic Admin
+            {% elif user.admin_role == 'super' %}Super Admin
+            {% elif user.admin_role == 'master' %}Master Admin
+            {% endif %}
+          </td>
+          <td>{% if user.oms_role != 'None' %}OMS: {{ user.oms_role }} / {% endif %}
+              {% if user.crm_role != 'None' %}CRM: {{ user.crm_role }} / {% endif %}
+              {% if user.hrm_role != 'None' %}HRM: {{ user.hrm_role }} / {% endif %}
+              {% if user.ams_role != 'None' %}AMS: {{ user.ams_role }} / {% endif %}
+              {% if user.mms_role != 'None' %}MMS: {{ user.mms_role }} / {% endif %}</td>
         </tr>
       {% endfor %}
     </table>

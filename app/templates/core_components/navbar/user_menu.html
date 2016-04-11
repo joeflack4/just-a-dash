@@ -6,27 +6,31 @@
     <li class="dropdown user user-menu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
         <i class="glyphicon glyphicon-user"></i>
-        <span>Placeholder <i class="caret"></i></span>
+        <span>{{ current_user.username }} <i class="caret"></i></span>
       </a>
       <ul class="dropdown-menu">
         <!-- User image -->
         <li class="user-header bg-light-blue">
-          <img src="../../img/avatar3.png" class="img-circle" alt="User Image" />
-          <p>
-            Jane Doe - Web Developer
-            <small>Member since Nov. 2012</small>
-          </p>
+{#          <img src="../../img/avatar3.png" class="img-circle" alt="User Image" />#}
+{#          <img src="avatar3.png" class="img-circle" alt="User Image" />#}
+            <p><strong>~ {{ current_user.username }} ~</strong></p>
+            {% if current_user.admin_role != 'None' %}User/App Admin: {{ current_user.admin_role }}<br/>{% endif %}
+            {% if current_user.oms_role != 'None' %}OMS Admin: {{ current_user.oms_role }}<br/>{% endif %}
+            {% if current_user.crm_role != 'None' %}CRM Admin: {{ current_user.crm_role }}<br/>{% endif %}
+            {% if current_user.hrm_role != 'None' %}HRM Admin: {{ current_user.hrm_role }}<br/>{% endif %}
+            {% if current_user.ams_role != 'None' %}AMS Admin: {{ current_user.ams_role }}<br/>{% endif %}
+    {% if current_user.mms_role != 'None' %}MMS Admin: {{ current_user.mms_role }}{% endif %}
         </li>
         <!-- Menu Body -->
         <li class="user-body">
           <div class="col-xs-4 text-center">
-            <a href="#">Followers</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
           </div>
           <div class="col-xs-4 text-center">
-            <a href="#">Sales</a>
+            <a href="{{ url_for('notifications') }}">Notifications</a>
           </div>
           <div class="col-xs-4 text-center">
-            <a href="#">Friends</a>
+            <a href="{{ url_for('tasks') }}">Tasks</a>
           </div>
         </li>
         <!-- Menu Footer-->

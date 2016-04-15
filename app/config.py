@@ -44,5 +44,4 @@ class DevelopmentConfig(Config):
 class TestConfig(Config):
     TESTING = True
     DEBUG = True
-    TESTING = True
     WTF_CSRF_ENABLED = False

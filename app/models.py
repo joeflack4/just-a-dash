@@ -22,6 +22,18 @@ class Config(db.Model):
     __tablename__ = 'app_config'
 
     key = db.Column(db.String(100), primary_key=True, nullable=False)
+    value = db.Column(db.String(200), nullable=False)
+    permission_level = db.Column(db.Integer, nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, key, value, permission_level, active):
+        self.key = key
+        self.value = value
+        self.permission_level = permission_level
+        self.active = active
+
+    def __repr__(self):
+        return '<key name: {}>'.format(self.key)
 
 
 class Modules(db.Model):
@@ -158,12 +170,14 @@ class Roles(db.Model):
     # 	- role (pk)  /  permission name / r / w / u / d
     # - custom admin permissions
     # 	- id # / permission name  / r / w / u / d
-    role = db.Column(db.String(20), primary_key=True)
     module_abbreviation = db.Column(db.String(3), primary_key=True)
+    role = db.Column(db.String(20), primary_key=True)
+    permission_level = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, role, module_abbreviation):
-        self.role = role
+    def __init__(self, module_abbreviation, role, permission_level):
         self.module_abbreviation = module_abbreviation
+        self.role = role
+        self.permission_level = permission_level
 
     def __repr__(self):
         return '<role/module: {}/{}>'.format(self.role, self.module_abbreviation)

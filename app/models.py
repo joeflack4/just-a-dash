@@ -16,9 +16,35 @@ db.Base = declarative_base()
 #     db.Column('messages_id', db.Integer, ForeignKey('messages.id'))
 # )
 
+##############
+# - App Core Models
+class Config(db.Model):
+    __tablename__ = 'app_config'
+
+    key = db.Column(db.String(100), primary_key=True, nullable=False)
+
+
+class Modules(db.Model):
+    __tablename__ = 'app_modules'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    abbreviation = db.Column(db.String(20), unique=True, nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, name, abbreviation, description, active):
+        self.name = name
+        self.abbreviation = abbreviation
+        self.description = description
+        self.active = active
+
+    def __repr__(self):
+        return '<module name: {}>'.format(self.id)
+
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'app_users'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -126,27 +152,8 @@ class User(db.Model):
         return '<user id: {}>'.format(self.id)
 
 
-class Modules(db.Model):
-    __tablename__ = 'modules'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    abbreviation = db.Column(db.String(20), unique=True, nullable=False)
-    description = db.Column(db.String(200), nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
-
-    def __init__(self, name, abbreviation, description, active):
-        self.name = name
-        self.abbreviation = abbreviation
-        self.description = description
-        self.active = active
-
-    def __repr__(self):
-        return '<module name: {}>'.format(self.id)
-
-
 class Roles(db.Model):
-    __tablename__ = 'roles'
+    __tablename__ = 'app_roles'
     # - admin role permissions
     # 	- role (pk)  /  permission name / r / w / u / d
     # - custom admin permissions
@@ -163,7 +170,7 @@ class Roles(db.Model):
 
 
 class Permissions(db.Model):
-    __tablename__ = 'permissions'
+    __tablename__ = 'app_permissions'
     # 	- table (user id #  /  group name  /  read  /  write  /  update  / delete
     # - need a relationship here with roles
     id = db.Column(db.Integer, primary_key=True)
@@ -191,7 +198,7 @@ class Permissions(db.Model):
 
 
 class Messages(db.Model):
-    __tablename__ = 'messages'
+    __tablename__ = 'app_messages'
 
     id = db.Column(db.Integer, primary_key=True)
     datetime = db.Column(db.DateTime)
@@ -256,7 +263,7 @@ class AppNotifications(db.Model):
 
 
 class Contacts(db.Model):
-    __tablename__ = 'contacts'
+    __tablename__ = 'app_contacts'
 
     id = db.Column(db.Integer, primary_key=True)
     name_last = db.Column(db.String(80), nullable=False)
@@ -295,9 +302,10 @@ class Contacts(db.Model):
         return '<contact id: {}>'.format(self.id)
 
 
-# # # CRM Models # # #
+##############
+# - CRM Models
 class Customers(db.Model):
-    __tablename__ = 'customers'
+    __tablename__ = 'crm_customers'
 
     id = db.Column(db.Integer, primary_key=True)
     name_last = db.Column(db.String(80), nullable=False)
@@ -389,7 +397,7 @@ class Customers(db.Model):
 
 
 class Agencies(db.Model):
-    __tablename__ = 'agencies'
+    __tablename__ = 'crm_agencies'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
@@ -404,7 +412,7 @@ class Agencies(db.Model):
 
 # # # HRM Models # # #
 class Personnel(db.Model):
-    __tablename__ = 'personnel'
+    __tablename__ = 'hrm_personnel'
 
     id = db.Column(db.Integer, primary_key=True)
     name_last = db.Column(db.String(80), nullable=False)
@@ -445,7 +453,7 @@ class Personnel(db.Model):
 # # # Marketing Models # # #
 # - Linguistic analysis sub-module models.
 class Result(db.Model):
-    __tablename__ = 'results'
+    __tablename__ = 'mms_word-analysis-results'
 
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime)

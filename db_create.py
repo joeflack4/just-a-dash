@@ -1,4 +1,5 @@
 from app.models import *
+from app.config import string_generator
 # from psycopg2 import IntegrityError
 # from sqlalchemy.exc import IntegrityError
 # from sqlalchemy import update
@@ -19,28 +20,93 @@ db.create_all()
 # IMPORTANT! - Post-deployment, you will want to make sure that you change the secret key value in your database.
 try:
     db.session.add(Config("App Name", "Just-a-Dash", permission_level=1, active=True))
-    db.session.add(Config("App Icon", "fa fa-equalizer", permission_level=1, active=True))
+    db.session.add(Config("App Icon", "glyphicon glyphicon-equalizer", permission_level=1, active=True))
     db.session.add(Config("App Title", "Just-a-Dash Enterprise Management System", permission_level=1, active=True))
     db.session.add(Config("App Short-Title", "Just-a-Dash", permission_level=1, active=True))
-    db.session.add(Config("Secret Key", "\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1", permission_level=1, active=True))
+    db.session.add(Config("Secret Key", string_generator(size=24), permission_level=1, active=True))
+    # db.session.add(Config("Secret Key", "\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1", permission_level=1, active=True))
     db.session.commit()
 except:
     errors.append(integrity_error.format("Config"))
     db.session.rollback()
 
+
 # Module registry initialization.
 # - By default, Just-a-Dash comes with the following pre-built modules: Operations, Customer Relations, Human Resources, Accounting, Marketing
 try:
-    db.session.add(Modules("Admin Control Panel", "ACP", "Administrative control panel.", active=True))
-    db.session.add(Modules("Operations", "OMS", "Operations management system.", active=True))
-    db.session.add(Modules("Customer Relations", "CRM", "Customer relationship management system.", active=True))
-    db.session.add(Modules("Human Resources", "HRM","Human resource management system.", active=True))
-    db.session.add(Modules("Accounting", "AMS", "Accounting management system.", active=True))
-    db.session.add(Modules("Marketing", "MMS", "Marketing management system.", active=True))
+    db.session.add(Modules("Admin Control Panel", "App", description="Administrative control panel.", active=True))
+    db.session.add(Modules("Operations", "OMS", description="Operations management system.", active=True))
+    db.session.add(Modules("Customer Relations", "CRM", description="Customer relationship management system.", active=True))
+    db.session.add(Modules("Human Resources", "HRM", description="Human resource management system.", active=True))
+    db.session.add(Modules("Accounting", "AMS", description="Accounting management system.", active=True))
+    db.session.add(Modules("Marketing", "MMS", description="Marketing management system.", active=True))
     db.session.commit()
 except:
     errors.append(integrity_error.format("Modules"))
     db.session.rollback()
+
+
+# Module config initializations.
+# - OMS
+try:
+    db.session.add(OMS_Config("Module Name", "Operations", permission_level=1, active=True))
+    db.session.add(OMS_Config("Module Abbreviation", "OMS", permission_level=1, active=True))
+    db.session.add(OMS_Config("Module Icon", "fa fa-fort-awesome", permission_level=1, active=True))
+    db.session.add(OMS_Config("Module Title", "Operations Management System", permission_level=1, active=True))
+    db.session.add(OMS_Config("Module Short-Title", "Operations Management", permission_level=1, active=True))
+    db.session.add(OMS_Config("Twilio Account SID", "", permission_level=1, active=True))
+    db.session.add(OMS_Config("Twilio Auth Token", "", permission_level=1, active=True))
+    db.session.add(OMS_Config("Twilio Phone Number", "+10000000000", permission_level=1, active=True))
+    db.session.commit()
+except:
+    errors.append(integrity_error.format("Config"))
+    db.session.rollback()
+# - CRM
+try:
+    db.session.add(CRM_Config("Module Name", "Customer Relations", permission_level=1, active=True))
+    db.session.add(CRM_Config("Module Abbreviation", "CRM", permission_level=1, active=True))
+    db.session.add(CRM_Config("Module Icon", "ion-person-stalker", permission_level=1, active=True))
+    db.session.add(CRM_Config("Module Title", "Customer Relationship Management System", permission_level=1, active=True))
+    db.session.add(CRM_Config("Module Short-Title", "Customer Relations Management", permission_level=1, active=True))
+    db.session.commit()
+except:
+    errors.append(integrity_error.format("Config"))
+    db.session.rollback()
+# - HRM
+try:
+    db.session.add(HRM_Config("Module Name", "Human Resources", permission_level=1, active=True))
+    db.session.add(HRM_Config("Module Abbreviation", "HRM", permission_level=1, active=True))
+    db.session.add(HRM_Config("Module Icon", "fa fa-users", permission_level=1, active=True))
+    db.session.add(HRM_Config("Module Title", "Human Resource Management System", permission_level=1, active=True))
+    db.session.add(HRM_Config("Module Short-Title", "Human Resources Management", permission_level=1, active=True))
+    db.session.commit()
+except:
+    errors.append(integrity_error.format("Config"))
+    db.session.rollback()
+# - AMS
+try:
+    db.session.add(AMS_Config("Module Name", "Accounting", permission_level=1, active=True))
+    db.session.add(AMS_Config("Module Abbreviation", "AMS", permission_level=1, active=True))
+    db.session.add(AMS_Config("Module Icon", "fa fa-bar-chart", permission_level=1, active=True))
+    db.session.add(AMS_Config("Module Title", "Accounting Management System", permission_level=1, active=True))
+    db.session.add(AMS_Config("Module Short-Title", "Accounting Management", permission_level=1, active=True))
+    db.session.commit()
+except:
+    errors.append(integrity_error.format("Config"))
+    db.session.rollback()
+# - MMS
+try:
+    db.session.add(MMS_Config("App Name", "Marketing", permission_level=1, active=True))
+    db.session.add(MMS_Config("Module Abbreviation", "MMS", permission_level=1, active=True))
+    db.session.add(MMS_Config("App Icon", "fa fa-line-chart", permission_level=1, active=True))
+    db.session.add(MMS_Config("App Title", "Marketing Management System", permission_level=1, active=True))
+    db.session.add(MMS_Config("App Short-Title", "Marketing Management", permission_level=1, active=True))
+
+    db.session.commit()
+except:
+    errors.append(integrity_error.format("Config"))
+    db.session.rollback()
+
 
 # Default users initialization.
 # - Initalizes the app with a user with master permissions. The app administrator should change the e-mail/password immediately. Also adds a basic admin and a basic user.
@@ -66,6 +132,7 @@ try:
 except:
     errors.append(integrity_error.format("Users"))
     db.session.rollback()
+
 
 # Roles initialization.
 # - Initializes the app with admin/group roles.
@@ -98,6 +165,7 @@ try:
 except:
     errors.append(integrity_error.format("Roles"))
     db.session.rollback()
+
 
 # Permissions initialization.
 # - Initializes the app with admin roles.
@@ -156,6 +224,7 @@ except:
     errors.append(integrity_error.format("Permissions"))
     db.session.rollback()
 
+
 # Tutorial messages initialization.
 # - Initializes the database creation with a first message to start the user off with an app tutorial.
 try:
@@ -167,6 +236,7 @@ try:
 except:
     errors.append(integrity_error.format("App Notifications"))
     db.session.rollback()
+
 
 # - Summary
 print("")

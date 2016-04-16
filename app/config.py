@@ -1,5 +1,6 @@
 import os
-
+import string
+import random
 #
 # try:
 #     app.config.from_object(os.environ['DATABASE_URL'])
@@ -13,6 +14,7 @@ import os
 #     app.config.from_object(config.DevelopmentConfig)
 #     print(os.environ['DATABASE_URL'])
 #     pass
+
 
 class Config(object):
     DEBUG = False
@@ -45,3 +47,7 @@ class TestConfig(Config):
     TESTING = True
     DEBUG = True
     WTF_CSRF_ENABLED = False
+
+
+def string_generator(size=24, chars=string.ascii_letters + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))

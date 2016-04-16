@@ -16,10 +16,18 @@ db.Base = declarative_base()
 #     db.Column('messages_id', db.Integer, ForeignKey('messages.id'))
 # )
 
+
 ##############
-# - App Core Models
-class Config(db.Model):
-    __tablename__ = 'app_config'
+# - Super Classes
+class Base_Model(db.Model):
+    __abstract__ = True
+
+    created_on = db.Column(db.DateTime, default=db.func.now())
+    updated_on = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+
+
+class Base_Config(Base_Model):
+    __abstract__ = True
 
     key = db.Column(db.String(100), primary_key=True, nullable=False)
     value = db.Column(db.String(200), nullable=False)
@@ -36,8 +44,14 @@ class Config(db.Model):
         return '<key name: {}>'.format(self.key)
 
 
-class Modules(db.Model):
-    __tablename__ = 'app_modules'
+##############
+# - App Core Models
+class Config(Base_Config):
+    __tablename__ = 'app_config'
+
+
+class Modules(Base_Model):
+    __tablename__ = 'app_module-registry'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
@@ -55,7 +69,7 @@ class Modules(db.Model):
         return '<module name: {}>'.format(self.id)
 
 
-class User(db.Model):
+class User(Base_Model):
     __tablename__ = 'app_users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -164,7 +178,7 @@ class User(db.Model):
         return '<user id: {}>'.format(self.id)
 
 
-class Roles(db.Model):
+class Roles(Base_Model):
     __tablename__ = 'app_roles'
     # - admin role permissions
     # 	- role (pk)  /  permission name / r / w / u / d
@@ -183,7 +197,7 @@ class Roles(db.Model):
         return '<role/module: {}/{}>'.format(self.role, self.module_abbreviation)
 
 
-class Permissions(db.Model):
+class Permissions(Base_Model):
     __tablename__ = 'app_permissions'
     # 	- table (user id #  /  group name  /  read  /  write  /  update  / delete
     # - need a relationship here with roles
@@ -211,7 +225,7 @@ class Permissions(db.Model):
         return '<role/module permission: {}/{} {}>'.format(self.role, self.module, self.permission)
 
 
-class Messages(db.Model):
+class Messages(Base_Model):
     __tablename__ = 'app_messages'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -249,7 +263,7 @@ class Messages(db.Model):
         return '<message id: {}>'.format(self.id)
 
 
-class AppNotifications(db.Model):
+class AppNotifications(Base_Model):
     __tablename__ = 'app_notifications'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -276,7 +290,7 @@ class AppNotifications(db.Model):
         return '<message id: {}>'.format(self.id)
 
 
-class Contacts(db.Model):
+class Contacts(Base_Model):
     __tablename__ = 'app_contacts'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -318,7 +332,11 @@ class Contacts(db.Model):
 
 ##############
 # - CRM Models
-class Customers(db.Model):
+class CRM_Config(Base_Config):
+    __tablename__ = 'crm_config'
+
+
+class Customers(Base_Model):
     __tablename__ = 'crm_customers'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -410,7 +428,7 @@ class Customers(db.Model):
         return '<customer id: {}>'.format(self.id)
 
 
-class Agencies(db.Model):
+class Agencies(Base_Model):
     __tablename__ = 'crm_agencies'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -424,8 +442,13 @@ class Agencies(db.Model):
         return '<agency name: {}>'.format(self.id)
 
 
-# # # HRM Models # # #
-class Personnel(db.Model):
+##############
+# - HRM Models
+class HRM_Config(Base_Config):
+    __tablename__ = 'hrm_config'
+
+
+class Personnel(Base_Model):
     __tablename__ = 'hrm_personnel'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -464,9 +487,25 @@ class Personnel(db.Model):
         return '<personnel id: {}>'.format(self.id)
 
 
-# # # Marketing Models # # #
+##############
+# - Operations Management Models
+class OMS_Config(Base_Config):
+    __tablename__ = 'oms_config'
+
+
+##############
+# - Accounting Management Models
+class AMS_Config(Base_Config):
+    __tablename__ = 'ams_config'
+
+
+##############
+# - Marketing Models
+class MMS_Config(Base_Config):
+    __tablename__ = 'mms_config'
+
 # - Linguistic analysis sub-module models.
-class Result(db.Model):
+class Result(Base_Model):
     __tablename__ = 'mms_word-analysis-results'
 
     id = db.Column(db.Integer, primary_key=True)

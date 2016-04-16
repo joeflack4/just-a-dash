@@ -2,6 +2,7 @@
 from app import db
 # from sqlalchemy import ForeignKey
 # from sqlalchemy.orm import relationship
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -199,22 +200,28 @@ class Roles(Base_Model):
 
 class Permissions(Base_Model):
     __tablename__ = 'app_permissions'
-    # 	- table (user id #  /  group name  /  read  /  write  /  update  / delete
+    __table_args__ = tuple(UniqueConstraint("module", "role"))
+
+    # - table (user id #  /  group name  /  read  /  write  /  update  / delete
     # - need a relationship here with roles
-    id = db.Column(db.Integer, primary_key=True)
+
+    # debugging -- this probably not needed below (id)
+    # id = db.Column(db.Integer, primary_key=True)
+
     # role = db.Column(db.String(20), foreign_key=True)
     # module = db.Column(db.String(3), foreign_key=True)
-    role = db.Column(db.String(20))
-    module = db.Column(db.String(3))
+
+    module = db.Column(db.String(3), primary_key=True)
+    role = db.Column(db.String(20), primary_key=True)
     permission = db.Column(db.String(80), nullable=False)
     read = db.Column(db.Boolean, nullable=False)
     write = db.Column(db.Boolean, nullable=False)
     update = db.Column(db.Boolean, nullable=False)
     delete = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, role, module, permission, r, w, u, d):
-        self.role = role
+    def __init__(self, module, role, permission, r, w, u, d):
         self.module = module
+        self.role = role
         self.permission = permission
         self.read = r
         self.write = w

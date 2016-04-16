@@ -8,7 +8,7 @@ from app.config import string_generator
 # The following code is an example of a way that works to update a db value.
 # user = User.query.filter_by(id='9').update(dict(username='newname'))
 
-integrity_error = "* IntegrityError: {} - Exception occurred while trying to add 1+ default sets of values. Perhaps they already exist."
+integrity_error = "* IntegrityError: (({})) - Exception occurred while trying to add 1+ default sets of values. Perhaps they already exist."
 errors = []
 
 # DB creation.
@@ -27,7 +27,7 @@ try:
     # db.session.add(Config("Secret Key", "\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1", permission_level=1, active=True))
     db.session.commit()
 except:
-    errors.append(integrity_error.format("Config"))
+    errors.append(integrity_error.format("App Config"))
     db.session.rollback()
 
 
@@ -59,7 +59,7 @@ try:
     db.session.add(OMS_Config("Twilio Phone Number", "+10000000000", permission_level=1, active=True))
     db.session.commit()
 except:
-    errors.append(integrity_error.format("Config"))
+    errors.append(integrity_error.format("OMS Module Config"))
     db.session.rollback()
 # - CRM
 try:
@@ -70,7 +70,7 @@ try:
     db.session.add(CRM_Config("Module Short-Title", "Customer Relations Management", permission_level=1, active=True))
     db.session.commit()
 except:
-    errors.append(integrity_error.format("Config"))
+    errors.append(integrity_error.format("CRM Module Config"))
     db.session.rollback()
 # - HRM
 try:
@@ -81,7 +81,7 @@ try:
     db.session.add(HRM_Config("Module Short-Title", "Human Resources Management", permission_level=1, active=True))
     db.session.commit()
 except:
-    errors.append(integrity_error.format("Config"))
+    errors.append(integrity_error.format("HRM Module Config"))
     db.session.rollback()
 # - AMS
 try:
@@ -92,7 +92,7 @@ try:
     db.session.add(AMS_Config("Module Short-Title", "Accounting Management", permission_level=1, active=True))
     db.session.commit()
 except:
-    errors.append(integrity_error.format("Config"))
+    errors.append(integrity_error.format("AMS Module Config"))
     db.session.rollback()
 # - MMS
 try:
@@ -104,7 +104,7 @@ try:
 
     db.session.commit()
 except:
-    errors.append(integrity_error.format("Config"))
+    errors.append(integrity_error.format("MMS Module Config"))
     db.session.rollback()
 
 
@@ -169,55 +169,55 @@ except:
 
 # Permissions initialization.
 # - Initializes the app with admin roles.
-# Parameters: role, module, permission, r(read), w(write), u(update), d(delete).
+# Parameters: module, role, permission, r(read), w(write), u(update), d(delete).
 try:
-    db.session.add(Permissions("Master", "ACP", "Master_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Super", "ACP", "Super_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Basic", "ACP", "Read_Only", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Read", "ACP", "Can_Read", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Write", "ACP", "Can_Write", r=False, w=True, u=False, d=False))
-    db.session.add(Permissions("Update", "ACP", "Can_Update", r=False, w=False, u=True, d=False))
-    db.session.add(Permissions("Delete", "ACP", "Can_Delete", r=False, w=False, u=False, d=True))
+    db.session.add(Permissions("App", "Master", "Master_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("App", "Super", "Super_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("App", "Basic", "Read_Only", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("App", "Read", "Can_Read", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("App", "Write", "Can_Write", r=False, w=True, u=False, d=False))
+    db.session.add(Permissions("App", "Update", "Can_Update", r=False, w=False, u=True, d=False))
+    db.session.add(Permissions("App", "Delete", "Can_Delete", r=False, w=False, u=False, d=True))
 
-    db.session.add(Permissions("Master", "OMS", "Master_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Super", "OMS", "Super_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Basic", "OMS", "Read_Only", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Read", "OMS", "Can_Read", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Write", "OMS", "Can_Write", r=False, w=True, u=False, d=False))
-    db.session.add(Permissions("Update", "OMS", "Can_Update", r=False, w=False, u=True, d=False))
-    db.session.add(Permissions("Delete", "OMS", "Can_Delete", r=False, w=False, u=False, d=True))
+    db.session.add(Permissions("OMS", "Master", "Master_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("OMS", "Super", "Super_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("OMS", "Basic", "Read_Only", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("OMS", "Read", "Can_Read", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("OMS", "Write", "Can_Write", r=False, w=True, u=False, d=False))
+    db.session.add(Permissions("OMS", "Update", "Can_Update", r=False, w=False, u=True, d=False))
+    db.session.add(Permissions("OMS", "Delete", "Can_Delete", r=False, w=False, u=False, d=True))
 
-    db.session.add(Permissions("Master", "CRM", "Master_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Super", "CRM", "Super_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Basic", "CRM", "Read_Only", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Read", "CRM", "Can_Read", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Write", "CRM", "Can_Write", r=False, w=True, u=False, d=False))
-    db.session.add(Permissions("Update", "CRM", "Can_Update", r=False, w=False, u=True, d=False))
-    db.session.add(Permissions("Delete", "CRM", "Can_Delete", r=False, w=False, u=False, d=True))
+    db.session.add(Permissions("CRM", "Master", "Master_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("CRM", "Super", "Super_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("CRM", "Basic", "Read_Only", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("CRM", "Read", "Can_Read", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("CRM", "Write", "Can_Write", r=False, w=True, u=False, d=False))
+    db.session.add(Permissions("CRM", "Update", "Can_Update", r=False, w=False, u=True, d=False))
+    db.session.add(Permissions("CRM", "Delete", "Can_Delete", r=False, w=False, u=False, d=True))
 
-    db.session.add(Permissions("Master", "HRM", "Master_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Super", "HRM", "Super_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Basic", "HRM", "Read_Only", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Read", "HRM", "Can_Read", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Write", "HRM", "Can_Write", r=False, w=True, u=False, d=False))
-    db.session.add(Permissions("Update", "HRM", "Can_Update", r=False, w=False, u=True, d=False))
-    db.session.add(Permissions("Delete", "HRM", "Can_Delete", r=False, w=False, u=False, d=True))
+    db.session.add(Permissions("HRM", "Master", "Master_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("HRM", "Super", "Super_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("HRM", "Basic", "Read_Only", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("HRM", "Read", "Can_Read", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("HRM", "Write","Can_Write", r=False, w=True, u=False, d=False))
+    db.session.add(Permissions("HRM", "Update", "Can_Update", r=False, w=False, u=True, d=False))
+    db.session.add(Permissions("HRM", "Delete", "Can_Delete", r=False, w=False, u=False, d=True))
 
-    db.session.add(Permissions("Master", "AMS", "Master_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Super", "AMS", "Super_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Basic", "AMS", "Read_Only", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Read", "AMS", "Can_Read", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Write", "AMS", "Can_Write", r=False, w=True, u=False, d=False))
-    db.session.add(Permissions("Update", "AMS", "Can_Update", r=False, w=False, u=True, d=False))
-    db.session.add(Permissions("Delete", "AMS", "Can_Delete", r=False, w=False, u=False, d=True))
+    db.session.add(Permissions("AMS", "Master", "Master_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("AMS", "Super", "Super_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("AMS", "Basic", "Read_Only", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("AMS", "Read", "Can_Read", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("AMS", "Write", "Can_Write", r=False, w=True, u=False, d=False))
+    db.session.add(Permissions("AMS", "Update", "Can_Update", r=False, w=False, u=True, d=False))
+    db.session.add(Permissions("AMS", "Delete", "Can_Delete", r=False, w=False, u=False, d=True))
 
-    db.session.add(Permissions("Master", "MMS", "Master_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Super", "MMS", "Super_All", r=True, w=True, u=True, d=True))
-    db.session.add(Permissions("Basic", "MMS", "Read_Only", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Read", "MMS", "Can_Read", r=True, w=False, u=False, d=False))
-    db.session.add(Permissions("Write", "MMS", "Can_Write", r=False, w=True, u=False, d=False))
-    db.session.add(Permissions("Update", "MMS", "Can_Update", r=False, w=False, u=True, d=False))
-    db.session.add(Permissions("Delete", "MMS", "Can_Delete", r=False, w=False, u=False, d=True))
+    db.session.add(Permissions("MMS", "Master", "Master_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("MMS", "Super", "Super_All", r=True, w=True, u=True, d=True))
+    db.session.add(Permissions("MMS", "Basic", "Read_Only", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("MMS", "Read", "Can_Read", r=True, w=False, u=False, d=False))
+    db.session.add(Permissions("MMS", "Write", "Can_Write", r=False, w=True, u=False, d=False))
+    db.session.add(Permissions("MMS", "Update", "Can_Update", r=False, w=False, u=True, d=False))
+    db.session.add(Permissions("MMS", "Delete", "Can_Delete", r=False, w=False, u=False, d=True))
 
     db.session.commit()
 except:

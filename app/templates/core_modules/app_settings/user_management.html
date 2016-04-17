@@ -17,9 +17,20 @@
   <h3 class="content-header">{{ page_name }}</h3>
 
   <ol class="breadcrumb">
-    <li><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#User-Add-Modal">
-      Add New <span class="fa fa-user-plus"></span>
-    </button></li>
+    <li>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#User-Add-Modal">
+          Add New <span class="fa fa-user-plus"></span>
+        </button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="caret"></span>
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a href="#" data-toggle="modal" data-target="#User-CSV-Upload-Modal"><span class="fa fa-upload"></span>Upload CSV</a></li>
+        </ul>
+      </div>
+    </li>
   </ol>
 
   <div>

@@ -15,23 +15,131 @@ from .stop_words import stops
 
 from .models import User, Messages, Result, AppNotifications
 from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDeleteForm, CustomerAddForm, \
-    CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm
+    CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm, Config_Names_and_Aesthetics, Config_Secret_Key, \
+    Config_Modules
 from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, \
-    personnel_update_modal
+    personnel_update_modal, user_csv_upload_modal, customer_csv_upload_modal, \
+    personnel_csv_upload_modal
 from .services.telephony.contacts import CompanyContacts
 from .services.telephony.sms import sms_response, sms_check_in_data
 from .services.telephony.calls import call_response, call_check_in_data
 from .includes import add_user, update_user, delete_user, check_permissions_to_update_user, \
-    check_permissions_to_assign_user_role, check_permissions_to_delete_user
+    check_permissions_to_assign_user_role, check_permissions_to_delete_user, \
+    check_permissions_to_change_App_Naming_and_Aesthetics, update_names_and_aesthetics, \
+    check_permissions_to_change_App_Secret_Key, update_secret_key, check_permissions_to_change_App_Modules, \
+    update_modules
 from .route_decorators import app_basic_admin_required, app_super_admin_required, oms_basic_admin_required, \
     oms_super_admin_required, crm_basic_admin_required, crm_super_admin_required, hrm_basic_admin_required, \
     hrm_super_admin_required, ams_basic_admin_required, ams_super_admin_required, mms_basic_admin_required, \
     mms_super_admin_required
 
 
+
+##############
+# - Testing
+
+# # # From flask-excel
+# from flask import jsonify
+# from flask.ext import excel
+# return jsonify({"result": request.get_data(field_name='file')})
+# return jsonify({"result": request.get_data()})
+
+# from working csv thingy. this part would only be for the console
+# import csv
+# csv_input = csv.reader(stream)
+# print(csv_input)
+# for row in csv_input:
+#     print(row)
+
+import io
+from flask import make_response
+import csv
+import json
+
+
+def csv2json(data):
+    # reader = csv.DictReader
+    reader = csv.DictReader(data)
+    out = json.dumps([ row for row in reader ])
+    print("JSON parsed!")
+    return out
+    # print("JSON saved!")
+
+
+@app.route('/csv2json', methods=["POST"])
+def convert():
+    # Taken from: https://gist.github.com/tonywhittaker/93fc9768fa135149edd3
+    f = request.files['data_file']
+    if not f:
+        return "No file"
+    f = f.read().decode('utf-8')
+    file_contents = io.StringIO(f)
+    result = csv2json(file_contents)
+    response = make_response(result)
+    response.headers["Content-Disposition"] = "attachment; filename=Converted.json"
+    return response
+
+
+@app.route("/upload", methods=['GET', 'POST'])
+@login_required
+def upload_file():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    register_form = RegisterForm(request.form)
+
+    return render_template('core_modules/file_upload/index.html',
+                           module_name="Just-a-Dash Control Panel",
+                           page_name="File Upload",
+                           icon="fa fa-star-o",
+                           module_abbreviation="Upload",
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           register_form=register_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
+# @app.route("/upload2", methods=['GET', 'POST'])
+# def upload_file2():
+#     if request.method == 'POST':
+#
+#         f = request.files['file']
+#
+#         stream = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
+#
+#         def transform(text_file_contents):
+#             return text_file_contents.replace("=", ",")
+#
+#         stream.seek(0)
+#         result = transform(stream.read())
+#
+#         # - This part works to return a download of the .csv
+#         response = make_response(result)
+#         response.headers["Content-Disposition"] = "attachment; filename=result.csv"
+#         return response
+#
+#         # - my addition
+#         # return jsonify(result)
+#
+#     return '''
+#     <!doctype html>
+#     <title>Upload an excel file</title>
+#     <h1>Excel file upload (csv, tsv, csvz, tsvz only)</h1>
+#     <form action="" method=post enctype=multipart/form-data><p>
+#     <input type=file name=file><input type=submit value=Upload>
+#     </form>
+#     '''
+
+
 ##############
 # - Variables
-
+record_update_error = 'Attempted to update record, but form submission failed validation. Please ensure that all of the' \
+                      ' non-blank fields submitted pass validation.'
+record_delete_error = 'Attempted to delete record, but an unexpected error occurred. Please contact the application' \
+                      ' administrator'
+record_add_error = 'Attempted to add record, but form submission failed validation. Please ensure that all of the' \
+                   ' non-blank fields submitted pass validation.'
 
 ##############
 # - Decorators
@@ -257,14 +365,64 @@ def tasks():
 
 ################
 # - App Core - Administrative Routes
-@app.route('/config')
-@app.route('/app-config')
-@app.route('/app-settings')
+@app.route('/config', methods=['GET', 'POST'])
+@app.route('/app-config', methods=['GET', 'POST'])
+@app.route('/app-settings', methods=['GET', 'POST'])
 @login_required
 @app_super_admin_required
 def app_settings():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
+    names_and_aesthetics_form = Config_Names_and_Aesthetics(request.form)
+    secret_key_form = Config_Secret_Key(request.form)
+    modules_form = Config_Modules(request.form)
+    forms = {'Naming-and-Aesthetics-Form': names_and_aesthetics_form,
+             'Secret-Key-Form': secret_key_form,
+             'Modules-Form': modules_form}
+
+    if request.method == 'POST':
+        if request.form['form_submit']:
+            if request.form['form_submit'] == 'Naming-and-Aesthetics-Form':
+                # may need to change the following line, as it might deny all.
+                # authority = check_permissions_to_change_App_Modules(current_user)
+                authority = True
+                if authority == True:
+                    if names_and_aesthetics_form.validate_on_submit():
+                        update_names_and_aesthetics(names_and_aesthetics_form)
+                    else:
+                        flash(record_update_error, 'danger')
+
+            elif request.form['form_submit'] == 'Secret-Key-Form':
+                # may need to change the following line, as it might deny all.
+                # authority = check_permissions_to_change_App_Modules(current_user)
+                authority = True
+                if authority == True:
+                    if secret_key_form.validate_on_submit():
+                        update_secret_key(secret_key_form)
+                    else:
+                        flash(record_update_error, 'danger')
+
+
+            elif request.form['form_submit'] == 'Modules-Form':
+                # may need to change the following line, as it might deny all.
+                # authority = check_permissions_to_change_App_Modules(current_user)
+                authority = True
+                if authority == True:
+                    if modules_form.validate_on_submit():
+                        update_modules(modules_form)
+                    else:
+                        flash(record_update_error, 'danger')
+            else:
+                flash(
+                    'An error occurred while processing the submitted form. Please correct the errors in your form submission. If you feel this message is in error, please contact the application administrator.',
+                    'danger')
+        else:
+            flash(
+                'Error. Data appears to have been posted to the server, but could not determine type of form submission. Please contact the application administrator.',
+                'danger')
+
+        return redirect((url_for('app_settings')))
+
     return render_template('core_modules/app_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="App Settings",
@@ -274,7 +432,8 @@ def app_settings():
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            current_user=current_user,
-                           logged_in=logged_in)
+                           logged_in=logged_in,
+                           forms=forms)
 
 
 @app.route('/user-management', methods=['GET', 'POST'])
@@ -306,7 +465,7 @@ def user_management():
                     # NEED TO CHECK AUTHORITY TO ASSIGN
                     add_user(add_form)
                 else:
-                    flash('Attempted to add record, but form submission failed validation. Please ensure that all of the non-blank fields submitted pass validation.','danger')
+                    flash(record_add_error,'danger')
 
             elif request.form['form_submit'] == 'User-Delete-Form':
                 superiority = check_permissions_to_delete_user(delete_form, current_user)
@@ -316,7 +475,7 @@ def user_management():
                     if delete_form.validate_on_submit():
                         delete_user(update_form)
                     else:
-                        flash('Attempted to delete record, but an unexpected error occurred. Please contact the application administrator', 'danger')
+                        flash(record_delete_error, 'danger')
                 else:
                     flash('One or more errors occurred while attempting to determine user permissions. Please contact the application administrator.', 'danger')
 
@@ -328,7 +487,7 @@ def user_management():
                     if update_form.validate_on_submit():
                         update_user(update_form, role_superiorities)
                     else:
-                        flash('Attempted to update record, but form submission failed validation. Please ensure that all of the non-blank fields submitted pass validation.', 'danger')
+                        flash(record_update_error, 'danger')
             else:
                 flash('An error occurred while processing the submitted form. Please correct the errors in your form submission. If you feel this message is in error, please contact the application administrator.', 'danger')
         else:
@@ -348,7 +507,8 @@ def user_management():
                            current_user=current_user,
                            logged_in=logged_in,
                            modals=modals,
-                           forms=forms)
+                           forms=forms,
+                           csv_upload_modal=user_csv_upload_modal)
 
 
 ############
@@ -471,7 +631,8 @@ def crm():
                            current_user=current_user,
                            logged_in=logged_in,
                            modals=modals,
-                           forms=forms)
+                           forms=forms,
+                           csv_upload_modal=customer_csv_upload_modal)
 
 
 @app.route('/crm-settings')
@@ -525,7 +686,8 @@ def hrm():
                                 current_user=current_user,
                                 logged_in=logged_in,
                                 modals=modals,
-                                forms=forms)
+                                forms=forms,
+                                csv_upload_modal=personnel_csv_upload_modal)
 
 
 @app.route('/hrm-settings')

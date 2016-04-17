@@ -7,16 +7,72 @@
 {%- endblock content_header %}
 
 {% block content -%}
-{#  <div page-header>#}
-{#    <h4 class="page-header">Welcome{% if username %}, {{ username }}.{% else %} ~{% endif %}</h4>#}
-{#  </div>#}
-
     {# - Use html of super-block template.#}
     {{ super() }}
 
-   Placeholder text.
+    {% set form = forms['Naming-and-Aesthetics-Form'] %}
+    <h3 xmlns:font-style="http://www.w3.org/1999/xhtml">{{ form.header }}</h3>
+    <p>Adjust naming and aesthetics here. The app name and icon together will appear as the logo of the app, for
+        example. This application
+        primarily uses <span style="font-style: italic;">FontAwesome</span> for its vector icons. To update the app
+        icon, browse their <a href="http://fortawesome.github.io/Font-Awesome/icons/">icons page</a>, click the desired
+        icon, and ender the code below. App title will appear in the browser window. Title and shortened title will
+        appear in breadcrumbs and other places.</p>
+    <form id="{{ form.form_id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
+      {{ form.csrf_token }}
+
+      {% for field in form %}
+        {% if field.id != 'csrf_token' %}
+          <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+          {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+          <p><span class="error">{% if field.errors %}{% for error in field.errors %} {{ error }} {% endfor %}{% endif %}</span></p>
+        {% endif %}
+      {% endfor %}
+
+      <button type="submit" name="form_submit" value="{{ form.form_id }}" class="btn btn-primary">Submit</button>
+    </form>
+
+
+    {% set form = forms['Secret-Key-Form'] %}
+    <h3>{{ form.header }}</h3>
+    <p>User seesions allow you to store information specific to a user from one request to the next. This is
+        implemented on top of cookies for you and signs the cookies cryptographically. What this means is that the
+        user could look at the contents of your cookie but not modify it, unless they know the secret key used for
+        signing. This application comes with a secret key by default, but for your security, this default should be
+        changed as soon as possible.</p>
+    <form id="{{ form.form_id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
+      {{ form.csrf_token }}
+
+      {% for field in form %}
+        {% if field.id != 'csrf_token' %}
+          <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+          {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+          <p><span class="error">{% if field.errors %}{% for error in field.errors %} {{ error }} {% endfor %}{% endif %}</span></p>
+        {% endif %}
+      {% endfor %}
+
+      <button type="submit" name="form_submit" value="{{ form.form_id }}" class="btn btn-primary">Submit</button>
+    </form>
+
+
+    {% set form = forms['Modules-Form'] %}
+    <h3>{{ form.header }}</h3>
+    <p>This application is an EMS, or Enterprise Management System. As such, it is not very much use without modules,
+        which represent the various domains and layers of an enterprise. This application ships with several modules
+        active by default. To toggle the moddules on or off, use the checkboxes next to each module below.</p>
+    <form id="{{ form.form_id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
+      {{ form.csrf_token }}
+
+      {% for field in form %}
+        {% if field.id != 'csrf_token' %}
+          {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+          <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+          <p><span class="error">{% if field.errors %}{% for error in field.errors %} {{ error }} {% endfor %}{% endif %}</span></p>
+        {% endif %}
+      {% endfor %}
+
+      <button type="submit" name="form_submit" value="{{ form.form_id }}" class="btn btn-primary">Submit</button>
+    </form>
+
 
 {%- endblock content %}
-
-
-{#{% include "core_components/footer.html" %}#}

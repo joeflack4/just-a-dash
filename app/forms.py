@@ -13,7 +13,8 @@ from wtforms import StringField, PasswordField, SelectField, BooleanField, Hidde
 # from wtforms import SubmitField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, Optional
 
-
+##############
+# - Super Classes
 class BaseForm(Form):
     @classmethod
     def append_field(cls, name, field):
@@ -22,23 +23,65 @@ class BaseForm(Form):
     # submit = SubmitField('Submit')
 
 
+##############
+# - App Core Forms
 class LoginForm(Form):
-    username = StringField('Username', render_kw={"placeholder": "Username/E-mail"},
-                           validators=[DataRequired()])
-    password = PasswordField('Password', render_kw={"placeholder": "Password"},
-                             validators=[DataRequired()])
+    username = StringField('Username', render_kw={"placeholder": "Username/E-mail"}, validators=[DataRequired()])
+    password = PasswordField('Password', render_kw={"placeholder": "Password"}, validators=[DataRequired()])
     remember_me = BooleanField('Remember Me', default=False, id="remember_me")
 
 
 class RegisterForm(Form):
     username = StringField('username', render_kw={"placeholder": "Username"},
-                           validators=[DataRequired(), Length(min=3, max=25)])
+                        validators=[DataRequired(), Length(min=6, max=25)])
     email = StringField('email', render_kw={"placeholder": "E-mail"},
-                        validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
+                        validators=[DataRequired(), Email(message=None), Length(min=6, max=50)])
     password = PasswordField('password', render_kw={"placeholder": "Password"},
-                             validators=[DataRequired(), Length(min=6, max=25)])
+                        validators=[DataRequired(), Length(min=6, max=25)])
     confirm = PasswordField('confirm password', render_kw={"placeholder": "Confirm Password..."},
-                            validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
+                        validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
+
+
+class Config_Names_and_Aesthetics(BaseForm):
+    form_id = 'Config_Name-and-Aesthetics-Form'
+    header = 'Application Naming & Aesthetics'
+    crud_type = "Update"
+    module = "App Administration"
+    sub_module = "App Config"
+
+    app_name = StringField('app_name', render_kw={"placeholder": "App Name", 'label': 'App Name'},
+                       validators=[DataRequired(), Length(min=1, max=50)])
+    app_icon = StringField('app_icon', render_kw={"placeholder": "App Icon", 'label': 'App Icon'},
+                           validators=[DataRequired(), Length(min=1, max=100)])
+    app_title = StringField('app_title', render_kw={"placeholder": "App Title", 'label': 'App Title'},
+                           validators=[DataRequired(), Length(min=1, max=50)])
+    app_short_title = StringField('app_short_title', render_kw={"placeholder": "App Shortened Title", 'label': 'App Shortened Title'},
+                           validators=[DataRequired(), Length(min=1, max=50)])
+
+
+class Config_Secret_Key(BaseForm):
+    form_id = 'Config_Secret-Key-Form'
+    header = 'Sessions Secret Key'
+    crud_type = "Update"
+    module = "App Administration"
+    sub_module = "App Config"
+
+    secret_key = StringField('secret_key', render_kw={"placeholder": "Secret Key", 'label': 'Secret Key'},
+                           validators=[DataRequired(), Length(min=1, max=200)])
+
+
+class Config_Modules(BaseForm):
+    form_id = 'Config_Modules-Form'
+    header = 'Module Management'
+    crud_type = "Update"
+    module = "App Administration"
+    sub_module = "App Config"
+
+    oms = BooleanField('oms', default=True, id="oms", render_kw={'label': 'Operations Management System'})
+    crm = BooleanField('crm', default=True, id="crm", render_kw={'label': 'Customer Relationsip Management System'})
+    hrm = BooleanField('hrm', default=True, id="hrm", render_kw={'label': 'Human Resources Management System'})
+    ams = BooleanField('ams', default=True, id="ams", render_kw={'label': 'Accounting Management System'})
+    mms = BooleanField('mms', default=True, id="mms", render_kw={'label': 'Marketing Management System'})
 
 
 class UserAddForm(BaseForm):
@@ -48,9 +91,9 @@ class UserAddForm(BaseForm):
     sub_module = "User Management"
 
     username = StringField('username', render_kw={"placeholder": "Username", "section": "account", 'label': 'Username'},
-        validators=[DataRequired(), Length(min=3, max=25)])
+        validators=[DataRequired(), Length(min=6, max=25)])
     email = StringField('email', render_kw={"placeholder": "E-mail", "section": "account", 'label': 'E-mail'},
-        validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
+        validators=[DataRequired(), Email(message=None), Length(min=6, max=50)])
     password = PasswordField('password', render_kw={"placeholder": "Password", "section": "account", 'label': 'Password'},
         validators=[DataRequired(), Length(min=6, max=25)])
     confirm = PasswordField('confirm password', render_kw={"placeholder": "Confirm Password", "section": "account", 'label': 'Confirm Password'},
@@ -88,7 +131,7 @@ class UserUpdateForm(BaseForm):
     username = StringField('username', render_kw={"placeholder": "Username", "section": "account", 'label': 'Username'},
                             validators=[Length(min=6, max=25)])
     email = StringField('email', render_kw={"placeholder": "E-mail", "section": "account", 'label': 'E-mail'},
-                            validators=[Email(message=None), Length(min=6, max=40)])
+                            validators=[Email(message=None), Length(min=6, max=50)])
     password = PasswordField('password', render_kw={"placeholder": "Leave blank to leave unchanged.", "section": "account", 'label': 'Password'},
                             validators=[Optional(), Length(min=6, max=25)])
     confirm = PasswordField('confirm password', render_kw={"placeholder": "Leave blank to leave unchanged.", "section": "account", 'label': 'Confirm Password'},
@@ -119,6 +162,8 @@ class UserDeleteForm(BaseForm):
     user_id = HiddenField('user_id', validators=[Length(min=1, max=12)])
 
 
+##############
+# - CRM Forms
 class CustomerAddForm(Form):
     form_id = 'Customer-Add-Form'
     crud_type = "Add"
@@ -151,6 +196,8 @@ class CustomerUpdateForm(Form):
                                validators=[Length(min=6, max=40)])
 
 
+##############
+# - HRM Forms
 class PersonnelAddForm(Form):
     form_id = 'Personnel-Add-Form'
     crud_type = "Add"

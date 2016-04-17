@@ -10,8 +10,58 @@ from .models import User
 # - Variables
 
 
+# - Classes
+
+
 # - Functions
+# -- App Settings
+def check_permissions_to_change_App_Naming_and_Aesthetics(current_user):
+    return
+
+
+def update_names_and_aesthetics(current_user):
+    return
+
+
+def check_permissions_to_change_App_Secret_Key(current_user):
+    return
+
+
+def update_secret_key(current_user):
+    return
+
+
+def check_permissions_to_change_App_Modules(current_user):
+    return
+
+
+def update_modules(current_user):
+    return
+
+
 # -- User Management
+def add_user(add_form):
+    try:
+        new_user = User(
+            username=add_form.username.data,
+            email=add_form.email.data,
+            password=add_form.password.data,
+            admin_role=add_form.admin_role.data,
+            oms_role=add_form.oms_role.data,
+            crm_role=add_form.crm_role.data,
+            hrm_role=add_form.hrm_role.data,
+            ams_role=add_form.ams_role.data,
+            mms_role=add_form.mms_role.data)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('User successfully added!', 'success')
+    except:
+        db.session.rollback()
+        flash(
+            'Sorry! It seems an issue occurred while attempting to add user to database. Please ensure that the username/e-mail is not already taken. If you feel this is in error, please contact the application administrator.',
+            'warning')
+
+
 def check_permissions_to_update_user(update_form, current_user):
     roles = ('admin_role', 'oms_role', 'crm_role', 'hrm_role', 'ams_role', 'mms_role')
     role_related_form_submissions = {}
@@ -98,44 +148,6 @@ def check_permissions_to_assign_user_role(update_form, current_user):
     return authority
 
 
-def check_permissions_to_delete_user(delete_form, current_user):
-    try:
-        user_submitted_id = delete_form.user_id.data
-        user_to_compare = User.query.filter_by(id=user_submitted_id).first()
-        try:
-            superiority = current_user.check_administrative_superiority('admin_role', user_to_compare.admin_role)
-        except:
-            superiority = False
-            flash('Permissions Assessment Error #1 - Authority to delete data could not be determined.', 'danger')
-    except:
-        superiority = False
-        flash('Permissions Assessment Error #2 - An error occurred while trying to access form data.', 'danger')
-
-    return superiority
-
-
-def add_user(add_form):
-    try:
-        new_user = User(
-            username=add_form.username.data,
-            email=add_form.email.data,
-            password=add_form.password.data,
-            admin_role=add_form.admin_role.data,
-            oms_role=add_form.oms_role.data,
-            crm_role=add_form.crm_role.data,
-            hrm_role=add_form.hrm_role.data,
-            ams_role=add_form.ams_role.data,
-            mms_role=add_form.mms_role.data)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('User successfully added!', 'success')
-    except:
-        db.session.rollback()
-        flash(
-            'Sorry! It seems an issue occurred while attempting to add user to database. Please ensure that the username/e-mail is not already taken. If you feel this is in error, please contact the application administrator.',
-            'warning')
-
-
 def update_user(update_form, role_superiorities):
     try:
         fields_to_update = {}
@@ -180,6 +192,22 @@ def update_user(update_form, role_superiorities):
         flash('Sorry! It seems an issue occurred while attempting to add/update user. Please contact the application administrator.', 'warning')
 
 
+def check_permissions_to_delete_user(delete_form, current_user):
+    try:
+        user_submitted_id = delete_form.user_id.data
+        user_to_compare = User.query.filter_by(id=user_submitted_id).first()
+        try:
+            superiority = current_user.check_administrative_superiority('admin_role', user_to_compare.admin_role)
+        except:
+            superiority = False
+            flash('Permissions Assessment Error #1 - Authority to delete data could not be determined.', 'danger')
+    except:
+        superiority = False
+        flash('Permissions Assessment Error #2 - An error occurred while trying to access form data.', 'danger')
+
+    return superiority
+
+
 def delete_user(update_form):
     user_id = update_form.user_id.data
     user = User.query.filter_by(id=user_id)
@@ -193,5 +221,3 @@ def delete_user(update_form):
         flash(
             'An error occurred while trying to delete user. User may not exist or otherwise already be deleted. If this is not the case, please contact the application administrator.',
             'danger')
-
-# - Classes

@@ -17,6 +17,7 @@ Flask-Login==0.2.11
 Flask-Testing==0.4.2
 Flask-WTF==0.12
 Flask-Mail==0.9.0
+Flask-Excel
 
 # - Server Dependencies #
 #gunicorn==18.0.0

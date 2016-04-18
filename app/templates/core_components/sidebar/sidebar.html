@@ -65,7 +65,7 @@
             <li class="treeview">
               <a href="#"><i class="fa fa-fort-awesome"></i> <span>Operations</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>OMS Home</span></a></li>
+                <li><a href="{{ url_for('operations') }}"><i class="fa fa-home"></i> <span>OMS Home</span></a></li>
                 <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Personnel Check-in</span></a></li>
                 <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Scheduling</span></a></li>
                 {% if current_user.oms_role == 'super' %}
@@ -79,7 +79,7 @@
             <li class="treeview">
               <a href="#"><i class="ion-person-stalker"></i> <span>Customer Relations</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('crm') }}">  <i class="fa fa-chevron-circle-right"></i> <span>CRM Home</span></a></li>
+                <li><a href="{{ url_for('crm') }}">  <i class="fa fa-home"></i> <span>CRM Home</span></a></li>
                 <li><a href="{{ url_for('crm') }}">  <i class="fa fa-chevron-circle-right"></i> <span>Customer List</span></a></li>
                 {% if current_user.crm_role == 'super' %}
                   <li><a href="{{ url_for('crm_settings') }}"><i class="fa fa-cog"></i> <span>CRM Settings</span></a></li>
@@ -92,7 +92,7 @@
             <li class="treeview">
               <a href="#"><i class="fa fa-users"></i> <span>Human Resources</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('hrm') }}"><i class="fa fa-chevron-circle-right"></i> <span>HRM Home</span></a></li>
+                <li><a href="{{ url_for('hrm') }}"><i class="fa fa-home"></i> <span>HRM Home</span></a></li>
                 <li><a href="{{ url_for('hrm') }}"><i class="fa fa-chevron-circle-right"></i> <span>Personnel List</span></a></li>
                 {% if current_user.hrm_role == 'super' %}
                   <li><a href="{{ url_for('hrm_settings') }}"><i class="fa fa-cog"></i> <span>HRM Settings</span></a></li>
@@ -105,7 +105,7 @@
             <li class="treeview">
               <a href="#"><i class="fa fa-bar-chart"></i> <span>Accounting</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('accounting') }}"><i class="fa fa-chevron-circle-right"></i> <span>AMS Home</span></a></li>
+                <li><a href="{{ url_for('accounting') }}"><i class="fa fa-home"></i> <span>AMS Home</span></a></li>
                 <li><a href="{{ url_for('accounting') }}"><i class="fa fa-chevron-circle-right"></i> <span>Billing Reports</span></a></li>
                 <li><a href="{{ url_for('accounting') }}"><i class="fa fa-chevron-circle-right"></i> <span>Financial Reports</span></a></li>
                 {% if current_user.ams_role == 'super' %}
@@ -119,7 +119,7 @@
             <li class="treeview">
               <a href="#"><i class="fa fa-line-chart"></i> <span>Marketing</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Marketing Home</span></a></li>
+                <li><a href="{{ url_for('marketing') }}"><i class="fa fa-home"></i> <span>Marketing Home</span></a></li>
                 <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Keyword Analytics</span></a></li>
                 <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Internal Metrics</span></a></li>
                 <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>A/B Testing Studies</span></a></li>

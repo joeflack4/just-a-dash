@@ -23,113 +23,15 @@ from .modals import user_add_modal, user_update_modal, customer_add_modal, custo
 from .services.telephony.contacts import CompanyContacts
 from .services.telephony.sms import sms_response, sms_check_in_data
 from .services.telephony.calls import call_response, call_check_in_data
-from .includes import add_user, update_user, delete_user, check_permissions_to_update_user, \
-    check_permissions_to_assign_user_role, check_permissions_to_delete_user, \
-    check_permissions_to_change_App_Naming_and_Aesthetics, update_names_and_aesthetics, \
-    check_permissions_to_change_App_Secret_Key, update_secret_key, check_permissions_to_change_App_Modules, \
-    update_modules
+from .includes import csv2json_conversion, Import_Data, validate_import, check_permissions_to_upload_data, add_to_db, \
+    add_user, update_user, delete_user, check_permissions_to_update_user, check_permissions_to_assign_user_role, \
+    check_permissions_to_delete_user, check_permissions_to_change_App_Naming_and_Aesthetics, \
+    update_names_and_aesthetics, check_permissions_to_change_App_Secret_Key, update_secret_key, \
+    check_permissions_to_change_App_Modules, update_modules
 from .route_decorators import app_basic_admin_required, app_super_admin_required, oms_basic_admin_required, \
     oms_super_admin_required, crm_basic_admin_required, crm_super_admin_required, hrm_basic_admin_required, \
     hrm_super_admin_required, ams_basic_admin_required, ams_super_admin_required, mms_basic_admin_required, \
     mms_super_admin_required
-
-
-
-##############
-# - Testing
-
-# # # From flask-excel
-# from flask import jsonify
-# from flask.ext import excel
-# return jsonify({"result": request.get_data(field_name='file')})
-# return jsonify({"result": request.get_data()})
-
-# from working csv thingy. this part would only be for the console
-# import csv
-# csv_input = csv.reader(stream)
-# print(csv_input)
-# for row in csv_input:
-#     print(row)
-
-import io
-from flask import make_response
-import csv
-import json
-
-
-def csv2json(data):
-    # reader = csv.DictReader
-    reader = csv.DictReader(data)
-    out = json.dumps([ row for row in reader ])
-    print("JSON parsed!")
-    return out
-    # print("JSON saved!")
-
-
-@app.route('/csv2json', methods=["POST"])
-def convert():
-    # Taken from: https://gist.github.com/tonywhittaker/93fc9768fa135149edd3
-    f = request.files['data_file']
-    if not f:
-        return "No file"
-    f = f.read().decode('utf-8')
-    file_contents = io.StringIO(f)
-    result = csv2json(file_contents)
-    response = make_response(result)
-    response.headers["Content-Disposition"] = "attachment; filename=Converted.json"
-    return response
-
-
-@app.route("/upload", methods=['GET', 'POST'])
-@login_required
-def upload_file():
-    logged_in = current_user.is_authenticated()
-    login_form = LoginForm(request.form)
-    register_form = RegisterForm(request.form)
-
-    return render_template('core_modules/file_upload/index.html',
-                           module_name="Just-a-Dash Control Panel",
-                           page_name="File Upload",
-                           icon="fa fa-star-o",
-                           module_abbreviation="Upload",
-                           messages=db.session.query(Messages),
-                           notifications=db.session.query(AppNotifications),
-                           login_form=login_form,
-                           register_form=register_form,
-                           current_user=current_user,
-                           logged_in=logged_in)
-
-
-# @app.route("/upload2", methods=['GET', 'POST'])
-# def upload_file2():
-#     if request.method == 'POST':
-#
-#         f = request.files['file']
-#
-#         stream = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
-#
-#         def transform(text_file_contents):
-#             return text_file_contents.replace("=", ",")
-#
-#         stream.seek(0)
-#         result = transform(stream.read())
-#
-#         # - This part works to return a download of the .csv
-#         response = make_response(result)
-#         response.headers["Content-Disposition"] = "attachment; filename=result.csv"
-#         return response
-#
-#         # - my addition
-#         # return jsonify(result)
-#
-#     return '''
-#     <!doctype html>
-#     <title>Upload an excel file</title>
-#     <h1>Excel file upload (csv, tsv, csvz, tsvz only)</h1>
-#     <form action="" method=post enctype=multipart/form-data><p>
-#     <input type=file name=file><input type=submit value=Upload>
-#     </form>
-#     '''
 
 
 ##############
@@ -140,9 +42,6 @@ record_delete_error = 'Attempted to delete record, but an unexpected error occur
                       ' administrator'
 record_add_error = 'Attempted to add record, but form submission failed validation. Please ensure that all of the' \
                    ' non-blank fields submitted pass validation.'
-
-##############
-# - Decorators
 
 
 ##############
@@ -289,6 +188,27 @@ def register():
                            register_form=register_form,
                            current_user=current_user,
                            logged_in=logged_in)
+
+
+@app.route('/upload', methods=["POST"])
+def upload():
+    f = request.files['data_file'].read().decode('utf-8')
+    if not f:
+        flash("Error. File upload attempt detected, but no file found. Please contact the application administrator.",
+              'danger')
+    # To do: Get the conditional below to work, and remove the placeholder 'if True'.
+    # if type(f) == '.csv':
+    if True:
+        f = csv2json_conversion(f)
+        import_data = Import_Data(f)
+        data_context = request.referrer
+        validated_data = validate_import(import_data, data_context)
+        data_to_add = check_permissions_to_upload_data(current_user, validated_data, data_context)
+        add_to_db(data_to_add, data_context)
+    else:
+        flash('Error. Incorrect file type. The only file types accepted are: .csv', 'danger')
+
+    return redirect(request.referrer)
 
 
 ################
@@ -490,6 +410,7 @@ def user_management():
                         flash(record_update_error, 'danger')
             else:
                 flash('An error occurred while processing the submitted form. Please correct the errors in your form submission. If you feel this message is in error, please contact the application administrator.', 'danger')
+
         else:
             flash('Error. Data appears to have been posted to the server, but could not determine type of form submission. Please contact the application administrator.', 'danger')
 

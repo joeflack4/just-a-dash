@@ -61,7 +61,7 @@
 
             {% if logged_in == True %}<li class="header"></li>{% endif %}
 
-            {% if current_user.oms_role == 'basic' or current_user.oms_role == 'super' %}
+            {% if current_user.oms_role == 'basic' or current_user.oms_role == 'super' or current_user.oms_role == 'master' %}
             <li class="treeview">
               <a href="#"><i class="fa fa-fort-awesome"></i> <span>Operations</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
@@ -75,7 +75,7 @@
             </li>
             {% endif %}
 
-            {% if current_user.crm_role == 'basic' or current_user.crm_role == 'super' %}
+            {% if current_user.crm_role == 'basic' or current_user.crm_role == 'super' or current_user.crm_role == 'master' %}
             <li class="treeview">
               <a href="#"><i class="ion-person-stalker"></i> <span>Customer Relations</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
@@ -88,7 +88,7 @@
             </li>
             {% endif %}
 
-            {% if current_user.hrm_role == 'basic' or current_user.hrm_role == 'super' %}
+            {% if current_user.hrm_role == 'basic' or current_user.hrm_role == 'super' or current_user.hrm_role == 'master' %}
             <li class="treeview">
               <a href="#"><i class="fa fa-users"></i> <span>Human Resources</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
@@ -101,7 +101,7 @@
             </li>
             {% endif %}
 
-            {% if current_user.ams_role == 'basic' or current_user.ams_role == 'super' %}
+            {% if current_user.ams_role == 'basic' or current_user.ams_role == 'super' or current_user.ams_role == 'master' %}
             <li class="treeview">
               <a href="#"><i class="fa fa-bar-chart"></i> <span>Accounting</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
@@ -115,7 +115,7 @@
             </li>
             {% endif %}
 
-            {% if current_user.mms_role == 'basic' or current_user.mms_role == 'super' %}
+            {% if current_user.mms_role == 'basic' or current_user.mms_role == 'super' or current_user.mms_role == 'master' %}
             <li class="treeview">
               <a href="#"><i class="fa fa-line-chart"></i> <span>Marketing</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">

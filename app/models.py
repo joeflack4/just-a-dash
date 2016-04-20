@@ -1,4 +1,4 @@
-# from flask import flash
+from flask import flash, Markup
 from app import db
 # from sqlalchemy import ForeignKey
 # from sqlalchemy.orm import relationship
@@ -72,6 +72,18 @@ class Modules(Base_Model):
 
 class User(Base_Model):
     __tablename__ = 'app_users'
+    # - db_columns is used for validating .csv imports.
+    db_columns = [
+        {'name': 'username', 'required': True},
+        {'name': 'email', 'required': True},
+        {'name': 'password', 'required': True},
+        {'name': 'admin_role', 'required': False},
+        {'name': 'oms_role', 'required': False},
+        {'name': 'crm_role', 'required': False},
+        {'name': 'hrm_role', 'required': False},
+        {'name': 'ams_role', 'required': False},
+        {'name': 'mms_role', 'required': False},
+    ]
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -138,6 +150,7 @@ class User(Base_Model):
         user_rank = int
 
         def determine_rank(role_value):
+            # unrecognized_role_values = []
             rank = int
             if role_value == 'master':
                 rank = 0
@@ -147,6 +160,21 @@ class User(Base_Model):
                 rank = 2
             elif role_value == 'None':
                 rank = 3
+            elif role_value == 'none':
+                rank = 3
+            elif role_value == '':
+                rank = 3
+            elif role_value == False:
+                rank = 3
+            else:
+                # Number below chosen randomly. Let's hope that 777+ ranks aren't necessary for any users. If so, this
+                # will have to be re-factored.
+                error_message = Markup('An error occurred while trying to assess user permissions. The following permission level was '
+                      'not recognized: <strong>{}</strong>'.format(role_value) + '. Only the following permission levels are valid: '
+                      '"master", "super, "basic", and "none". Please change value of permission level(s) and try again.')
+                flash(error_message, 'danger')
+                rank = 777
+                # unrecognized_role_values.append(role_value)
             return rank
 
         if role == 'admin_role':
@@ -345,6 +373,88 @@ class CRM_Config(Base_Config):
 
 class Customers(Base_Model):
     __tablename__ = 'crm_customers'
+    # - db_columns is used for validating .csv imports.
+    db_columns = [
+        {'name': 'name_last', 'required': True},
+        {'name': 'name_first', 'required': True},
+        {'name': 'name_prefix', 'required': False},
+        {'name': 'name_suffix', 'required': False},
+        {'name': 'name_middle', 'required': False},
+        {'name': 'email1', 'required': False},
+        {'name': 'email2', 'required': False},
+        {'name': 'phone1', 'required': False},
+        {'name': 'phone2', 'required': False},
+        {'name': 'phone3', 'required': False},
+        {'name': 'phone4', 'required': False},
+        {'name': 'phone5', 'required': False},
+        {'name': 'pii_dob', 'required': False},
+        {'name': 'pii_other', 'required': False},
+        {'name': 'phi', 'required': False},
+        {'name': 'pfi', 'required': False},
+        {'name': 'address_street', 'required': False},
+        {'name': 'address_suite', 'required': False},
+        {'name': 'address_state', 'required': False},
+        {'name': 'address_county', 'required': False},
+        {'name': 'address_zip', 'required': False},
+        {'name': 'address_zip_extension', 'required': False},
+        {'name': 'billing_method', 'required': False},
+        {'name': 'billing_frequency', 'required': False},
+        {'name': 'billing_relation_name', 'required': False},
+        {'name': 'billing_email', 'required': False},
+        {'name': 'billing_address_street', 'required': False},
+        {'name': 'billing_address_suite', 'required': False},
+        {'name': 'billing_address_state', 'required': False},
+        {'name': 'billing_address_county', 'required': False},
+        {'name': 'billing_address_zip', 'required': False},
+        {'name': 'billing_address_zip_extension', 'required': False},
+        {'name': 'billing_notes', 'required': False},
+        {'name': 'relation_1_name', 'required': False},
+        {'name': 'relation_1_role', 'required': False},
+        {'name': 'relation_2_name', 'required': False},
+        {'name': 'relation_2_role', 'required': False},
+        {'name': 'relation_3_name', 'required': False},
+        {'name': 'relation_3_role', 'required': False},
+        {'name': 'relation_4_name', 'required': False},
+        {'name': 'relation_4_role', 'required': False},
+        {'name': 'relation_5_name', 'required': False},
+        {'name': 'relation_5_role', 'required': False},
+        {'name': 'customer_type', 'required': False},
+        {'name': 'customer_type_id1', 'required': False},
+        {'name': 'customer_type_id2', 'required': False},
+        {'name': 'customer_type_id3', 'required': False},
+        {'name': 'service_1_id', 'required': False},
+        {'name': 'service_1_day', 'required': False},
+        {'name': 'service_1_hours', 'required': False},
+        {'name': 'service_1_type', 'required': False},
+        {'name': 'service_1_rate', 'required': False},
+        {'name': 'service_2_id', 'required': False},
+        {'name': 'service_2_day', 'required': False},
+        {'name': 'service_2_hours', 'required': False},
+        {'name': 'service_2_type', 'required': False},
+        {'name': 'service_2_rate', 'required': False},
+        {'name': 'service_3_id', 'required': False},
+        {'name': 'service_3_day', 'required': False},
+        {'name': 'service_3_hours', 'required': False},
+        {'name': 'service_3_type', 'required': False},
+        {'name': 'service_3_rate', 'required': False},
+        {'name': 'service_4_id', 'required': False},
+        {'name': 'service_4_day', 'required': False},
+        {'name': 'service_4_hours', 'required': False},
+        {'name': 'service_4_type', 'required': False},
+        {'name': 'service_4_rate', 'required': False},
+        {'name': 'service_5_id', 'required': False},
+        {'name': 'service_5_day', 'required': False},
+        {'name': 'service_5_hours', 'required': False},
+        {'name': 'service_5_type', 'required': False},
+        {'name': 'service_5_rate', 'required': False},
+        {'name': 'service_6_id', 'required': False},
+        {'name': 'service_6_day', 'required': False},
+        {'name': 'service_6_hours', 'required': False},
+        {'name': 'service_6_type', 'required': False},
+        {'name': 'service_6_rate', 'required': False},
+        {'name': 'notes_case', 'required': False},
+        {'name': 'notes_other', 'required': False},
+    ]
 
     id = db.Column(db.Integer, primary_key=True)
     name_last = db.Column(db.String(80), nullable=False)
@@ -457,6 +567,36 @@ class HRM_Config(Base_Config):
 
 class Personnel(Base_Model):
     __tablename__ = 'hrm_personnel'
+    # - db_columns is used for validating .csv imports.
+    db_columns = [
+        {'name': 'name_last', 'required': True},
+        {'name': 'name_first', 'required': True},
+        {'name': 'name_prefix', 'required': False},
+        {'name': 'name_suffix', 'required': False},
+        {'name': 'name_middle', 'required': False},
+        {'name': 'email1', 'required': False},
+        {'name': 'email2', 'required': False},
+        {'name': 'phone1', 'required': False},
+        {'name': 'phone2', 'required': False},
+        {'name': 'phone3', 'required': False},
+        {'name': 'phone4', 'required': False},
+        {'name': 'phone5', 'required': False},
+        {'name': 'pii_dob', 'required': False},
+        {'name': 'pii_other', 'required': False},
+        {'name': 'phi', 'required': False},
+        {'name': 'pfi', 'required': False},
+        {'name': 'address_street', 'required': False},
+        {'name': 'address_suite', 'required': False},
+        {'name': 'address_state', 'required': False},
+        {'name': 'address_county', 'required': False},
+        {'name': 'address_zip', 'required': False},
+        {'name': 'address_zip_extension', 'required': False},
+        {'name': 'relation_1_name', 'required': False},
+        {'name': 'relation_1_notes', 'required': False},
+        {'name': 'relation_2_name', 'required': False},
+        {'name': 'relation_2_notes', 'required': False},
+        {'name': 'notes_other', 'required': False},
+    ]
 
     id = db.Column(db.Integer, primary_key=True)
     name_last = db.Column(db.String(80), nullable=False)

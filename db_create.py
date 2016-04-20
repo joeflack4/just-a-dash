@@ -112,7 +112,7 @@ except:
 # - Initalizes the app with a user with master permissions. The app administrator should change the e-mail/password immediately. Also adds a basic admin and a basic user.
 # IMPORTANT! - Post-deployment, you will want to make sure that you change these passwords (at least for 'master') in your database.
 try:
-    db.session.add(User("master", "master@not-a-real-email.com", password="master", admin_role="master", oms_role="super", crm_role="super", hrm_role="super", ams_role="super", mms_role="super"))
+    db.session.add(User("master", "master@not-a-real-email.com", password="master", admin_role="master", oms_role="master", crm_role="master", hrm_role="master", ams_role="master", mms_role="master"))
     db.session.add(User("super_admin", "super@not-a-real-email.com", password="super_admin", admin_role="super", oms_role="super", crm_role="super", hrm_role="super", ams_role="super", mms_role="super"))
     db.session.add(User("admin", "admin@not-a-real-email.com", password="admin", admin_role="basic", oms_role="basic", crm_role="basic", hrm_role="basic", ams_role="basic", mms_role="basic"))
     db.session.add(User("user", "user@not-a-real-email.com", password="user", admin_role="None", oms_role="None", crm_role="None", hrm_role="None", ams_role="None", mms_role="None"))

@@ -16,20 +16,16 @@ from .models import User, Customers, Personnel
 
 # - Classes
 class Import_Data():
-    data = {}
-    columns = []
-    rows = data
-
-    def get_columns(self, data):
+    def get_columns(self, rows):
         columns = []
-        column_row = data[0]
-        for key, value in column_row:
+        for key in rows[0]:
             columns.append(key)
         return columns
 
     def __init__(self, data):
-        self.data = data
-        self.columns = self.get_columns(data)
+        self.data = json.loads(data)
+        self.rows = self.data
+        self.columns = self.get_columns(rows=self.rows)
 
     def __repr__(self):
         return '<Import Data of Schema: {}>'.format(self.columns)
@@ -52,142 +48,136 @@ def csv2json_conversion(file):
     return result
 
 
+def make_string_list(list):
+    string = ''
+    for item in list:
+        string += item + ', '
+    string = string[:-2]
+    return string
+
+
 def check_for_missing_required_columns(db_columns, import_data_columns):
-    missing_required_columns = False
+    missing_columns = []
     for column in db_columns:
         if column['required'] == True:
-            if import_data_columns[column] == False:
-                missing_required_columns = True
-                break
-    return missing_required_columns
-
-
-def check_for_unknown_columns(db_columns, import_data_columns):
-    unknown_columns = ""
-    for column in import_data_columns:
-        if not db_columns[column]:
-            unknown_columns += column + ', '
-    return unknown_columns
-
-
-def check_for_missing_columns(db_columns, import_data_columns):
-    missing_columns = ""
-    for column in db_columns:
-            if import_data_columns[column] == False:
-                missing_columns += column + ', '
+            if column['name'] not in import_data_columns:
+                missing_columns.append(column['name'])
+    missing_columns = make_string_list(missing_columns)
     return missing_columns
 
 
-# Need to list columns / required columns for the following 3 validation functions.
-def validate_users(import_data):
-    db_columns = [
-        {'name': '', 'required': False},
-    ]
-
-    # - Column validation.
-    missing_required_columns = check_for_missing_required_columns(db_columns, import_data.columns)
-    if missing_required_columns == True:
-        flash(
-            'Error. Tried to import data, but required columns were missing. Please correct the issue, and try again.',
-            'danger')
-        return redirect(request.referrer)
-    unknown_columns = check_for_unknown_columns(db_columns, import_data.columns)
-    if unknown_columns != "":
-        flash('Error. Tried to import data, but some columns were not recognized. Please correct the issue, and try '
-              'again. Those columns were as follows: {}'.format(unknown_columns), 'info')
-        return redirect(request.referrer)
-    missing_columns = check_for_missing_columns(db_columns, import_data.columns)
-    if missing_columns != "":
-        flash('During import, it was determined that some optional columns were not included. Those columns were as '
-              'follows: {}'.format(missing_columns), 'info')
-
-    # - Row validation.
-    # Perhaps reject whole .csv for now instead of returning a .csv of erroneous rows, for ease.
-    erroneous_rows = []
-    valid_rows = []
-    # To do: validate each row. Add to erroneous/valid rows as necessary.
-    # This is going to be the hard part, I think, as I'm going to have to call upon regexp functions for each column.
-
-    return valid_rows
+def check_for_unknown_columns(db_columns, import_data_columns):
+    unknown_columns = []
+    for imported_column in import_data_columns:
+        recognized_column = False
+        for db_column in db_columns:
+            if imported_column == db_column['name']:
+                recognized_column = True
+                break
+        if recognized_column == False:
+            unknown_columns.append(imported_column)
+    unknown_columns = make_string_list(unknown_columns)
+    return unknown_columns
 
 
-def validate_customers(import_data):
-    db_columns = [
-        {'name': '', 'required': False},
-    ]
-
-    # - Column validation.
-    missing_required_columns = check_for_missing_required_columns(db_columns, import_data.columns)
-    if missing_required_columns == True:
-        flash('Error. Tried to import data, but required columns were missing. Please correct the issue, and try again.',
-              'danger')
-        return redirect(request.referrer)
-    unknown_columns = check_for_unknown_columns(db_columns, import_data.columns)
-    if unknown_columns != "":
-        flash('Error. Tried to import data, but some columns were not recognized. Please correct the issue, and try '
-              'again. Those columns were as follows: {}'.format(unknown_columns), 'info')
-        return redirect(request.referrer)
-    missing_columns = check_for_missing_columns(db_columns, import_data.columns)
-    if missing_columns != "":
-        flash('During import, it was determined that some optional columns were not included. Those columns were as '
-              'follows: {}'.format(missing_columns), 'info')
-
-    # - Row validation.
-    # Perhaps reject whole .csv for now instead of returning a .csv of erroneous rows, for ease.
-    erroneous_rows = []
-    valid_rows = []
-    # To do: validate each row. Add to erroneous/valid rows as necessary.
-    # This is going to be the hard part, I think, as I'm going to have to call upon regexp functions for each column.
-
-    return valid_rows
+def check_for_missing_optional_columns(db_columns, import_data_columns):
+    missing_columns = []
+    for column in db_columns:
+        if column['name'] not in import_data_columns:
+            missing_columns.append(column['name'])
+    missing_columns = make_string_list(missing_columns)
+    return missing_columns
 
 
-def validate_personnel(import_data):
-    db_columns = [
-        {'name': '', 'required': False},
-    ]
-
-    # - Column validation.
-    missing_required_columns = check_for_missing_required_columns(db_columns, import_data.columns)
-    if missing_required_columns == True:
-        flash(
-            'Error. Tried to import data, but required columns were missing. Please correct the issue, and try again.',
-            'danger')
-        return redirect(request.referrer)
-    unknown_columns = check_for_unknown_columns(db_columns, import_data.columns)
-    if unknown_columns != "":
-        flash('Error. Tried to import data, but some columns were not recognized. Please correct the issue, and try '
-              'again. Those columns were as follows: {}'.format(unknown_columns), 'info')
-        return redirect(request.referrer)
-    missing_columns = check_for_missing_columns(db_columns, import_data.columns)
-    if missing_columns != "":
-        flash('During import, it was determined that some optional columns were not included. Those columns were as '
-              'follows: {}'.format(missing_columns), 'info')
-
-    # - Row validation.
-    # Perhaps reject whole .csv for now instead of returning a .csv of erroneous rows, for ease.
-    erroneous_rows = []
-    valid_rows = []
-    # To do: validate each row. Add to erroneous/valid rows as necessary.
-    # This is going to be the hard part, I think, as I'm going to have to call upon regexp functions for each column.
-
-    return valid_rows
-
-def validate_import(import_data, data_context):
-    # To do: Update the below if statement to declare different 'db_columns', rather than calling a separate function.
-    # , and just use that db_columns variable for the rest of this validation function.
-
-    if data_context == '/user-management':
-        validated_data = validate_users(import_data)
-    elif data_context == '/crm':
-        validated_data = validate_customers(import_data)
-    elif data_context == '/hrm':
-        validated_data = validate_personnel(import_data)
+def validate_columns(import_data, data_context):
+    db_columns = []
+    # - Determine columns based on context
+    if data_context == 'User-CSV-Upload-Submit':
+        db_columns = User.db_columns
+    elif data_context == 'Customer-CSV-Upload-Submit':
+        db_columns = Customers.db_columns
+    elif data_context == 'Personnel-CSV-Upload-Submit':
+        db_columns = Personnel.db_columns
     else:
-        validated_data = ''
         flash('Error in validation. Upload was detected, but could not determine the source. Please contact the '
               'application administrator for assistance.', 'danger')
-    return validated_data
+
+    if db_columns != []:
+        # - Column validation - Required & Unknown columns.
+        missing_required_columns = check_for_missing_required_columns(db_columns, import_data.columns)
+        unknown_columns = check_for_unknown_columns(db_columns, import_data.columns)
+        if missing_required_columns != '' or unknown_columns != '':
+            if missing_required_columns != '':
+                error_message = Markup(
+                    '<strong>Import Error: Missing Required columns</strong>. Tried to import data, but the following required ' \
+                    'columns appear to have been missing from your import: <strong>{}</strong>'.format(
+                        missing_required_columns) + \
+                    '. Please correct the issue, and try again.')
+                flash(error_message, 'danger')
+            if unknown_columns != '':
+                error_message = Markup(
+                    '<strong>Import Error: Unrecognized Columns</strong>. Tried to import data, but some columns were not ' \
+                    'recognized. Those columns were as follows: <strong>{}</strong>'.format(unknown_columns) + \
+                    '. Please correct the issue, and try again.')
+                flash(error_message, 'danger')
+            return redirect(request.referrer)
+
+        # - Column validation - Missing optional columns.
+        missing_columns = check_for_missing_optional_columns(db_columns, import_data.columns)
+        if missing_columns != '':
+            message = Markup('During import, it was determined that some optional columns were not included. Those ' \
+                             'columns were as follows: <strong>{}</strong>'.format(
+                missing_columns) + '. The rest of the data, '
+                                   'however, was included for processing as normal.')
+            flash(message, 'info')
+
+
+def assess_import_permissions(current_user, import_data, data_context):
+    authority = True
+    for row in import_data.rows:
+        authority = check_permissions_to_assign_user_role(row, current_user)
+        if authority == False:
+            break
+    return authority
+
+
+# To do: validate each row. Add to erroneous/valid rows as necessary.
+# This is going to be the hard part, I think, as I'm going to have to call upon regexp functions for each column.
+def validate_rows(import_data, data_context):
+    rows = {'erroneous_rows': [], 'valid_rows': []}
+    # debugging - not iteratable
+    # for row in import_data.rows:
+    #     #NEEDS WORK -- try form.validate_on_submit()?
+    #
+    #     return
+
+    return rows
+
+
+def validate_import(current_user, import_data, data_context):
+    validate_columns(import_data, data_context)
+    authority = assess_import_permissions(current_user, import_data, data_context)
+
+    if authority == True:
+        rows = validate_rows(import_data, data_context)
+
+        erroneous_rows = rows['erroneous_rows']
+        if erroneous_rows != []:
+            erroneous_row_string = ''
+            for row in erroneous_rows:
+                erroneous_row_string += str(row) + '\n'
+            erroneous_row_string = erroneous_row_string[:-1]
+            flash('Some rows did not pass validation, and were not imported. Please correct the following rows, and try '
+                  'importing again:\n\n' + erroneous_row_string, 'danger')
+
+        valid_rows = rows['valid_rows']
+        return valid_rows
+    elif authority == False:
+        return redirect(request.referrer)
+    else:
+        flash('An unknown error occurred while trying to assess user permissions. Please contact the application '
+              'administrator.', 'danger')
+        redirect(request.referrer)
 
 
 def add_to_db(data_to_add, data_context):
@@ -243,6 +233,7 @@ def add_to_db(data_to_add, data_context):
 # -- App Settings
 def check_permissions_to_upload_data(current_user, validated_data, validation_context):
     return
+
 
 def check_permissions_to_change_App_Naming_and_Aesthetics(current_user):
     return
@@ -339,40 +330,44 @@ def check_permissions_to_update_user(update_form, current_user):
     return role_superiorities
 
 
-def check_permissions_to_assign_user_role(update_form, current_user):
+def check_permissions_to_assign_user_role(table, current_user):
     role_authority = {}
     non_authority_count = 0
     role_values_to_assign = {}
+    role_fields = ('admin_role', 'oms_role', 'crm_role', 'hrm_role', 'ams_role', 'mms_role')
+    role_assignments_denied = []
 
-    for field in update_form.data:
+    # The following will work if authorizing a form submission.
+    try:
+        for field in table.data:
+            if field in role_fields:
+                role_values_to_assign[field] = table.data[field]
+    # The following will work if authorizing a .csv upload.
+    except:
+        for field in table:
+            if field in role_fields:
+                role_values_to_assign[field] = table[field]
 
-        if field == ('admin_role' or 'oms_role' or 'crm_role' or 'hrm_role' or 'ams_role' or 'mms_role'):
-            role_values_to_assign[field] = update_form.data[field]
-
-        #DEBUGGING
-        # authority = True
-
-    # for role in role_values_to_assign:
     for role, value in role_values_to_assign.items():
         if value != 'null':
-            #debugging
-            flash(role)
-            flash(value)
-            # flash(role_values_to_assign[role])
-
-            # case_authority = current_user.check_administrative_authority(role, role_values_to_assign[role])
             case_authority = current_user.check_administrative_authority(role, value)
             role_authority[role] = case_authority
 
     for role in role_authority:
         if role_authority[role] == False:
+            role_assignments_denied.append(role)
             non_authority_count += 1
+    role_assignments_denied = make_string_list(role_assignments_denied)
 
     if non_authority_count == 0:
         authority = True
     else:
         authority = False
-        flash('Permission denied. It is not possible to assign administrative permissions greater or equal to one\'s own.', 'danger')
+        error_message = Markup('Permission denied to grant 1 or more user(s) permissions of the following type: '
+            '<strong>{}</strong>'.format(role_assignments_denied) + '. It is not possible to assign administrative '
+            'permissions greater or equal to one\'s own. Please locate the user(s) for whom this exception was caused, '
+            'and please select lower permission(s).')
+        flash(error_message, 'danger')
 
     return authority
 

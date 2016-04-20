@@ -201,10 +201,16 @@ def upload():
     if True:
         f = csv2json_conversion(f)
         import_data = Import_Data(f)
-        data_context = request.referrer
-        validated_data = validate_import(import_data, data_context)
-        data_to_add = check_permissions_to_upload_data(current_user, validated_data, data_context)
-        add_to_db(data_to_add, data_context)
+
+        # - Work in Progress
+        data_context = request.form['form_submit']
+        validated_data = validate_import(current_user, import_data, data_context)
+
+        # Maybe below line not necessary
+        # data_to_add = check_permissions_to_upload_data(current_user, validated_data, data_context)
+
+        # data_to_add = validated_data
+        # add_to_db(data_to_add, data_context)
     else:
         flash('Error. Incorrect file type. The only file types accepted are: .csv', 'danger')
 
@@ -381,11 +387,12 @@ def user_management():
         if request.form['form_submit']:
 
             if request.form['form_submit'] == 'User-Add-Form':
-                if add_form.validate_on_submit():
-                    # NEED TO CHECK AUTHORITY TO ASSIGN
-                    add_user(add_form)
-                else:
-                    flash(record_add_error,'danger')
+                authority = check_permissions_to_assign_user_role(add_form, current_user)
+                if authority == True:
+                    if add_form.validate_on_submit():
+                        add_user(add_form)
+                    else:
+                        flash(record_add_error,'danger')
 
             elif request.form['form_submit'] == 'User-Delete-Form':
                 superiority = check_permissions_to_delete_user(delete_form, current_user)
@@ -400,7 +407,6 @@ def user_management():
                     flash('One or more errors occurred while attempting to determine user permissions. Please contact the application administrator.', 'danger')
 
             elif request.form['form_submit'] == 'User-Update-Form':
-                # may need to change the following line, as it might deny all.
                 authority = check_permissions_to_assign_user_role(update_form, current_user)
                 if authority == True:
                     role_superiorities = check_permissions_to_update_user(update_form, current_user)

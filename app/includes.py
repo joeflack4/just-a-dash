@@ -284,10 +284,6 @@ def add_to_db(data_to_add, data_context):
 
 
 # -- App Settings
-def check_permissions_to_upload_data(current_user, validated_data, validation_context):
-    return
-
-
 def check_permissions_to_change_App_Naming_and_Aesthetics(current_user):
     return
 

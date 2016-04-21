@@ -44,7 +44,7 @@ def oms_basic_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'operations management'
-        if current_user.oms_role == 'basic' or current_user.oms_role == 'super':
+        if current_user.oms_role == 'basic' or current_user.oms_role == 'super' or current_user.oms_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -56,7 +56,7 @@ def oms_super_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'operations management'
-        if current_user.oms_role == 'super':
+        if current_user.oms_role == 'super' or current_user.oms_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -68,7 +68,7 @@ def crm_basic_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'customer relations management'
-        if current_user.crm_role == 'basic' or current_user.crm_role == 'super':
+        if current_user.crm_role == 'basic' or current_user.crm_role == 'super' or current_user.crm_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -80,7 +80,7 @@ def crm_super_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'customer relations management'
-        if current_user.crm_role == 'super':
+        if current_user.crm_role == 'super' or current_user.crm_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -92,7 +92,7 @@ def hrm_basic_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'human resources management'
-        if current_user.hrm_role == 'basic' or current_user.hrm_role == 'super':
+        if current_user.hrm_role == 'basic' or current_user.hrm_role == 'super' or current_user.hrm_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -104,7 +104,7 @@ def hrm_super_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'human resources management'
-        if current_user.hrm_role == 'super':
+        if current_user.hrm_role == 'super' or current_user.hrm_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -116,7 +116,7 @@ def ams_basic_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'accounting management'
-        if current_user.ams_role == 'basic' or current_user.ams_role == 'super':
+        if current_user.ams_role == 'basic' or current_user.ams_role == 'super' or current_user.ams_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -128,7 +128,7 @@ def ams_super_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'accounting management'
-        if current_user.ams_role == 'super':
+        if current_user.ams_role == 'super' or current_user.ams_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -140,7 +140,7 @@ def mms_basic_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'marketing management'
-        if current_user.mms_role == 'basic' or current_user.mms_role == 'super':
+        if current_user.mms_role == 'basic' or current_user.mms_role == 'super' or current_user.mms_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')
@@ -152,7 +152,7 @@ def mms_super_admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         permissions_type = 'marketing management'
-        if current_user.mms_role == 'super':
+        if current_user.mms_role == 'super' or current_user.mms_role == 'master':
             return f(*args, **kwargs)
         else:
             flash('You do not have sufficient {} permissions to access this area.'.format(permissions_type), 'warning')

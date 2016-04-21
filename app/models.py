@@ -73,22 +73,24 @@ class Modules(Base_Model):
 class User(Base_Model):
     __tablename__ = 'app_users'
     # - db_columns is used for validating .csv imports.
-    db_columns = [
-        {'name': 'username', 'required': True},
-        {'name': 'email', 'required': True},
-        {'name': 'password', 'required': True},
-        {'name': 'admin_role', 'required': False},
-        {'name': 'oms_role', 'required': False},
-        {'name': 'crm_role', 'required': False},
-        {'name': 'hrm_role', 'required': False},
-        {'name': 'ams_role', 'required': False},
-        {'name': 'mms_role', 'required': False},
-    ]
+    role_selectors = ('super', 'basic', 'none', '')
+
+    db_columns = {
+        'username': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 6, 'max': 25}},
+        'email': {'required': True, 'validators': 'email', 'validator_parameters': {'min': 6, 'max': 25}},
+        'password': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 6, 'max': 25}},
+        'admin_role': {'required': False, 'validators': 'selection', 'validator_parameters': role_selectors},
+        'oms_role': {'required': False, 'validators': 'selection', 'validator_parameters': role_selectors},
+        'crm_role': {'required': False, 'validators': 'selection', 'validator_parameters': role_selectors},
+        'hrm_role': {'required': False, 'validators': 'selection', 'validator_parameters': role_selectors},
+        'ams_role': {'required': False, 'validators': 'selection', 'validator_parameters': role_selectors},
+        'mms_role': {'required': False, 'validators': 'selection', 'validator_parameters': role_selectors}
+    }
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(500), nullable=False)
+    username = db.Column(db.String(25), unique=True, nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(25), nullable=False)
     admin_role = db.Column(db.String(20))
     oms_role = db.Column(db.String(20))
     crm_role = db.Column(db.String(20))
@@ -147,24 +149,25 @@ class User(Base_Model):
         return self.id
 
     def check_administrative_superiority(self, role, role_value):
+        role_val = role_value.lower()
         user_rank = int
 
-        def determine_rank(role_value):
+        def determine_rank(role_val):
             # unrecognized_role_values = []
             rank = int
-            if role_value == 'master':
+            if role_val == 'master':
                 rank = 0
-            elif role_value == 'super':
+            elif role_val == 'super':
                 rank = 1
-            elif role_value == 'basic':
+            elif role_val == 'basic':
                 rank = 2
-            elif role_value == 'None':
+            elif role_val == 'None':
                 rank = 3
-            elif role_value == 'none':
+            elif role_val == 'none':
                 rank = 3
-            elif role_value == '':
+            elif role_val == '':
                 rank = 3
-            elif role_value == False:
+            elif role_val == False:
                 rank = 3
             else:
                 # Number below chosen randomly. Let's hope that 777+ ranks aren't necessary for any users. If so, this
@@ -190,7 +193,7 @@ class User(Base_Model):
         elif role == 'mms_role':
             user_rank = determine_rank(self.mms_role)
 
-        user_to_compare_rank = determine_rank(role_value)
+        user_to_compare_rank = determine_rank(role_val)
 
         is_superior = bool
         if user_rank < user_to_compare_rank:
@@ -374,87 +377,87 @@ class CRM_Config(Base_Config):
 class Customers(Base_Model):
     __tablename__ = 'crm_customers'
     # - db_columns is used for validating .csv imports.
-    db_columns = [
-        {'name': 'name_last', 'required': True},
-        {'name': 'name_first', 'required': True},
-        {'name': 'name_prefix', 'required': False},
-        {'name': 'name_suffix', 'required': False},
-        {'name': 'name_middle', 'required': False},
-        {'name': 'email1', 'required': False},
-        {'name': 'email2', 'required': False},
-        {'name': 'phone1', 'required': False},
-        {'name': 'phone2', 'required': False},
-        {'name': 'phone3', 'required': False},
-        {'name': 'phone4', 'required': False},
-        {'name': 'phone5', 'required': False},
-        {'name': 'pii_dob', 'required': False},
-        {'name': 'pii_other', 'required': False},
-        {'name': 'phi', 'required': False},
-        {'name': 'pfi', 'required': False},
-        {'name': 'address_street', 'required': False},
-        {'name': 'address_suite', 'required': False},
-        {'name': 'address_state', 'required': False},
-        {'name': 'address_county', 'required': False},
-        {'name': 'address_zip', 'required': False},
-        {'name': 'address_zip_extension', 'required': False},
-        {'name': 'billing_method', 'required': False},
-        {'name': 'billing_frequency', 'required': False},
-        {'name': 'billing_relation_name', 'required': False},
-        {'name': 'billing_email', 'required': False},
-        {'name': 'billing_address_street', 'required': False},
-        {'name': 'billing_address_suite', 'required': False},
-        {'name': 'billing_address_state', 'required': False},
-        {'name': 'billing_address_county', 'required': False},
-        {'name': 'billing_address_zip', 'required': False},
-        {'name': 'billing_address_zip_extension', 'required': False},
-        {'name': 'billing_notes', 'required': False},
-        {'name': 'relation_1_name', 'required': False},
-        {'name': 'relation_1_role', 'required': False},
-        {'name': 'relation_2_name', 'required': False},
-        {'name': 'relation_2_role', 'required': False},
-        {'name': 'relation_3_name', 'required': False},
-        {'name': 'relation_3_role', 'required': False},
-        {'name': 'relation_4_name', 'required': False},
-        {'name': 'relation_4_role', 'required': False},
-        {'name': 'relation_5_name', 'required': False},
-        {'name': 'relation_5_role', 'required': False},
-        {'name': 'customer_type', 'required': False},
-        {'name': 'customer_type_id1', 'required': False},
-        {'name': 'customer_type_id2', 'required': False},
-        {'name': 'customer_type_id3', 'required': False},
-        {'name': 'service_1_id', 'required': False},
-        {'name': 'service_1_day', 'required': False},
-        {'name': 'service_1_hours', 'required': False},
-        {'name': 'service_1_type', 'required': False},
-        {'name': 'service_1_rate', 'required': False},
-        {'name': 'service_2_id', 'required': False},
-        {'name': 'service_2_day', 'required': False},
-        {'name': 'service_2_hours', 'required': False},
-        {'name': 'service_2_type', 'required': False},
-        {'name': 'service_2_rate', 'required': False},
-        {'name': 'service_3_id', 'required': False},
-        {'name': 'service_3_day', 'required': False},
-        {'name': 'service_3_hours', 'required': False},
-        {'name': 'service_3_type', 'required': False},
-        {'name': 'service_3_rate', 'required': False},
-        {'name': 'service_4_id', 'required': False},
-        {'name': 'service_4_day', 'required': False},
-        {'name': 'service_4_hours', 'required': False},
-        {'name': 'service_4_type', 'required': False},
-        {'name': 'service_4_rate', 'required': False},
-        {'name': 'service_5_id', 'required': False},
-        {'name': 'service_5_day', 'required': False},
-        {'name': 'service_5_hours', 'required': False},
-        {'name': 'service_5_type', 'required': False},
-        {'name': 'service_5_rate', 'required': False},
-        {'name': 'service_6_id', 'required': False},
-        {'name': 'service_6_day', 'required': False},
-        {'name': 'service_6_hours', 'required': False},
-        {'name': 'service_6_type', 'required': False},
-        {'name': 'service_6_rate', 'required': False},
-        {'name': 'notes_case', 'required': False},
-        {'name': 'notes_other', 'required': False},
-    ]
+    db_columns = {
+        'name_last': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 6, 'max': 50}},
+        'name_first': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 6, 'max': 50}},
+        'name_prefix': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'name_suffix': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'name_middle': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'email1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'email2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'phone1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'phone2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'phone3': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'phone4': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'phone5': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'pii_dob': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'pii_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'phi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'pfi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_method': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_frequency': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_relation_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_email': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_1_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_1_role': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_2_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_2_role': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_3_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_3_role': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_4_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_4_role': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_5_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'relation_5_role': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'customer_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'customer_type_id1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'customer_type_id2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'customer_type_id3': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_1_id': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_1_day': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_1_hours': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_1_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_1_rate': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_2_id': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_2_day': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_2_hours': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_2_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_2_rate': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_3_id': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_3_day': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_3_hours': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_3_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_3_rate': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_4_id': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_4_day': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_4_hours': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_4_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_4_rate': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_5_id': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_5_day': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_5_hours': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_5_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_5_rate': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_6_id': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_6_day': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_6_hours': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_6_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'service_6_rate': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'notes_case': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'notes_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}}
+    }
 
     id = db.Column(db.Integer, primary_key=True)
     name_last = db.Column(db.String(80), nullable=False)
@@ -568,35 +571,35 @@ class HRM_Config(Base_Config):
 class Personnel(Base_Model):
     __tablename__ = 'hrm_personnel'
     # - db_columns is used for validating .csv imports.
-    db_columns = [
-        {'name': 'name_last', 'required': True},
-        {'name': 'name_first', 'required': True},
-        {'name': 'name_prefix', 'required': False},
-        {'name': 'name_suffix', 'required': False},
-        {'name': 'name_middle', 'required': False},
-        {'name': 'email1', 'required': False},
-        {'name': 'email2', 'required': False},
-        {'name': 'phone1', 'required': False},
-        {'name': 'phone2', 'required': False},
-        {'name': 'phone3', 'required': False},
-        {'name': 'phone4', 'required': False},
-        {'name': 'phone5', 'required': False},
-        {'name': 'pii_dob', 'required': False},
-        {'name': 'pii_other', 'required': False},
-        {'name': 'phi', 'required': False},
-        {'name': 'pfi', 'required': False},
-        {'name': 'address_street', 'required': False},
-        {'name': 'address_suite', 'required': False},
-        {'name': 'address_state', 'required': False},
-        {'name': 'address_county', 'required': False},
-        {'name': 'address_zip', 'required': False},
-        {'name': 'address_zip_extension', 'required': False},
-        {'name': 'relation_1_name', 'required': False},
-        {'name': 'relation_1_notes', 'required': False},
-        {'name': 'relation_2_name', 'required': False},
-        {'name': 'relation_2_notes', 'required': False},
-        {'name': 'notes_other', 'required': False},
-    ]
+    db_columns = {
+         'name_last': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 1, 'max': 50}},
+         'name_first': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 1, 'max': 50}},
+         'name_prefix': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'name_suffix': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'name_middle': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'email1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'email2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'phone1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'phone2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'phone3': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'phone4': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'phone5': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'pii_dob': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'pii_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'phi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'pfi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'relation_1_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'relation_1_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'relation_2_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'relation_2_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'notes_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}}
+    }
 
     id = db.Column(db.Integer, primary_key=True)
     name_last = db.Column(db.String(80), nullable=False)

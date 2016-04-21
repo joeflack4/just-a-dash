@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash
 from app import db
 # from requests import request
 from .models import User, Customers, Personnel
-# from .forms import UserAddForm
+from validate_email import validate_email
 
 
 # - Variables
@@ -58,10 +58,10 @@ def make_string_list(list):
 
 def check_for_missing_required_columns(db_columns, import_data_columns):
     missing_columns = []
-    for column in db_columns:
-        if column['required'] == True:
-            if column['name'] not in import_data_columns:
-                missing_columns.append(column['name'])
+    for column, metadata in db_columns.items():
+        if metadata['required'] == True:
+            if column not in import_data_columns:
+                missing_columns.append(column)
     missing_columns = make_string_list(missing_columns)
     return missing_columns
 
@@ -71,7 +71,7 @@ def check_for_unknown_columns(db_columns, import_data_columns):
     for imported_column in import_data_columns:
         recognized_column = False
         for db_column in db_columns:
-            if imported_column == db_column['name']:
+            if imported_column == db_column:
                 recognized_column = True
                 break
         if recognized_column == False:
@@ -82,16 +82,15 @@ def check_for_unknown_columns(db_columns, import_data_columns):
 
 def check_for_missing_optional_columns(db_columns, import_data_columns):
     missing_columns = []
-    for column in db_columns:
-        if column['name'] not in import_data_columns:
-            missing_columns.append(column['name'])
+    for column, metadata in db_columns.items():
+        if column not in import_data_columns:
+            missing_columns.append(column)
     missing_columns = make_string_list(missing_columns)
     return missing_columns
 
 
-def validate_columns(import_data, data_context):
+def get_cols_from_context(data_context):
     db_columns = []
-    # - Determine columns based on context
     if data_context == 'User-CSV-Upload-Submit':
         db_columns = User.db_columns
     elif data_context == 'Customer-CSV-Upload-Submit':
@@ -101,7 +100,11 @@ def validate_columns(import_data, data_context):
     else:
         flash('Error in validation. Upload was detected, but could not determine the source. Please contact the '
               'application administrator for assistance.', 'danger')
+    return db_columns
 
+
+def validate_columns(import_data, data_context):
+    db_columns = get_cols_from_context(data_context)
     if db_columns != []:
         # - Column validation - Required & Unknown columns.
         missing_required_columns = check_for_missing_required_columns(db_columns, import_data.columns)
@@ -143,13 +146,52 @@ def assess_import_permissions(current_user, import_data, data_context):
 
 # To do: validate each row. Add to erroneous/valid rows as necessary.
 # This is going to be the hard part, I think, as I'm going to have to call upon regexp functions for each column.
+def validate_field(key, val, db_columns):
+    validity = True
+    validators = db_columns[key]['validators']
+    validator_parameters = db_columns[key]['validator_parameters']
+    errors = ''
+
+    if validators == 'email':
+        validity = validate_email(val)
+        if validity == False:
+            errors = key.capitalize() + ' field is not valid.'
+    elif validators == 'selection':
+        key.lower()
+        if key in validator_parameters == False:
+            validity = False
+            errors = key.capitalize() + ' field not recognized as a valid selection.'
+    elif validators == 'string':
+        if validator_parameters['max']:
+            if len(val) > validator_parameters['max']:
+                validity = False
+                errors = key.capitalize() + ' field has too many characters.'
+        if validator_parameters['min']:
+            if len(val) < validator_parameters['min']:
+                validity = False
+                errors = key.capitalize() + ' field has too few characters.'
+
+    return validity, errors
+
+
 def validate_rows(import_data, data_context):
+    db_columns = get_cols_from_context(data_context)
     rows = {'erroneous_rows': [], 'valid_rows': []}
-    # debugging - not iteratable
-    # for row in import_data.rows:
-    #     #NEEDS WORK -- try form.validate_on_submit()?
-    #
-    #     return
+
+    for row in import_data.rows:
+        error_count = 0
+        for key, val in row.items():
+            validity, errors = validate_field(key, val, db_columns)
+            if validity == True:
+                continue
+            elif validity == False:
+                error_count += 1
+                erroneous_row = {}
+                erroneous_row['row_data'] = row
+                erroneous_row['errors'] = errors
+                rows['erroneous_rows'].append(erroneous_row)
+        if error_count == 0:
+            rows['valid_rows'].append(row)
 
     return rows
 
@@ -164,16 +206,22 @@ def validate_import(current_user, import_data, data_context):
         erroneous_rows = rows['erroneous_rows']
         if erroneous_rows != []:
             erroneous_row_string = ''
-            for row in erroneous_rows:
-                erroneous_row_string += str(row) + '\n'
+            i = 1
+            for erroneous_row in erroneous_rows:
+                erroneous_row_string += '<span style="text-decoration: underline">Row ' + str(i) + ': ' + \
+                    str(erroneous_row['errors']) + '</span><br/>' + str(erroneous_row['row_data']) + '<br/><br/>'
+                i += 1
             erroneous_row_string = erroneous_row_string[:-1]
-            flash('Some rows did not pass validation, and were not imported. Please correct the following rows, and try '
-                  'importing again:\n\n' + erroneous_row_string, 'danger')
+            error_message = Markup('<strong>Import Error: Validation</strong>. Some rows did not pass validation, and were not imported. Please correct the following rows, and try '
+                  'importing again: <br/><br/>'+ erroneous_row_string)
+            flash(error_message, 'danger')
 
         valid_rows = rows['valid_rows']
         return valid_rows
+
     elif authority == False:
         return redirect(request.referrer)
+
     else:
         flash('An unknown error occurred while trying to assess user permissions. Please contact the application '
               'administrator.', 'danger')
@@ -181,53 +229,55 @@ def validate_import(current_user, import_data, data_context):
 
 
 def add_to_db(data_to_add, data_context):
-    error_message = ''
     errors = []
-    # I think the below row.KEY is likely to cause problems. may need to do ['KEY'] instead for now, or otherwise
-    # set up as a class.
-    if data_context == '/user-management':
-        for row in data_to_add.rows:
+    if data_context == 'User-CSV-Upload-Submit':
+        for row in data_to_add:
             try:
-                db.session.add(User(username=row.username, email=row.email, password=row.password, admin_role=row.admin_role,
-                                    oms_role=row.oms_role, crm_role=row.crm_role, hrm_role=row.hrm_role,
-                                    ams_role=row.ams_role, mms_role=row.mms_role))
+                db.session.add(User(username=row['username'], email=row['email'], password=row['password'],
+                                    admin_role=row['admin_role'], oms_role=row['oms_role'], crm_role=row['crm_role'],
+                                    hrm_role=row['hrm_role'], ams_role=row['ams_role'], mms_role=row['mms_role']))
                 db.session.commit()
             except:
                 db.session.rollback()
-                errors.append(row.username)
-                flash('Validation error occurred. Make sure data is valid for all rows, and try uploading again.',
-                      'danger')
-    elif data_context == '/crm':
-        for row in data_to_add.rows:
-            try:
-                # Need to flesh out either more parameters, or *args.
-                db.session.add(Customers(name_last=row.name_last, name_first=row.name_first))
-                db.session.commit()
-            except:
-                db.session.rollback()
-                errors.append(row.name_last)
-                flash('Validation error occurred. Make sure data is valid for all rows, and try uploading again.',
-                      'danger')
-    elif data_context == '/hrm':
-        for row in data_to_add.rows:
+                errors.append(row)
+                # error_message = Markup('<strong>DB Import Error:</strong> We\'re sorry, but an unexpected error '
+                #     'occurred while attempting to add records to the database. Please contact the application administrator.')
+                # flash(error_message, 'danger')
+    elif data_context == 'Customers-CSV-Upload-Submit':
+        for row in data_to_add:
             try:
                 # Need to flesh out either more parameters, or *args.
-                db.session.add(Personnel(name_last=row.name_last))
+                db.session.add(Customers(name_last=row['name_last'], name_first=row['name_first']))
                 db.session.commit()
             except:
                 db.session.rollback()
-                errors.append(row.name_last)
-                flash('Validation error occurred. Make sure data is valid for all rows, and try uploading again.',
-                      'danger')
+                errors.append(row)
+                # flash('Validation error occurred. Make sure data is valid for all rows, and try uploading again.',
+                #       'danger')
+    elif data_context == 'Personnel-CSV-Upload-Submit':
+        for row in data_to_add:
+            try:
+                # Need to flesh out either more parameters, or *args.
+                db.session.add(Personnel(name_last=row['name_last']))
+                db.session.commit()
+            except:
+                db.session.rollback()
+                errors.append(row)
+                # flash('Validation error occurred. Make sure data is valid for all rows, and try uploading again.',
+                #       'danger')
     else:
         flash('Error occurred when attempting to import data. Upload was detected, but could not determine the source. '
               'Please contact the application administrator.', 'danger')
 
     if errors:
         if errors != []:
+            record_errors = ''
             for error in errors:
-                error_message += error + ', '
-        flash('Some issues occurred while trying to import data. The following entries were affected: {}'.format(error_message), 'danger')
+                record_errors += str(error) + '<br/>'
+            error_message = Markup('<strong>DB Import Error:</strong> We\'re sorry, but an unexpected error '
+                'occurred while attempting to add records to the database. The following entries were affected: <br/><br/>'
+                '{}'.format(record_errors) + '<br/><br/>Please contact the application administrator.')
+            flash(error_message, 'danger')
 
 
 # -- App Settings

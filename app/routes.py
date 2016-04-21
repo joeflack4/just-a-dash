@@ -203,10 +203,8 @@ def upload():
         import_data = Import_Data(f)
         data_context = request.form['form_submit']
         validated_data = validate_import(current_user, import_data, data_context)
-        add_to_db(validated_data, data_context)
-
-        # Maybe below line not necessary
-        # data_to_add = check_permissions_to_upload_data(current_user, validated_data, data_context)
+        if validated_data:
+            add_to_db(validated_data, data_context)
     else:
         flash('Error. Incorrect file type. The only file types accepted are: .csv', 'danger')
 

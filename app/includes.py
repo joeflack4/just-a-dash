@@ -123,7 +123,7 @@ def validate_columns(import_data, data_context):
                     'recognized. Those columns were as follows: <strong>{}</strong>'.format(unknown_columns) + \
                     '. Please correct the issue, and try again.')
                 flash(error_message, 'danger')
-            return redirect(request.referrer)
+            redirect(request.referrer)
 
         # - Column validation - Missing optional columns.
         missing_columns = check_for_missing_optional_columns(db_columns, import_data.columns)
@@ -213,14 +213,15 @@ def validate_import(current_user, import_data, data_context):
                 i += 1
             erroneous_row_string = erroneous_row_string[:-1]
             error_message = Markup('<strong>Import Error: Validation</strong>. Some rows did not pass validation, and were not imported. Please correct the following rows, and try '
-                  'importing again: <br/><br/>'+ erroneous_row_string)
+                                   'importing again: <br/><br/>'+ erroneous_row_string)
             flash(error_message, 'danger')
+            redirect(request.referrer)
 
         valid_rows = rows['valid_rows']
         return valid_rows
 
     elif authority == False:
-        return redirect(request.referrer)
+        redirect(request.referrer)
 
     else:
         flash('An unknown error occurred while trying to assess user permissions. Please contact the application '
@@ -274,9 +275,11 @@ def add_to_db(data_to_add, data_context):
             record_errors = ''
             for error in errors:
                 record_errors += str(error) + '<br/>'
-            error_message = Markup('<strong>DB Import Error:</strong> We\'re sorry, but an unexpected error '
-                'occurred while attempting to add records to the database. The following entries were affected: <br/><br/>'
-                '{}'.format(record_errors) + '<br/><br/>Please contact the application administrator.')
+            error_message = Markup('<strong>DB Import Error:</strong> We\'re sorry, but an error occurred while '
+                                   'attempting to add records to the database. The following entries were affected: '
+                                   '<br/><br/>{}'.format(record_errors) + '<br/><br/>It is possible that the record(s) '
+                                   'you are trying to add may already exist. If this is not the cae, please contact the '
+                                   'application administrator.')
             flash(error_message, 'danger')
 
 

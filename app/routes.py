@@ -13,7 +13,7 @@ import nltk
 # Marketing Module imports - from w/in app.
 from .stop_words import stops
 
-from .models import User, Messages, Result, AppNotifications
+from .models import User, Customers, Personnel, Messages, Result, AppNotifications
 from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDeleteForm, CustomerAddForm, \
     CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm, Config_Names_and_Aesthetics, Config_Secret_Key, \
     Config_Modules
@@ -196,6 +196,7 @@ def upload():
     if not f:
         flash("Error. File upload attempt detected, but no file found. Please contact the application administrator.",
               'danger')
+
     # To do: Get the conditional below to work, and remove the placeholder 'if True'.
     # if type(f) == '.csv':
     if True:
@@ -535,7 +536,8 @@ def crm():
              'Customer-Update-Form': CustomerUpdateForm(request.form)}
 
     try:
-        customers = CompanyContacts.get_customer_contacts()
+        customers = db.session.query(Customers)
+        # customers = CompanyContacts.get_customer_contacts()
     except:
         customers = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
 
@@ -589,10 +591,10 @@ def hrm():
              'Personnel-Update-Form': PersonnelUpdateForm(request.form)}
 
     try:
+        customers = db.session.query(Personnel)
         personnel = CompanyContacts.get_contacts()
     except:
-        personnel = CompanyContacts.get_contacts()
-        # personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+        personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
 
     return render_template('modules/hrm/index.html',
                                 icon="fa fa-users",

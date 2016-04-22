@@ -396,6 +396,7 @@ class Customers(Base_Model):
         'pfi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_city': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
@@ -478,6 +479,7 @@ class Customers(Base_Model):
     pfi = db.Column(db.String(500))
     address_street = db.Column(db.String(50))
     address_suite = db.Column(db.String(20))
+    address_city = db.Column(db.String(30))
     address_state = db.Column(db.String(2))
     address_county = db.Column(db.String(20))
     address_zip = db.Column(db.String(5))
@@ -590,6 +592,7 @@ class Personnel(Base_Model):
          'pfi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_city': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
@@ -620,6 +623,7 @@ class Personnel(Base_Model):
     pfi = db.Column(db.String(500))
     address_street = db.Column(db.String(50))
     address_suite = db.Column(db.String(20))
+    address_city = db.Column(db.String(30))
     address_state = db.Column(db.String(2))
     address_county = db.Column(db.String(20))
     address_zip = db.Column(db.String(5))

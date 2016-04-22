@@ -37,19 +37,39 @@
     <table class="table">
       <tr>
           <th>#</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Phone Number</th>
+          <th>Laste Name</th>
+          <th>E-mail</th>
+          <th>Admin Role</th>
+          <th>Module Roles</th>
       </tr>
-      {% for key, value in customer_data.items() %}
-        <tr data-toggle="modal" data-id="{{ value.id }}" data-target="#Customer-Update-Modal">
+      {% for customer in customer_data %}
+        <tr data-toggle="modal" data-id="{{ customer.id }}" data-target="#Customer-Update-Modal{{ customer.id }}">
           <td>{{ loop.index }}</td>
-          <td>{{ value.first_name }}</td>
-          <td>{{ value.last_name }}</td>
-          <td>{{ value.phone_number }}</td>
+          <td>{{ customer.name_last }},</td>
+          <td>{{ customer.name_first }}</td>
+          <td>{{ customer.phone1 }}</td>
+          <td>{{ customer.address_ }}, {{ customer.address_ }}, </td>
         </tr>
       {% endfor %}
     </table>
+
+{# -- Legacy Table -- #}
+{#    <table class="table">#}
+{#      <tr>#}
+{#          <th>#</th>#}
+{#          <th>First Name</th>#}
+{#          <th>Last Name</th>#}
+{#          <th>Phone Number</th>#}
+{#      </tr>#}
+{#      {% for key, value in customer_data.items() %}#}
+{#        <tr data-toggle="modal" data-id="{{ value.id }}" data-target="#Customer-Update-Modal">#}
+{#          <td>{{ loop.index }}</td>#}
+{#          <td>{{ value.first_name }}</td>#}
+{#          <td>{{ value.last_name }}</td>#}
+{#          <td>{{ value.phone_number }}</td>#}
+{#        </tr>#}
+{#      {% endfor %}#}
+{#    </table>#}
   </div>
 
 {%- endblock content %}

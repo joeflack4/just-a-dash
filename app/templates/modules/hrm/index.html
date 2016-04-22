@@ -37,19 +37,43 @@
     <table class="table">
       <tr>
           <th>#</th>
-          <th>First Name</th>
           <th>Last Name</th>
-          <th>Phone Number</th>
+          <th>First Name</th>
+          <th>Phone #</th>
+          <th>E-mail</th>
+          <th>Address</th>
       </tr>
-      {% for key, value in personnel_data.items() %}
-        <tr data-toggle="modal" data-id="{{ value.id }}" data-target="#Personnel-Update-Modal">
+      {% for p in personnel %}
+        <tr data-toggle="modal" data-id="{{ p.id }}" data-target="#Customer-Update-Modal{{ p.id }}">
           <td>{{ loop.index }}</td>
-          <td>{{ value.first_name }}</td>
-          <td>{{ value.last_name }}</td>
-          <td>{{ key }}</td>
+          <td>{{ p.name_last }}</td>
+          <td>{{ p.name_first }}</td>
+          <td>{{ p.phone1 }}</td>
+          <td>{{ p.email1 }}</td>
+          <td>{{ p.address_street }}, {% if p.address_suite %}{{ p.address_suite}},  {% endif %}
+              {{ p.address_city }}, {{ p.address_state }} {{ p.address_zip }}
+              {% if p.address_zip_extension %}-{{ p.address_zip_extension }}{% endif %}</td>
         </tr>
       {% endfor %}
     </table>
+
+{# -- Legacy Table -- #}
+{#    <table class="table">#}
+{#      <tr>#}
+{#          <th>#</th>#}
+{#          <th>First Name</th>#}
+{#          <th>Last Name</th>#}
+{#          <th>Phone Number</th>#}
+{#      </tr>#}
+{#      {% for key, value in personnel_data.items() %}#}
+{#        <tr data-toggle="modal" data-id="{{ value.id }}" data-target="#Personnel-Update-Modal">#}
+{#          <td>{{ loop.index }}</td>#}
+{#          <td>{{ value.first_name }}</td>#}
+{#          <td>{{ value.last_name }}</td>#}
+{#          <td>{{ key }}</td>#}
+{#        </tr>#}
+{#      {% endfor %}#}
+{#    </table>#}
   </div>
 
 {%- endblock content %}

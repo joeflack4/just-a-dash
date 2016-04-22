@@ -15,8 +15,8 @@ from .stop_words import stops
 
 from .models import User, Customers, Personnel, Messages, Result, AppNotifications
 from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDeleteForm, CustomerAddForm, \
-    CustomerUpdateForm, PersonnelAddForm, PersonnelUpdateForm, Config_Names_and_Aesthetics, Config_Secret_Key, \
-    Config_Modules
+    CustomerUpdateForm, CustomerDeleteForm, PersonnelAddForm, PersonnelUpdateForm, PersonelDeleteForm, \
+    Config_Names_and_Aesthetics, Config_Secret_Key, Config_Modules
 from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, \
     personnel_update_modal, user_csv_upload_modal, customer_csv_upload_modal, \
     personnel_csv_upload_modal
@@ -533,7 +533,8 @@ def crm():
     login_form = LoginForm(request.form)
     modals = {'CustomerAddModal': customer_add_modal, 'CustomerUpdateModal': customer_update_modal}
     forms = {'Customer-Add-Form': CustomerAddForm(request.form),
-             'Customer-Update-Form': CustomerUpdateForm(request.form)}
+             'Customer-Update-Form': CustomerUpdateForm(request.form),
+             'Customer-Delete-Form': CustomerDeleteForm(request.form)}
 
     try:
         customers = db.session.query(Customers)
@@ -547,7 +548,7 @@ def crm():
                            module_name="Customer Relationship Management",
                            page_name="CRM Home",
                            form_title="Customer",
-                           customer_data=customers,
+                           customers=customers,
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -588,11 +589,12 @@ def hrm():
     login_form = LoginForm(request.form)
     modals = {'PersonnelAddModal': personnel_add_modal, 'PersonnelUpdateModal': personnel_update_modal}
     forms = {'Personnel-Add-Form': PersonnelAddForm(request.form),
-             'Personnel-Update-Form': PersonnelUpdateForm(request.form)}
+             'Personnel-Update-Form': PersonnelUpdateForm(request.form),
+             'Personnel-Delete-Form': PersonelDeleteForm(request.form)}
 
     try:
-        customers = db.session.query(Personnel)
-        personnel = CompanyContacts.get_contacts()
+        personnel = db.session.query(Personnel)
+        # personnel = CompanyContacts.get_contacts()
     except:
         personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
 
@@ -602,7 +604,7 @@ def hrm():
                                 module_name="Human Resource Management",
                                 page_name="HRM Home",
                                 form_title="Personnel",
-                                personnel_data=personnel,
+                                personnel=personnel,
                                 messages=db.session.query(Messages),
                                 notifications=db.session.query(AppNotifications),
                                 login_form=login_form,

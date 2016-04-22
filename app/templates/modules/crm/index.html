@@ -37,18 +37,20 @@
     <table class="table">
       <tr>
           <th>#</th>
-          <th>Laste Name</th>
-          <th>E-mail</th>
-          <th>Admin Role</th>
-          <th>Module Roles</th>
+          <th>Last Name</th>
+          <th>First Name</th>
+          <th>Phone #</th>
+          <th>Address</th>
       </tr>
-      {% for customer in customer_data %}
-        <tr data-toggle="modal" data-id="{{ customer.id }}" data-target="#Customer-Update-Modal{{ customer.id }}">
+      {% for c in customers %}
+        <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
           <td>{{ loop.index }}</td>
-          <td>{{ customer.name_last }},</td>
-          <td>{{ customer.name_first }}</td>
-          <td>{{ customer.phone1 }}</td>
-          <td>{{ customer.address_ }}, {{ customer.address_ }}, </td>
+          <td>{{ c.name_last }}</td>
+          <td>{{ c.name_first }}</td>
+          <td>{{ c.phone1 }}</td>
+          <td>{{ c.address_street }}, {% if c.address_suite %}{{ c.address_suite}},  {% endif %}
+              {{ c.address_city }}, {{ c.address_state }} {{ c.address_zip }}
+              {% if c.address_zip_extension %}-{{ c.address_zip_extension }}{% endif %}</td>
         </tr>
       {% endfor %}
     </table>

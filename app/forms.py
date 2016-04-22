@@ -168,15 +168,15 @@ class CustomerAddForm(Form):
     form_id = 'Customer-Add-Form'
     crud_type = "Add"
     module = "Customer Relations"
-    sub_module = "Customer Management"
+    sub_module = "Customer List"
 
-    first_name = StringField('first name', render_kw={"placeholder": "first name"},
+    first_name = StringField('first name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[DataRequired(), Length(min=3, max=25)])
-    last_name = StringField('last name', render_kw={"placeholder": "last name"},
+    last_name = StringField('last name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
                             validators=[DataRequired(), Length(min=3, max=25)])
-    email = StringField('email', render_kw={"placeholder": "e-mail"},
+    email = StringField('email', render_kw={"placeholder": "E-mail", "section": "contact_info", 'label': 'E-mail'},
                         validators=[Email(message=None), Length(min=6, max=40)])
-    phone_number = StringField('phone number', render_kw={"placeholder": "phone number"},
+    phone_number = StringField('phone number', render_kw={"placeholder": "Phone Number", "section": "contact_info", 'label': 'Phone #'},
                                validators=[DataRequired(), Length(min=6, max=40)])
 
 
@@ -184,16 +184,25 @@ class CustomerUpdateForm(Form):
     form_id = 'Customer-Update-Form'
     crud_type = "Update"
     module = "Customer Relations"
-    sub_module = "Customer Management"
+    sub_module = "Customer List"
 
-    first_name = StringField('first_name', render_kw={"placeholder": "first name"},
+    customer_id = HiddenField('customer_id', validators=[Length(min=1, max=12)])
+    first_name = StringField('first_name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[Length(min=3, max=25)])
-    last_name = StringField('last_name', render_kw={"placeholder": "last name"},
+    last_name = StringField('last_name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
                             validators=[Length(min=3, max=25)])
-    email = StringField('email', render_kw={"placeholder": "e-mail"},
+    email = StringField('email', render_kw={"placeholder": "E-mail", "section": "contact_info", 'label': 'E-mail'},
                         validators=[Email(message=None), Length(min=6, max=40)])
-    phone_number = StringField('phone_number', render_kw={"placeholder": "phone number"},
+    phone_number = StringField('phone_number', render_kw={"placeholder": "Phone Number", "section": "contact_info", 'label': 'Phone #'},
                                validators=[Length(min=6, max=40)])
+
+class CustomerDeleteForm(BaseForm):
+    form_id = 'Customer-Delete-Form'
+    crud_type = "Delete"
+    module = "Customer Relations"
+    sub_module = "Customer List"
+
+    customer_id = HiddenField('customer_id', validators=[Length(min=1, max=12)])
 
 
 ##############
@@ -204,13 +213,13 @@ class PersonnelAddForm(Form):
     module = "Human Resources"
     sub_module = "HR Management"
 
-    first_name = StringField('first_name', render_kw={"placeholder": "first name"},
+    first_name = StringField('first_name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[DataRequired(), Length(min=3, max=25)])
-    last_name = StringField('last_name', render_kw={"placeholder": "last name"},
+    last_name = StringField('last_name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
                             validators=[DataRequired(), Length(min=3, max=25)])
-    email = StringField('email', render_kw={"placeholder": "e-mail"},
+    email = StringField('email', render_kw={"placeholder": "E-mail", "section": "contact_info", 'label': 'E-mail'},
                         validators=[Email(message=None), Length(min=6, max=40)])
-    phone_number = StringField('phone_number', render_kw={"placeholder": "phone number"},
+    phone_number = StringField('phone_number', render_kw={"placeholder": "Phone Number", "section": "contact_info", 'label': 'Phone #'},
                                validators=[DataRequired(), Length(min=6, max=40)])
 
 
@@ -218,13 +227,23 @@ class PersonnelUpdateForm(Form):
     form_id = 'Personnel-Update-Form'
     crud_type = "Update"
     module = "Human Resources"
-    sub_module = "HR Management"
+    sub_module = "Personnel List"
 
-    first_name = StringField('first_name', render_kw={"placeholder": "first name"},
+    personneL_id = HiddenField('personnel_id', validators=[Length(min=1, max=12)])
+    first_name = StringField('first_name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[Length(min=3, max=25)])
-    last_name = StringField('last_name', render_kw={"placeholder": "last name"},
+    last_name = StringField('last_name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
                             validators=[Length(min=3, max=25)])
-    email = StringField('email', render_kw={"placeholder": "e-mail"},
+    email = StringField('email', render_kw={"placeholder": "E-mail", "section": "contact_info", 'label': 'E-mail'},
                         validators=[Email(message=None), Length(min=6, max=40)])
-    phone_number = StringField('phone_number', render_kw={"placeholder": "phone number"},
+    phone_number = StringField('phone_number', render_kw={"placeholder": "Phone Number", "section": "contact_info", 'label': 'Phone #'},
                                validators=[Length(min=6, max=40)])
+
+
+class PersonelDeleteForm(BaseForm):
+    form_id = 'Personnel-Delete-Form'
+    crud_type = "Delete"
+    module = "Human Resources"
+    sub_module = "Personnel List"
+
+    personnel_id = HiddenField('personnel_id', validators=[Length(min=1, max=12)])

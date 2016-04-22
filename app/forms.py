@@ -229,7 +229,7 @@ class PersonnelUpdateForm(Form):
     module = "Human Resources"
     sub_module = "Personnel List"
 
-    personneL_id = HiddenField('personnel_id', validators=[Length(min=1, max=12)])
+    personnel_id = HiddenField('personnel_id', validators=[Length(min=1, max=12)])
     first_name = StringField('first_name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[Length(min=3, max=25)])
     last_name = StringField('last_name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},

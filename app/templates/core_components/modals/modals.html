@@ -302,15 +302,18 @@
                         {% for field in form %}
                           {% if field.render_kw['section'] == 'contact_info' %}
                             <div class="form-group">
-                              {% if field.render_kw['placeholder'] == 'first name' %}
+                              {% if field.render_kw['placeholder'] == 'First Name' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
-                                {{ field(placeholder=field.render_kw['placeholder'], value=c.first_name, class='form-control') }}
-                              {% elif field.render_kw['placeholder'] == 'last name' %}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.name_first, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Last Name' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
-                                {{ field(placeholder=field.render_kw['placeholder'], value=c.last_name, class='form-control') }}
-                              {% elif field.render_kw['placeholder'] == 'e-mail' %}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.name_last, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'E-mail' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
-                                {{ field(placeholder=field.render_kw['placeholder'], value=c.email, class='form-control') }}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.email1, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Phone Number' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.phone1, class='form-control') }}
                               {% else %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
                                 {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
@@ -417,15 +420,18 @@
                         {% for field in form %}
                           {% if field.render_kw['section'] == 'contact_info' %}
                             <div class="form-group">
-                              {% if field.render_kw['placeholder'] == 'first name' %}
+                              {% if field.render_kw['placeholder'] == 'First Name' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
-                                {{ field(placeholder=field.render_kw['placeholder'], value=p.first_name, class='form-control') }}
-                              {% elif field.render_kw['placeholder'] == 'last name' %}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.name_first, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Last Name' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
-                                {{ field(placeholder=field.render_kw['placeholder'], value=p.last_name, class='form-control') }}
-                              {% elif field.render_kw['placeholder'] == 'e-mail' %}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.name_last, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'E-mail' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
-                                {{ field(placeholder=field.render_kw['placeholder'], value=p.email, class='form-control') }}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.email1, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Phone Number' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.phone1, class='form-control') }}
                               {% else %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
                                 {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}

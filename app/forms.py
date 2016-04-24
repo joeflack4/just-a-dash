@@ -50,13 +50,13 @@ class Config_Names_and_Aesthetics(BaseForm):
     sub_module = "App Config"
 
     app_name = StringField('app_name', render_kw={"placeholder": "App Name", 'label': 'App Name'},
-                       validators=[DataRequired(), Length(min=1, max=50)])
+                       validators=[Optional(), Length(min=1, max=50)])
     app_icon = StringField('app_icon', render_kw={"placeholder": "App Icon", 'label': 'App Icon'},
-                           validators=[DataRequired(), Length(min=1, max=100)])
+                           validators=[Optional(), Length(min=1, max=100)])
     app_title = StringField('app_title', render_kw={"placeholder": "App Title", 'label': 'App Title'},
-                           validators=[DataRequired(), Length(min=1, max=50)])
+                           validators=[Optional(), Length(min=1, max=50)])
     app_short_title = StringField('app_short_title', render_kw={"placeholder": "App Shortened Title", 'label': 'App Shortened Title'},
-                           validators=[DataRequired(), Length(min=1, max=50)])
+                           validators=[Optional(), Length(min=1, max=50)])
 
 
 class Config_Secret_Key(BaseForm):
@@ -67,7 +67,7 @@ class Config_Secret_Key(BaseForm):
     sub_module = "App Config"
 
     secret_key = StringField('secret_key', render_kw={"placeholder": "Secret Key", 'label': 'Secret Key'},
-                           validators=[DataRequired(), Length(min=1, max=200)])
+                           validators=[Optional(), Length(min=1, max=200)])
 
 
 class Config_Modules(BaseForm):
@@ -129,9 +129,9 @@ class UserUpdateForm(BaseForm):
 
     user_id = HiddenField('user_id', validators=[Length(min=1, max=12)])
     username = StringField('username', render_kw={"placeholder": "Username", "section": "account", 'label': 'Username'},
-                            validators=[Length(min=6, max=25)])
+                            validators=[Optional(), Length(min=6, max=25)])
     email = StringField('email', render_kw={"placeholder": "E-mail", "section": "account", 'label': 'E-mail'},
-                            validators=[Email(message=None), Length(min=6, max=50)])
+                            validators=[Optional(), Email(message=None), Length(min=6, max=50)])
     password = PasswordField('password', render_kw={"placeholder": "Leave blank to leave unchanged.", "section": "account", 'label': 'Password'},
                             validators=[Optional(), Length(min=6, max=25)])
     confirm = PasswordField('confirm password', render_kw={"placeholder": "Leave blank to leave unchanged.", "section": "account", 'label': 'Confirm Password'},
@@ -170,14 +170,27 @@ class CustomerAddForm(Form):
     module = "Customer Relations"
     sub_module = "Customer List"
 
-    first_name = StringField('first name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
+    name_first = StringField('name_first', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[DataRequired(), Length(min=3, max=25)])
-    last_name = StringField('last name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
+    name_last = StringField('name_last', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
                             validators=[DataRequired(), Length(min=3, max=25)])
-    email = StringField('email', render_kw={"placeholder": "E-mail", "section": "contact_info", 'label': 'E-mail'},
-                        validators=[Email(message=None), Length(min=6, max=40)])
-    phone_number = StringField('phone number', render_kw={"placeholder": "Phone Number", "section": "contact_info", 'label': 'Phone #'},
+    email1 = StringField('email1', render_kw={"placeholder": "Primary E-mail", "section": "contact_info", 'label': 'Primary E-mail'},
+                        validators=[Optional(), Email(message=None), Length(min=6, max=40)])
+    phone1 = StringField('phone1', render_kw={"placeholder": "Primary Phone #", "section": "contact_info", 'label': 'Primary Phone #'},
                                validators=[DataRequired(), Length(min=6, max=40)])
+    address_street = StringField('address_street', render_kw={"placeholder": "Street Address", "section": "address",
+                                'label': 'Street Address'}, validators=[DataRequired(), Length(min=1, max=40)])
+    address_suite = StringField('address_suite', render_kw={"placeholder": "Apt./Suite #", "section": "address",
+                                'label': 'Apt./Suite #'}, validators=[Optional(), Length(min=1, max=20)])
+    address_city = StringField('address_city', render_kw={"placeholder": "City", "section": "address", 'label': 'City'},
+                               validators=[DataRequired(), Length(min=1, max=40)])
+    address_state = StringField('address_state', render_kw={"placeholder": "State", "section": "address", 'label': 'State'},
+                                validators=[DataRequired(), Length(min=2, max=2)])
+    address_zip = StringField('address_zip', render_kw={"placeholder": "Zip Code", "section": "address", 'label': 'Zip Code'},
+                              validators=[DataRequired(), Length(min=5, max=5)])
+    address_zip_extension = StringField('address_zip_extension', render_kw={"placeholder": "Zip Extension", "section": "address",
+                                        'label': 'Zip Extension'}, validators=[Optional(), Length(min=4, max=5)])
+
 
 
 class CustomerUpdateForm(Form):
@@ -187,21 +200,33 @@ class CustomerUpdateForm(Form):
     sub_module = "Customer List"
 
     customer_id = HiddenField('customer_id', validators=[Length(min=1, max=12)])
-    first_name = StringField('first_name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
-                             validators=[Length(min=3, max=25)])
-    last_name = StringField('last_name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
-                            validators=[Length(min=3, max=25)])
-    email = StringField('email', render_kw={"placeholder": "E-mail", "section": "contact_info", 'label': 'E-mail'},
-                        validators=[Email(message=None), Length(min=6, max=40)])
-    phone_number = StringField('phone_number', render_kw={"placeholder": "Phone Number", "section": "contact_info", 'label': 'Phone #'},
-                               validators=[Length(min=6, max=40)])
+    name_first = StringField('name_first', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
+                             validators=[Optional(), Length(min=3, max=25)])
+    name_last = StringField('name_last', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
+                            validators=[Optional(), Length(min=3, max=25)])
+    email1 = StringField('email1', render_kw={"placeholder": "Primary E-mail", "section": "contact_info", 'label': 'Primary E-mail'},
+                        validators=[Optional(), Email(message=None), Length(min=6, max=40)])
+    phone1 = StringField('phone1', render_kw={"placeholder": "Primary Phone #", "section": "contact_info", 'label': 'Primary Phone #'},
+                               validators=[Optional(), Length(min=6, max=40)])
+    address_street = StringField('address_street', render_kw={"placeholder": "Street Address", "section": "address", 'label': 'Street Address'},
+                             validators=[Optional(), Length(min=1, max=40)])
+    address_suite = StringField('address_suite', render_kw={"placeholder": "Apt./Suite #", "section": "address", 'label': 'Apt./Suite #'},
+                          validators=[Optional(), Length(min=1, max=20)])
+    address_city = StringField('address_city', render_kw={"placeholder": "City", "section": "address", 'label': 'City'},
+                          validators=[Optional(), Length(min=1, max=40)])
+    address_state = StringField('address_state', render_kw={"placeholder": "State", "section": "address", 'label': 'State'},
+                          validators=[Optional(), Length(min=2, max=2)])
+    address_zip = StringField('address_zip', render_kw={"placeholder": "Zip Code", "section": "address", 'label': 'Zip Code'},
+                          validators=[Optional(), Length(min=5, max=5)])
+    address_zip_extension = StringField('address_zip_extension', render_kw={"placeholder": "Zip Extension", "section": "address", 'label': 'Zip Extension'},
+                          validators=[Optional(), Length(min=4, max=5)])
+
 
 class CustomerDeleteForm(BaseForm):
     form_id = 'Customer-Delete-Form'
     crud_type = "Delete"
     module = "Customer Relations"
     sub_module = "Customer List"
-
     customer_id = HiddenField('customer_id', validators=[Length(min=1, max=12)])
 
 
@@ -213,14 +238,26 @@ class PersonnelAddForm(Form):
     module = "Human Resources"
     sub_module = "HR Management"
 
-    first_name = StringField('first_name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
+    name_first = StringField('name_first', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[DataRequired(), Length(min=3, max=25)])
-    last_name = StringField('last_name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
+    name_last = StringField('name_last', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
                             validators=[DataRequired(), Length(min=3, max=25)])
-    email = StringField('email', render_kw={"placeholder": "E-mail", "section": "contact_info", 'label': 'E-mail'},
-                        validators=[Email(message=None), Length(min=6, max=40)])
-    phone_number = StringField('phone_number', render_kw={"placeholder": "Phone Number", "section": "contact_info", 'label': 'Phone #'},
+    email1 = StringField('email1', render_kw={"placeholder": "Primary E-mail", "section": "contact_info", 'label': 'Primary E-mail'},
+                        validators=[Optional(), Email(message=None), Length(min=6, max=40)])
+    phone1 = StringField('phone1', render_kw={"placeholder": "Primary Phone #", "section": "contact_info", 'label': 'Primary Phone #'},
                                validators=[DataRequired(), Length(min=6, max=40)])
+    address_street = StringField('address_street', render_kw={"placeholder": "Street Address", "section": "address",
+                                'label': 'Street Address'}, validators=[DataRequired(), Length(min=1, max=40)])
+    address_suite = StringField('address_suite', render_kw={"placeholder": "Apt./Suite #", "section": "address",
+                                'label': 'Apt./Suite #'}, validators=[Optional(), Length(min=1, max=20)])
+    address_city = StringField('address_city', render_kw={"placeholder": "City", "section": "address", 'label': 'City'},
+                               validators=[DataRequired(), Length(min=1, max=40)])
+    address_state = StringField('address_state', render_kw={"placeholder": "State", "section": "address", 'label': 'State'},
+                                validators=[DataRequired(), Length(min=2, max=2)])
+    address_zip = StringField('address_zip', render_kw={"placeholder": "Zip Code", "section": "address", 'label': 'Zip Code'},
+                              validators=[DataRequired(), Length(min=5, max=5)])
+    address_zip_extension = StringField('address_zip_extension', render_kw={"placeholder": "Zip Extension", "section": "address",
+                                        'label': 'Zip Extension'}, validators=[Optional(), Length(min=4, max=5)])
 
 
 class PersonnelUpdateForm(Form):
@@ -230,14 +267,30 @@ class PersonnelUpdateForm(Form):
     sub_module = "Personnel List"
 
     personnel_id = HiddenField('personnel_id', validators=[Length(min=1, max=12)])
-    first_name = StringField('first_name', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
-                             validators=[Length(min=3, max=25)])
-    last_name = StringField('last_name', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
-                            validators=[Length(min=3, max=25)])
-    email = StringField('email', render_kw={"placeholder": "E-mail", "section": "contact_info", 'label': 'E-mail'},
-                        validators=[Email(message=None), Length(min=6, max=40)])
-    phone_number = StringField('phone_number', render_kw={"placeholder": "Phone Number", "section": "contact_info", 'label': 'Phone #'},
-                               validators=[Length(min=6, max=40)])
+    name_first = StringField('name_first', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
+                             validators=[Optional(), Length(min=3, max=25)])
+    name_last = StringField('name_last', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
+                            validators=[Optional(), Length(min=3, max=25)])
+    email1 = StringField('email1', render_kw={"placeholder": "Primary E-mail", "section": "contact_info", 'label': 'Primary E-mail'},
+                        validators=[Optional(), Email(message=None), Length(min=6, max=40)])
+    phone1 = StringField('phone1', render_kw={"placeholder": "Primary Phone #", "section": "contact_info", 'label': 'Primary Phone #'},
+                               validators=[Optional(), Length(min=6, max=40)])
+    address_street = StringField('address_street', render_kw={"placeholder": "Street Address", "section": "address",
+                                 'label': 'Street Address'}, validators=[Optional(), Length(min=1, max=40)])
+    address_suite = StringField('address_suite', render_kw={"placeholder": "Apt./Suite #", "section": "address",
+                                'label': 'Apt./Suite #'}, validators=[Optional(), Length(min=1, max=20)])
+    address_city = StringField('address_city', render_kw={"placeholder": "City", "section": "address", 'label': 'City'},
+                               validators=[Optional(), Length(min=1, max=40)])
+    address_state = StringField('address_state', render_kw={"placeholder": "State", "section": "address", 'label': 'State'},
+                                validators=[Optional(), Length(min=2, max=2)])
+    address_zip = StringField('address_zip', render_kw={"placeholder": "Zip Code", "section": "address", 'label': 'Zip Code'},
+                              validators=[Optional(), Length(min=5, max=5)])
+    address_zip_extension = StringField('address_zip_extension', render_kw={"placeholder": "Zip Extension", "section": "address",
+                                        'label': 'Zip Extension'}, validators=[Optional(), Length(min=4, max=5)])
+    # address_zip_extension = StringField('address_zip_extension', render_kw={"placeholder": "Zip Extension", "section": "address",
+    #                                 'label': 'Zip Extension'}, validators=[Optional(), Length(min=4, max=5)],
+    #                                 filters=[lambda x: x.strip() if x else ""])
+
 
 
 class PersonelDeleteForm(BaseForm):
@@ -245,5 +298,4 @@ class PersonelDeleteForm(BaseForm):
     crud_type = "Delete"
     module = "Human Resources"
     sub_module = "Personnel List"
-
     personnel_id = HiddenField('personnel_id', validators=[Length(min=1, max=12)])

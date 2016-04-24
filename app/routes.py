@@ -27,7 +27,8 @@ from .includes import csv2json_conversion, Import_Data, validate_import, add_to_
     add_user, update_user, delete_user, check_permissions_to_update_user, check_permissions_to_assign_user_role, \
     check_permissions_to_delete_user, check_permissions_to_change_App_Naming_and_Aesthetics, \
     update_names_and_aesthetics, check_permissions_to_change_App_Secret_Key, update_secret_key, \
-    check_permissions_to_change_App_Modules, update_modules
+    check_permissions_to_change_App_Modules, update_modules, add_customer, update_customer, delete_customer, \
+    add_personnel, update_personnel, delete_personnel
 from .route_decorators import app_basic_admin_required, app_super_admin_required, oms_basic_admin_required, \
     oms_super_admin_required, crm_basic_admin_required, crm_super_admin_required, hrm_basic_admin_required, \
     hrm_super_admin_required, ams_basic_admin_required, ams_super_admin_required, mms_basic_admin_required, \
@@ -378,7 +379,6 @@ def user_management():
              'User-Delete-Form': delete_form}
 
     if request.method == 'POST':
-
         if request.form['form_submit']:
 
             if request.form['form_submit'] == 'User-Add-Form':
@@ -409,12 +409,14 @@ def user_management():
                         update_user(update_form, role_superiorities)
                     else:
                         flash(record_update_error, 'danger')
+
             else:
-                flash('An error occurred while processing the submitted form. Please correct the errors in your form submission. If you feel this message is in error, please contact the application administrator.', 'danger')
-
+                flash('An error occurred while processing the submitted form. Please correct the errors in your form '
+                      'submission. If you feel this message is in error, please contact the application administrator.',
+                      'danger')
         else:
-            flash('Error. Data appears to have been posted to the server, but could not determine type of form submission. Please contact the application administrator.', 'danger')
-
+            flash('Error. Data appears to have been posted to the server, but could not determine type of form '
+                  'submission. Please contact the application administrator.', 'danger')
         return redirect((url_for('user_management')))
 
     return render_template('core_modules/app_settings/user_management.html',
@@ -532,15 +534,61 @@ def crm():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
     modals = {'CustomerAddModal': customer_add_modal, 'CustomerUpdateModal': customer_update_modal}
-    forms = {'Customer-Add-Form': CustomerAddForm(request.form),
-             'Customer-Update-Form': CustomerUpdateForm(request.form),
-             'Customer-Delete-Form': CustomerDeleteForm(request.form)}
-
+    add_form = CustomerAddForm(request.form)
+    update_form = CustomerUpdateForm(request.form)
+    delete_form = CustomerDeleteForm(request.form)
+    forms = {'Customer-Add-Form': add_form,
+             'Customer-Update-Form': update_form,
+             'Customer-Delete-Form': delete_form}
     try:
         customers = db.session.query(Customers)
         # customers = CompanyContacts.get_customer_contacts()
     except:
         customers = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+
+    if request.method == 'POST':
+        if request.form['form_submit']:
+
+            if request.form['form_submit'] == 'Customer-Add-Form':
+                # authority = check_permissions_to_add_customer(add_form, current_user)
+                authority = True
+                if authority == True:
+                    if add_form.validate_on_submit():
+                        add_customer(add_form)
+                    else:
+                        flash(record_add_error, 'danger')
+
+            elif request.form['form_submit'] == 'Customer-Delete-Form':
+                # authority = check_permissions_to_delete_customer(add_form, current_user)
+                authority = True
+                if authority == False:
+                    flash('Failed to delete customer. You do not have sufficient permissions.', 'danger')
+                elif authority == True:
+                    if delete_form.validate_on_submit():
+                        delete_customer(update_form)
+                    else:
+                        flash(record_delete_error, 'danger')
+                else:
+                    flash('One or more errors occurred while attempting to determine user permissions. Please contact '
+                          'the application administrator.', 'danger')
+
+            elif request.form['form_submit'] == 'Customer-Update-Form':
+                # authority = check_permissions_to_assign_update_customer(update_form, current_user)
+                authority = True
+                if authority == True:
+                    if update_form.validate_on_submit():
+                        update_customer(update_form)
+                    else:
+                        flash(record_update_error, 'danger')
+
+            else:
+                flash('An error occurred while processing the submitted form. Please correct the errors in your form '
+                      'submission. If you feel this message is in error, please contact the application administrator.',
+                    'danger')
+        else:
+            flash('Error. Data appears to have been posted to the server, but could not determine type of form '
+                  'submission. Please contact the application administrator.', 'danger')
+        return redirect((url_for('crm')))
 
     return render_template('modules/crm/index.html',
                            icon="ion-person-stalker",
@@ -588,15 +636,74 @@ def hrm():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
     modals = {'PersonnelAddModal': personnel_add_modal, 'PersonnelUpdateModal': personnel_update_modal}
-    forms = {'Personnel-Add-Form': PersonnelAddForm(request.form),
-             'Personnel-Update-Form': PersonnelUpdateForm(request.form),
-             'Personnel-Delete-Form': PersonelDeleteForm(request.form)}
-
+    add_form = PersonnelAddForm(request.form)
+    update_form = PersonnelUpdateForm(request.form)
+    delete_form = PersonelDeleteForm(request.form)
+    forms = {'Personnel-Add-Form': add_form,
+             'Personnel-Update-Form': update_form,
+             'Personnel-Delete-Form': delete_form}
     try:
         personnel = db.session.query(Personnel)
         # personnel = CompanyContacts.get_contacts()
     except:
         personnel = {"-": {"timestamp": "-", "first_name": "-", "last_name": "-", "phone_number": "-"}}
+
+    if request.method == 'POST':
+        if request.form['form_submit']:
+
+            if request.form['form_submit'] == 'Personnel-Add-Form':
+                # authority = check_permissions_to_add_personnel(add_form, current_user)
+                authority = True
+
+                #DEBUGGING
+                # new_form = {}
+                # flash(type(add_form))
+                # flash(add_form)
+                # for key, val in add_form.data.items():
+                #     if len(val) > 0:
+                #         new_form[key] = val
+
+                # new_form = PersonnelAddForm(new_form)
+                # flash(new_form)
+
+                if authority == True:
+                    #Debugging
+                    if add_form.validate_on_submit():
+                        add_personnel(add_form)
+                    else:
+                        flash(record_add_error, 'danger')
+
+            elif request.form['form_submit'] == 'Personnel-Delete-Form':
+                # authority = check_permissions_to_delete_personnel(add_form, current_user)
+                authority = True
+                if authority == False:
+                    flash( 'Failed to delete personnel. You do not have sufficient permissions.', 'danger')
+                elif authority == True:
+                    if delete_form.validate_on_submit():
+                        delete_personnel(update_form)
+                    else:
+                        flash(record_delete_error, 'danger')
+                else:
+                    flash( 'One or more errors occurred while attempting to determine user permissions. '
+                           'Please contact the application administrator.', 'danger')
+
+            elif request.form['form_submit'] == 'Personnel-Update-Form':
+                # authority = check_permissions_to_assign_update_personnel(update_form, current_user)
+                authority = True
+                if authority == True:
+                    if update_form.validate_on_submit():
+                        update_personnel(update_form)
+                    else:
+                        flash(record_update_error, 'danger')
+
+            else:
+                flash('An error occurred while processing the submitted form. Please correct the errors in your form '
+                      'submission. If you feel this message is in error, please contact the application administrator.',
+                      'danger')
+        else:
+            flash('Error. Data appears to have been posted to the server, but could not determine type of form '
+                  'submission. Please contact the application administrator.', 'danger')
+        return redirect((url_for('hrm')))
 
     return render_template('modules/hrm/index.html',
                                 icon="fa fa-users",

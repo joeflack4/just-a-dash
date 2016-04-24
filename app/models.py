@@ -542,11 +542,101 @@ class Customers(Base_Model):
     notes_case = db.Column(db.String(100))
     notes_other = db.Column(db.String(100))
 
-    def __init__(self, name_last, name_first):
-        self.last_name = name_last
-        self.first_name = name_first
+    def __init__(self, name_last, name_first, name_prefix, name_suffix, name_middle, email1, email2, phone1, phone2,
+                 phone3, phone4, phone5, pii_dob, pii_other, phi, pfi, address_street, address_suite, address_city,
+                 address_state, address_county, address_zip, address_zip_extension, billing_method, billing_frequency,
+                 billing_relation_name, billing_email, billing_address_street, billing_address_suite,
+                 billing_address_state, billing_address_county, billing_address_zip, billing_address_zip_extension,
+                 billing_notes, relation_1_name, relation_1_role, relation_2_name, relation_2_role, relation_3_name,
+                 relation_3_role, relation_4_name, relation_4_role, relation_5_name, relation_5_role, customer_type,
+                 customer_type_id1, customer_type_id2, customer_type_id3, service_1_id, service_1_day, service_1_hours,
+                 service_1_type, service_1_rate, service_2_id, service_2_day, service_2_hours, service_2_type,
+                 service_2_rate, service_3_id, service_3_day, service_3_hours, service_3_type, service_3_rate,
+                 service_4_id, service_4_day, service_4_hours, service_4_type, service_4_rate, service_5_id,
+                 service_5_day, service_5_hours, service_5_type, service_5_rate, service_6_id, service_6_day,
+                 service_6_hours, service_6_type, service_6_rate, notes_case, notes_other):
+        self.name_last = name_last
+        self.name_first = name_first
+        self.name_prefix = name_prefix
+        self.name_suffix = name_suffix
+        self.name_middle = name_middle
+        self.email1 = email1
+        self.email2 = email2
+        self.phone1 = phone1
+        self.phone2 = phone2
+        self.phone3 = phone3
+        self.phone4 = phone4
+        self.phone5 = phone5
+        self.pii_dob = pii_dob
+        self.pii_other = pii_other
+        self.phi = phi
+        self.pfi = pfi
+        self.address_street = address_street
+        self.address_suite = address_suite
+        self.address_city = address_city
+        self.address_state = address_state
+        self.address_county = address_county
+        self.address_zip = address_zip
+        self.address_zip_extension = address_zip_extension
+        self.billing_method = billing_method
+        self.billing_frequency = billing_frequency
+        self.billing_relation_name = billing_relation_name
+        self.billing_email = billing_email
+        self.billing_address_street = billing_address_street
+        self.billing_address_suite = billing_address_suite
+        self.billing_address_state = billing_address_state
+        self.billing_address_county = billing_address_county
+        self.billing_address_zip = billing_address_zip
+        self.billing_address_zip_extension = billing_address_zip_extension
+        self.billing_notes = billing_notes
+        self.relation_1_name = relation_1_name
+        self.relation_1_role = relation_1_role
+        self.relation_2_name = relation_2_name
+        self.relation_2_role = relation_2_role
+        self.relation_3_name = relation_3_name
+        self.relation_3_role = relation_3_role
+        self.relation_4_name = relation_4_name
+        self.relation_4_role = relation_4_role
+        self.relation_5_name = relation_5_name
+        self.relation_5_role = relation_5_role
+        self.customer_type = customer_type
+        self.customer_type_id1 = customer_type_id1
+        self.customer_type_id2 = customer_type_id2
+        self.customer_type_id3 = customer_type_id3
+        self.service_1_id = service_1_id
+        self.service_1_day = service_1_day
+        self.service_1_hours = service_1_hours
+        self.service_1_type = service_1_type
+        self.service_1_rate = service_1_rate
+        self.service_2_id = service_2_id
+        self.service_2_day = service_2_day
+        self.service_2_hours = service_2_hours
+        self.service_2_type = service_2_type
+        self.service_2_rate = service_2_rate
+        self.service_3_id = service_3_id
+        self.service_3_day = service_3_day
+        self.service_3_hours = service_3_hours
+        self.service_3_type = service_3_type
+        self.service_3_rate = service_3_rate
+        self.service_4_id = service_4_id
+        self.service_4_day = service_4_day
+        self.service_4_hours = service_4_hours
+        self.service_4_type = service_4_type
+        self.service_4_rate = service_4_rate
+        self.service_5_id = service_5_id
+        self.service_5_day = service_5_day
+        self.service_5_hours = service_5_hours
+        self.service_5_type = service_5_type
+        self.service_5_rate = service_5_rate
+        self.service_6_id = service_6_id
+        self.service_6_day = service_6_day
+        self.service_6_hours = service_6_hours
+        self.service_6_type = service_6_type
+        self.service_6_rate = service_6_rate
+        self.notes_case = notes_case
+        self.notes_other = notes_other
 
-    def __repr__(self):
+def __repr__(self):
         return '<customer id: {}>'.format(self.id)
 
 
@@ -634,8 +724,38 @@ class Personnel(Base_Model):
     relation_2_notes = db.Column(db.String(100))
     notes_other = db.Column(db.String(100))
 
-    def __init__(self, name_last):
+    def __init__(self, name_last, name_first, name_prefix, name_suffix, name_middle, email1, email2, phone1, phone2,
+                 phone3, phone4, phone5, pii_dob, pii_other, phi, pfi, address_street, address_suite, address_city,
+                 address_state, address_county, address_zip, address_zip_extension, relation_1_name, relation_1_notes,
+                 relation_2_name, relation_2_notes, notes_other):
         self.name_last = name_last
+        self.name_first = name_first
+        self.name_prefix = name_prefix
+        self.name_suffix = name_suffix
+        self.name_middle = name_middle
+        self.email1 = email1
+        self.email2 = email2
+        self.phone1 = phone1
+        self.phone2 = phone2
+        self.phone3 = phone3
+        self.phone4 = phone4
+        self.phone5 = phone5
+        self.pii_dob = pii_dob
+        self.pii_other = pii_other
+        self.phi = phi
+        self.pfi = pfi
+        self.address_street = address_street
+        self.address_suite = address_suite
+        self.address_city = address_city
+        self.address_state = address_state
+        self.address_county = address_county
+        self.address_zip = address_zip
+        self.address_zip_extension = address_zip_extension
+        self.relation_1_name = relation_1_name
+        self.relation_1_notes = relation_1_notes
+        self.relation_2_name = relation_2_name
+        self.relation_2_notes = relation_2_notes
+        self.notes_other = notes_other
 
     def __repr__(self):
         return '<personnel id: {}>'.format(self.id)

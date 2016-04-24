@@ -491,6 +491,249 @@ def delete_user(update_form):
     except:
         db.session.rollback()
         flash(user.id)
+        flash('An error occurred while trying to delete user. User may not exist or otherwise already be deleted. If '
+              'this is not the case, please contact the application administrator.', 'danger')
+
+
+# -- Customer Management
+def add_customer(add_form):
+    try:
+        new_customer = Customers(
+            name_last=add_form.name_last.data,
+            name_first=add_form.name_first.data,
+            phone1=add_form.phone1.data,
+            email1=add_form.email1.data,
+            name_prefix='',
+            name_suffix='',
+            name_middle='',
+            email2='',
+            phone2='',
+            phone3='',
+            phone4='',
+            phone5='',
+            pii_dob='',
+            pii_other='',
+            phi='',
+            pfi='',
+            address_street=add_form.address_street.data,
+            address_suite=add_form.address_suite.data,
+            address_city=add_form.address_city.data,
+            address_state=add_form.address_state.data,
+            address_county='',
+            address_zip=add_form.address_zip.data,
+            address_zip_extension=add_form.address_zip_extension.data,
+            billing_method='',
+            billing_frequency='',
+            billing_relation_name='',
+            billing_email='',
+            billing_address_street='',
+            billing_address_suite='',
+            billing_address_state='',
+            billing_address_county='',
+            billing_address_zip='',
+            billing_address_zip_extension='',
+            billing_notes='',
+            relation_1_name='',
+            relation_1_role='',
+            relation_2_name='',
+            relation_2_role='',
+            relation_3_name='',
+            relation_3_role='',
+            relation_4_name='',
+            relation_4_role='',
+            relation_5_name='',
+            relation_5_role='',
+            customer_type='',
+            customer_type_id1='',
+            customer_type_id2='',
+            customer_type_id3='',
+            service_1_id='',
+            service_1_day='',
+            service_1_hours='',
+            service_1_type='',
+            service_1_rate='',
+            service_2_id='',
+            service_2_day='',
+            service_2_hours='',
+            service_2_type='',
+            service_2_rate='',
+            service_3_id='',
+            service_3_day='',
+            service_3_hours='',
+            service_3_type='',
+            service_3_rate='',
+            service_4_id='',
+            service_4_day='',
+            service_4_hours='',
+            service_4_type='',
+            service_4_rate='',
+            service_5_id='',
+            service_5_day='',
+            service_5_hours='',
+            service_5_type='',
+            service_5_rate='',
+            service_6_id='',
+            service_6_day='',
+            service_6_hours='',
+            service_6_type='',
+            service_6_rate='',
+            notes_case='',
+            notes_other='')
+        db.session.add(new_customer)
+        db.session.commit()
+        flash('Customer successfully added!', 'success')
+    except:
+        db.session.rollback()
+        flash('Sorry! It seems an issue occurred while attempting to add customer to database. Please ensure that the '
+              'customer does not already exist. If you feel this is in error, please contact the application '
+              'administrator.', 'warning')
+
+
+def update_customer(update_form):
+    try:
+        fields_to_update = {}
+
+        customer_id = update_form.customer_id.data
+        customer = Customers.query.filter_by(id=customer_id)
+
+        if update_form.name_last.data != customer.first().name_last:
+            fields_to_update['name_last'] = update_form.name_last.data
+        if update_form.name_first.data != customer.first().name_first:
+            fields_to_update['name_first'] = update_form.name_first.data
+        if update_form.email1.data != customer.first().email1:
+            fields_to_update['email1'] = update_form.email1.data
+        if update_form.phone1.data != customer.first().phone1:
+            fields_to_update['phone1'] = update_form.phone1.data
+        if update_form.address_street.data != customer.first().address_street:
+            fields_to_update['address_street'] = update_form.address_street.data
+        if update_form.address_suite.data != customer.first().address_suite:
+            fields_to_update['address_suite'] = update_form.address_suite.data
+        if update_form.address_city.data != customer.first().address_city:
+            fields_to_update['address_city'] = update_form.address_city.data
+        if update_form.address_state.data != customer.first().address_state:
+            fields_to_update['address_state'] = update_form.address_state.data
+        if update_form.address_zip.data != customer.first().address_zip:
+            fields_to_update['address_zip'] = update_form.address_zip.data
+        if update_form.address_zip_extension.data != customer.first().address_zip_extension:
+            fields_to_update['address_zip_extension'] = update_form.address_zip_extension.data
+
+        if len(fields_to_update) == 0:
+            flash('No changes to user were detected in form submission. Customer has been left unchanged.', 'info')
+        else:
+            customer.update(dict(fields_to_update))
+            db.session.commit()
+            flash('Customer successfully updated!', 'success')
+    except:
+        db.session.rollback()
+        flash('Sorry! It seems an issue occurred while attempting to add/update customer. Please contact the application'
+              ' administrator.', 'warning')
+
+
+def delete_customer(update_form):
+    customer_id = update_form.customer_id.data
+    customer = Customers.query.filter_by(id=customer_id)
+    try:
+        customer.delete()
+        db.session.commit()
+        flash('Customer successfully deleted!', 'success')
+    except:
+        db.session.rollback()
+        flash(customer.id)
+        flash('An error occurred while trying to delete customer. User may not exist or otherwise already be deleted. '
+              'If this is not the case, please contact the application administrator.', 'danger')
+
+
+# -- Personnel Management
+def add_personnel(add_form):
+    try:
+        new_personnel = Personnel(
+            name_last=add_form.name_last.data,
+            name_first=add_form.name_first.data,
+            phone1=add_form.phone1.data,
+            email1=add_form.email1.data,
+            name_prefix='',
+            name_suffix='',
+            name_middle='',
+            email2='',
+            phone2='',
+            phone3='',
+            phone4='',
+            phone5='',
+            pii_dob='',
+            pii_other='',
+            phi='',
+            pfi='',
+            address_street=add_form.address_street.data,
+            address_suite=add_form.address_suite.data,
+            address_city=add_form.address_city.data,
+            address_state=add_form.address_state.data,
+            address_county='',
+            address_zip=add_form.address_zip.data,
+            address_zip_extension=add_form.address_zip_extension.data,
+            relation_1_name='',
+            relation_1_notes='',
+            relation_2_name='',
+            relation_2_notes='',
+            notes_other='')
+        db.session.add(new_personnel)
+        db.session.commit()
+        flash('Personnel successfully added!', 'success')
+    except:
+        db.session.rollback()
         flash(
-            'An error occurred while trying to delete user. User may not exist or otherwise already be deleted. If this is not the case, please contact the application administrator.',
-            'danger')
+            'Sorry! It seems an issue occurred while attempting to add personnel to database. Please ensure that the '
+            'personnel does not already exist. If you feel this is in error, please contact the application '
+            'administrator.', 'warning')
+
+
+def update_personnel(update_form):
+    try:
+        fields_to_update = {}
+
+        personnel_id = update_form.personnel_id.data
+        personnel = Personnel.query.filter_by(id=personnel_id)
+
+        if update_form.name_last.data != personnel.first().name_last:
+            fields_to_update['name_last'] = update_form.name_last.data
+        if update_form.name_first.data != personnel.first().name_first:
+            fields_to_update['name_first'] = update_form.name_first.data
+        if update_form.email1.data != personnel.first().email1:
+            fields_to_update['email1'] = update_form.email1.data
+        if update_form.phone1.data != personnel.first().phone1:
+            fields_to_update['phone1'] = update_form.phone1.data
+            fields_to_update['address_street'] = update_form.address_street.data
+        if update_form.address_suite.data != personnel.first().address_suite:
+            fields_to_update['address_suite'] = update_form.address_suite.data
+        if update_form.address_city.data != personnel.first().address_city:
+            fields_to_update['address_city'] = update_form.address_city.data
+        if update_form.address_state.data != personnel.first().address_state:
+            fields_to_update['address_state'] = update_form.address_state.data
+        if update_form.address_zip.data != personnel.first().address_zip:
+            fields_to_update['address_zip'] = update_form.address_zip.data
+        if update_form.address_zip_extension.data != personnel.first().address_zip_extension:
+            fields_to_update['address_zip_extension'] = update_form.address_zip_extension.data
+
+        if len(fields_to_update) == 0:
+            flash('No changes to user were detected in form submission. Personnel has been left unchanged.', 'info')
+        else:
+            personnel.update(dict(fields_to_update))
+            db.session.commit()
+            flash('Personnel successfully updated!', 'success')
+    except:
+        db.session.rollback()
+        flash('Sorry! It seems an issue occurred while attempting to add/update personnel. Please contact the application'
+              ' administrator.', 'warning')
+
+
+def delete_personnel(update_form):
+    personnel_id = update_form.personnel_id.data
+    personnel = Personnel.query.filter_by(id=personnel_id)
+    try:
+        personnel.delete()
+        db.session.commit()
+        flash('Personnel successfully deleted!', 'success')
+    except:
+        db.session.rollback()
+        flash(personnel.id)
+        flash('An error occurred while trying to delete personnel. User may not exist or otherwise already be deleted. '
+              'If this is not the case, please contact the application administrator.', 'danger')

@@ -63,12 +63,24 @@
 
                 {# Customer Add Form #}
                 {% elif form.form_id == 'Customer-Add-Form'%}
-                    <h3>Contact Information</h3>
+                    <h3>Basic Contact Information</h3>
                     {% for field in form %}
                       {% if field.render_kw['section'] == 'contact_info' %}
                         <div class="form-group">
                           <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
                           {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                          <p><span class="error">
+                            {% if field.errors %}
+                            {% for error in field.errors %} {{ error }} {% endfor %}
+                        {% endif %}</span></p></div>
+                      {% endif %}
+                    {% endfor %}
+                    <h3>Address</h3>
+                    {% for field in form %}
+                      {% if field.render_kw['section'] == 'address' %}
+                          <div class="form-group">
+                            <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
+                            {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
                           <p><span class="error">
                             {% if field.errors %}
                             {% for error in field.errors %} {{ error }} {% endfor %}
@@ -97,6 +109,18 @@
                         <div class="form-group">
                           <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
                           {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                          <p><span class="error">
+                            {% if field.errors %}
+                            {% for error in field.errors %} {{ error }} {% endfor %}
+                        {% endif %}</span></p></div>
+                      {% endif %}
+                    {% endfor %}
+                    <h3>Address</h3>
+                    {% for field in form %}
+                      {% if field.render_kw['section'] == 'address' %}
+                          <div class="form-group">
+                            <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
+                            {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
                           <p><span class="error">
                             {% if field.errors %}
                             {% for error in field.errors %} {{ error }} {% endfor %}
@@ -298,7 +322,7 @@
                     {{ form.csrf_token }}
 
                     {# Customer Update Form #}
-                        <h3>Contact Information</h3>
+                        <h3>Basic Contact Information</h3>
                         {% for field in form %}
                           {% if field.render_kw['section'] == 'contact_info' %}
                             <div class="form-group">
@@ -308,10 +332,10 @@
                               {% elif field.render_kw['placeholder'] == 'Last Name' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
                                 {{ field(placeholder=field.render_kw['placeholder'], value=c.name_last, class='form-control') }}
-                              {% elif field.render_kw['placeholder'] == 'E-mail' %}
+                              {% elif field.render_kw['placeholder'] == 'Primary E-mail' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
-                                {{ field(placeholder=field.render_kw['placeholder'], value=c.email1, class='form-control') }}
-                              {% elif field.render_kw['placeholder'] == 'Phone Number' %}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.email2, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Primary Phone #' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
                                 {{ field(placeholder=field.render_kw['placeholder'], value=c.phone1, class='form-control') }}
                               {% else %}
@@ -323,6 +347,39 @@
                                 {% for error in field.errors %} {{ error }} {% endfor %}
                             {% endif %}</span></p></div>
                           {% endif %}
+                        {% endfor %}
+
+                        <h3>Address</h3>
+                        {% for field in form %}
+                          {% if field.render_kw['section'] == 'address' %}
+                            <div class="form-group">
+                              {% if field.render_kw['placeholder'] == 'Street Address' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_street, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Apt./Suite #' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_suite, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'City' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_city, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'State' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_state, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Zip Code' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_zip, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Zip Extension' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_zip_extension, class='form-control') }}
+                              {% else %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                              {% endif %}
+                              <p><span class="error">
+                                {% if field.errors %}
+                                {% for error in field.errors %} {{ error }} {% endfor %}
+                              {% endif %}</span></p></div>
+                            {% endif %}
                         {% endfor %}
 
                         <h3>Other Information</h3>
@@ -426,10 +483,10 @@
                               {% elif field.render_kw['placeholder'] == 'Last Name' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
                                 {{ field(placeholder=field.render_kw['placeholder'], value=p.name_last, class='form-control') }}
-                              {% elif field.render_kw['placeholder'] == 'E-mail' %}
+                              {% elif field.render_kw['placeholder'] == 'Primary E-mail' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
                                 {{ field(placeholder=field.render_kw['placeholder'], value=p.email1, class='form-control') }}
-                              {% elif field.render_kw['placeholder'] == 'Phone Number' %}
+                              {% elif field.render_kw['placeholder'] == 'Primary Phone #' %}
                                 <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
                                 {{ field(placeholder=field.render_kw['placeholder'], value=p.phone1, class='form-control') }}
                               {% else %}
@@ -441,6 +498,39 @@
                                 {% for error in field.errors %} {{ error }} {% endfor %}
                             {% endif %}</span></p></div>
                           {% endif %}
+                        {% endfor %}
+
+                        <h3>Address</h3>
+                        {% for field in form %}
+                          {% if field.render_kw['section'] == 'address' %}
+                            <div class="form-group">
+                              {% if field.render_kw['placeholder'] == 'Street Address' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.address_street, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Apt./Suite #' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.address_suite, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'City' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.address_city, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'State' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.address_state, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Zip Code' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.address_zip, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Zip Extension' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=p.address_zip_extension, class='form-control') }}
+                              {% else %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                              {% endif %}
+                              <p><span class="error">
+                                {% if field.errors %}
+                                {% for error in field.errors %} {{ error }} {% endfor %}
+                              {% endif %}</span></p></div>
+                            {% endif %}
                         {% endfor %}
 
                         <h3>Other Information</h3>

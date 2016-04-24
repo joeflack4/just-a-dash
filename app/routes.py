@@ -23,7 +23,7 @@ from .modals import user_add_modal, user_update_modal, customer_add_modal, custo
 from .services.telephony.contacts import CompanyContacts
 from .services.telephony.sms import sms_response, sms_check_in_data
 from .services.telephony.calls import call_response, call_check_in_data
-from .includes import csv2json_conversion, Import_Data, validate_import, add_to_db, \
+from .includes import csv2json_conversion, Import_Data, validate_columns, validate_import, add_to_db, \
     add_user, update_user, delete_user, check_permissions_to_update_user, check_permissions_to_assign_user_role, \
     check_permissions_to_delete_user, check_permissions_to_change_App_Naming_and_Aesthetics, \
     update_names_and_aesthetics, check_permissions_to_change_App_Secret_Key, update_secret_key, \
@@ -204,9 +204,11 @@ def upload():
         f = csv2json_conversion(f)
         import_data = Import_Data(f)
         data_context = request.form['form_submit']
-        validated_data = validate_import(current_user, import_data, data_context)
-        if validated_data:
-            add_to_db(validated_data, data_context)
+        valid_schema = validate_columns(import_data, data_context)
+        if valid_schema == True:
+            validated_data = validate_import(current_user, import_data, data_context)
+            if validated_data:
+                add_to_db(validated_data, data_context)
     else:
         flash('Error. Incorrect file type. The only file types accepted are: .csv', 'danger')
 

@@ -199,7 +199,7 @@ class CustomerUpdateForm(Form):
     module = "Customer Relations"
     sub_module = "Customer List"
 
-    customer_id = HiddenField('customer_id', validators=[Length(min=1, max=12)])
+    id = HiddenField('id', validators=[Length(min=1, max=12)])
     name_first = StringField('name_first', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[Optional(), Length(min=3, max=25)])
     name_last = StringField('name_last', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
@@ -227,7 +227,7 @@ class CustomerDeleteForm(BaseForm):
     crud_type = "Delete"
     module = "Customer Relations"
     sub_module = "Customer List"
-    customer_id = HiddenField('customer_id', validators=[Length(min=1, max=12)])
+    id = HiddenField('id', validators=[Length(min=1, max=12)])
 
 
 ##############
@@ -266,7 +266,7 @@ class PersonnelUpdateForm(Form):
     module = "Human Resources"
     sub_module = "Personnel List"
 
-    personnel_id = HiddenField('personnel_id', validators=[Length(min=1, max=12)])
+    id = HiddenField('id', validators=[Length(min=1, max=12)])
     name_first = StringField('name_first', render_kw={"placeholder": "First Name", "section": "contact_info", 'label': 'First Name'},
                              validators=[Optional(), Length(min=3, max=25)])
     name_last = StringField('name_last', render_kw={"placeholder": "Last Name", "section": "contact_info", 'label': 'Last Name'},
@@ -283,8 +283,8 @@ class PersonnelUpdateForm(Form):
                                validators=[Optional(), Length(min=1, max=40)])
     address_state = StringField('address_state', render_kw={"placeholder": "State", "section": "address", 'label': 'State'},
                                 validators=[Optional(), Length(min=2, max=2)])
-    address_zip = StringField('address_zip', render_kw={"placeholder": "Zip Code", "section": "address", 'label': 'Zip Code'},
-                              validators=[Optional(), Length(min=5, max=5)])
+    address_zip = StringField('address_zip', render_kw={"placeholder": "Zip Code", "section": "address", 'label': 'Zip Code',
+                                'maxlength': 5, 'size': 5}, validators=[Optional(), Length(min=5, max=5)])
     address_zip_extension = StringField('address_zip_extension', render_kw={"placeholder": "Zip Extension", "section": "address",
                                         'label': 'Zip Extension'}, validators=[Optional(), Length(min=4, max=5)])
     # address_zip_extension = StringField('address_zip_extension', render_kw={"placeholder": "Zip Extension", "section": "address",
@@ -298,4 +298,4 @@ class PersonelDeleteForm(BaseForm):
     crud_type = "Delete"
     module = "Human Resources"
     sub_module = "Personnel List"
-    personnel_id = HiddenField('personnel_id', validators=[Length(min=1, max=12)])
+    id = HiddenField('id', validators=[Length(min=1, max=12)])

@@ -385,20 +385,25 @@
                         <h3>Other Information</h3>
                         {% for field in form %}
                           {% if field.render_kw['section'] == '' or not field.render_kw['section'] %}
-                            <div class="form-group">
-                              <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
-                              {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
-                              <p><span class="error">
-                                {% if field.errors %}
-                                {% for error in field.errors %} {{ error }} {% endfor %}
-                            {% endif %}</span></p></div>
+                            {% if field.id != 'csrf_token' %}
+                            {% if field.id != 'id' %}
+                                <div class="form-group">
+                                  <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+                                  {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                                  <p><span class="error">
+                                    {% if field.errors %}
+                                    {% for error in field.errors %} {{ error }} {% endfor %}
+                                    {% endif %}
+                                  </span></p></div>
+                             {% endif %}
+                            {% endif %}
                           {% endif %}
                         {% endfor %}
 
                     <div class="modal-footer">
                         <div style="float:left">
                           <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#ConfirmDelete{{ c.id }}">Delete</button>
-                          {{ form.customer_id(value=c.id) }}
+                          {{ form.id(value=c.id) }}
                         </div>
                         <div style="float:right">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -427,7 +432,7 @@
               <form id="Customer-Delete-Form{{ c.id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
                 {% set form = forms['Customer-Delete-Form'] %}
               {{ form.csrf_token }}
-              {{ form.customer_id(value=c.id) }}
+              {{ form.id(value=c.id) }}
 
               <div class="modal-footer">
                 <div style="float:left">
@@ -536,20 +541,25 @@
                         <h3>Other Information</h3>
                         {% for field in form %}
                           {% if field.render_kw['section'] == '' or not field.render_kw['section'] %}
-                            <div class="form-group">
-                              <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
-                              {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
-                              <p><span class="error">
-                                {% if field.errors %}
-                                {% for error in field.errors %} {{ error }} {% endfor %}
-                            {% endif %}</span></p></div>
+                            {% if field.id != 'csrf_token' %}
+                            {% if field.id != 'id' %}
+                                <div class="form-group">
+                                  <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+                                  {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                                  <p><span class="error">
+                                    {% if field.errors %}
+                                    {% for error in field.errors %} {{ error }} {% endfor %}
+                                    {% endif %}
+                                  </span></p></div>
+                             {% endif %}
+                            {% endif %}
                           {% endif %}
                         {% endfor %}
 
                     <div class="modal-footer">
+                        {{ form.id(value=p.id) }}
                         <div style="float:left">
                           <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#ConfirmDelete{{ p.id }}">Delete</button>
-                          {{ form.personnel_id(value=p.id) }}
                         </div>
                         <div style="float:right">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -578,7 +588,7 @@
               <form id="Personnel-Delete-Form{{ p.id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
                 {% set form = forms['Personnel-Delete-Form'] %}
               {{ form.csrf_token }}
-              {{ form.personnel_id(value=p.id) }}
+              {{ form.id(value=p.id) }}
 
               <div class="modal-footer">
                 <div style="float:left">

@@ -104,6 +104,7 @@ def get_cols_from_context(data_context):
 
 
 def validate_columns(import_data, data_context):
+    valid_schema = True
     db_columns = get_cols_from_context(data_context)
     if db_columns != []:
         # - Column validation - Required & Unknown columns.
@@ -123,16 +124,18 @@ def validate_columns(import_data, data_context):
                     'recognized. Those columns were as follows: <strong>{}</strong>'.format(unknown_columns) + \
                     '. Please correct the issue, and try again.')
                 flash(error_message, 'danger')
-            redirect(request.referrer)
+            valid_schema = False
+            # Debugging - I want this to cancel function calls and simply redirect.
+            # redirect(request.referrer)
 
         # - Column validation - Missing optional columns.
         missing_columns = check_for_missing_optional_columns(db_columns, import_data.columns)
         if missing_columns != '':
             message = Markup('During import, it was determined that some optional columns were not included. Those ' \
                              'columns were as follows: <strong>{}</strong>'.format(
-                missing_columns) + '. The rest of the data, '
-                                   'however, was included for processing as normal.')
+                             missing_columns) + '. The rest of the data, however, was included for processing as normal.')
             flash(message, 'info')
+    return valid_schema
 
 
 def assess_import_permissions(current_user, import_data, data_context):
@@ -197,8 +200,10 @@ def validate_rows(import_data, data_context):
 
 
 def validate_import(current_user, import_data, data_context):
-    validate_columns(import_data, data_context)
-    authority = assess_import_permissions(current_user, import_data, data_context)
+    # validate_columns(import_data, data_context)
+    authority = True
+    if data_context == 'User-CSV-Upload-Submit':
+        authority = assess_import_permissions(current_user, import_data, data_context)
 
     if authority == True:
         rows = validate_rows(import_data, data_context)
@@ -593,7 +598,7 @@ def update_customer(update_form):
     try:
         fields_to_update = {}
 
-        customer_id = update_form.customer_id.data
+        customer_id = update_form.id.data
         customer = Customers.query.filter_by(id=customer_id)
 
         if update_form.name_last.data != customer.first().name_last:
@@ -630,7 +635,7 @@ def update_customer(update_form):
 
 
 def delete_customer(update_form):
-    customer_id = update_form.customer_id.data
+    customer_id = update_form.id.data
     customer = Customers.query.filter_by(id=customer_id)
     try:
         customer.delete()
@@ -690,7 +695,7 @@ def update_personnel(update_form):
     try:
         fields_to_update = {}
 
-        personnel_id = update_form.personnel_id.data
+        personnel_id = update_form.id.data
         personnel = Personnel.query.filter_by(id=personnel_id)
 
         if update_form.name_last.data != personnel.first().name_last:
@@ -726,7 +731,7 @@ def update_personnel(update_form):
 
 
 def delete_personnel(update_form):
-    personnel_id = update_form.personnel_id.data
+    personnel_id = update_form.id.data
     personnel = Personnel.query.filter_by(id=personnel_id)
     try:
         personnel.delete()

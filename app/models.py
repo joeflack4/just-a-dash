@@ -349,16 +349,16 @@ class Contacts(Base_Model):
     phi = db.Column(db.String(500))
     pfi = db.Column(db.String(500))
     address_street = db.Column(db.String(50))
-    address_suite = db.Column(db.String(20))
+    address_suite = db.Column(db.String(30))
     address_state = db.Column(db.String(2))
     address_county = db.Column(db.String(20))
     address_zip = db.Column(db.String(5))
     address_zip_extension = db.Column(db.String(4))
     relation_1_name = db.Column(db.String(100))
-    relation_1_notes = db.Column(db.String(100))
+    relation_1_notes = db.Column(db.String(500))
     relation_2_name = db.Column(db.String(100))
-    relation_2_notes = db.Column(db.String(100))
-    notes_other = db.Column(db.String(100))
+    relation_2_notes = db.Column(db.String(500))
+    notes_other = db.Column(db.String(1000))
 
     def __init__(self, name_last, name_first):
         self.last_name = name_last
@@ -378,14 +378,14 @@ class Customers(Base_Model):
     __tablename__ = 'crm_customers'
     # - db_columns is used for validating .csv imports.
     db_columns = {
-        'name_last': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 6, 'max': 50}},
-        'name_first': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 6, 'max': 50}},
+        'name_last': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 1, 'max': 50}},
+        'name_first': {'required': True, 'validators': 'string', 'validator_parameters': {'min': 1, 'max': 50}},
         'name_prefix': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'name_suffix': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'name_middle': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'email1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'email2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'phone1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'phone1': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'phone2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'phone3': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'phone4': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
@@ -394,24 +394,24 @@ class Customers(Base_Model):
         'pii_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'phi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'pfi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'address_city': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_street': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 30}},
+        'address_city': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_state': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'address_zip': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_method': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_frequency': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_relation_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_email': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'billing_address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 30}},
         'billing_address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'billing_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 1000}},
         'relation_1_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'relation_1_role': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'relation_2_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
@@ -456,8 +456,8 @@ class Customers(Base_Model):
         'service_6_hours': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'service_6_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'service_6_rate': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'notes_case': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'notes_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}}
+        'notes_case': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 1000}},
+        'notes_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 1000}}
     }
 
     id = db.Column(db.Integer, primary_key=True)
@@ -478,7 +478,7 @@ class Customers(Base_Model):
     phi = db.Column(db.String(500))
     pfi = db.Column(db.String(500))
     address_street = db.Column(db.String(50))
-    address_suite = db.Column(db.String(20))
+    address_suite = db.Column(db.String(30))
     address_city = db.Column(db.String(30))
     address_state = db.Column(db.String(2))
     address_county = db.Column(db.String(20))
@@ -489,12 +489,12 @@ class Customers(Base_Model):
     billing_relation_name = db.Column(db.String(50))
     billing_email = db.Column(db.String(50))
     billing_address_street = db.Column(db.String(50))
-    billing_address_suite = db.Column(db.String(20))
+    billing_address_suite = db.Column(db.String(30))
     billing_address_state = db.Column(db.String(2))
     billing_address_county = db.Column(db.String(20))
     billing_address_zip = db.Column(db.String(5))
     billing_address_zip_extension = db.Column(db.String(4))
-    billing_notes = db.Column(db.String(50))
+    billing_notes = db.Column(db.String(1000))
     relation_1_name = db.Column(db.String(100))
     relation_1_role = db.Column(db.String(100))
     relation_2_name = db.Column(db.String(100))
@@ -539,8 +539,8 @@ class Customers(Base_Model):
     service_6_hours = db.Column(db.String(100))
     service_6_type = db.Column(db.String(100))
     service_6_rate = db.Column(db.String(10))
-    notes_case = db.Column(db.String(100))
-    notes_other = db.Column(db.String(100))
+    notes_case = db.Column(db.String(1000))
+    notes_other = db.Column(db.String(1000))
 
     def __init__(self, name_last, name_first, name_prefix, name_suffix, name_middle, email1, email2, phone1, phone2,
                  phone3, phone4, phone5, pii_dob, pii_other, phi, pfi, address_street, address_suite, address_city,
@@ -671,7 +671,7 @@ class Personnel(Base_Model):
          'name_middle': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'email1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'email2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'phone1': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'phone1': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'phone2': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'phone3': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'phone4': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
@@ -680,18 +680,18 @@ class Personnel(Base_Model):
          'pii_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'phi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'pfi': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'address_city': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_street': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 30}},
+         'address_city': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_state': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'address_zip': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
          'relation_1_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'relation_1_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+         'relation_1_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 500}},
          'relation_2_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'relation_2_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-         'notes_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}}
+         'relation_2_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 500}},
+         'notes_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 1000}}
     }
 
     id = db.Column(db.Integer, primary_key=True)
@@ -712,17 +712,17 @@ class Personnel(Base_Model):
     phi = db.Column(db.String(500))
     pfi = db.Column(db.String(500))
     address_street = db.Column(db.String(50))
-    address_suite = db.Column(db.String(20))
+    address_suite = db.Column(db.String(30))
     address_city = db.Column(db.String(30))
     address_state = db.Column(db.String(2))
     address_county = db.Column(db.String(20))
     address_zip = db.Column(db.String(5))
     address_zip_extension = db.Column(db.String(4))
     relation_1_name = db.Column(db.String(100))
-    relation_1_notes = db.Column(db.String(100))
+    relation_1_notes = db.Column(db.String(500))
     relation_2_name = db.Column(db.String(100))
-    relation_2_notes = db.Column(db.String(100))
-    notes_other = db.Column(db.String(100))
+    relation_2_notes = db.Column(db.String(500))
+    notes_other = db.Column(db.String(1000))
 
     def __init__(self, name_last, name_first, name_prefix, name_suffix, name_middle, email1, email2, phone1, phone2,
                  phone3, phone4, phone5, pii_dob, pii_other, phi, pfi, address_street, address_suite, address_city,

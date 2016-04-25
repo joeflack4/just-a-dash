@@ -640,12 +640,18 @@
                 <li>Data in all cells must be valid.</li>
               </ul>
 
+              <h5><strong>About Column Names</strong></h5>
+              <p>Column headings (the first row in the file) must contain text matching the exact column names specified
+                  below. They can appear in any order.</p>
+                  <p style="text-decoration: underline">Required Columns</p>
+                    <p>{{ upload_columns['required'] }}</p>
+                  <p style="text-decoration: underline">Optional Columns</p>
+                    <p>{{ upload_columns['optional'] }}</p>
               {#CSV Modal Header Body -> User Management#}
               {% if modal.id == 'User-CSV-Upload-Modal' %}
-              <h5><strong>About Column Names</strong></h5>
-              <p>To upload users, make sure that the column headings (the first row in the file)contain text
-                matching following, exactly: 'username', 'email', 'password', 'admin_role'. For each module in your app,
-                there should be a column such as 'mod_role', where 'mod' is the 3-letter abbreviationfor the module. For example
+              {#              <strong>'username', 'email', 'password', 'admin_role'</strong>.#}
+              <p>Note: For each module in your app,
+                there should be a column such as <strong>'mod_role'</strong>, where 'mod' is the 3-letter abbreviationfor the module. For example
                 , using only only the 5 default modules included in this app, the columns would be as follows: 'oms_role',
                 'crm_role', 'hrm_role', 'ams_role', 'mms_role'.</p>
               <h5><strong>About User Roles</strong></h5>
@@ -661,25 +667,14 @@
                 Any user rows which contain invalid data not matching this criteria will be rejected.</p>
 
               {#CSV Modal Header Body -> Customer List#}
-              {% elif modal.id == 'Customer-CSV-Upload-Modal' %}
-              <h5><strong>About Column Names</strong></h5>
-              <p>Make sure that the column headings (the first row in the file)contain text
-                matching following, exactly: <strong>placeholder</strong>.
-              <h5><strong>About Data Validation</strong></h5>
-              <p>Please ensure that all data is valid. Valid names, for example, are 6-25 characters. E-mails must be 6-50
-                characters and be correctly formatted. <strong>placeholder</strong>
-                Any user rows which contain invalid data not matching this criteria will be rejected.</p>
-
               {#CSV Modal Header Body -> Personnel List#}
-              {% elif modal.id == 'Personnel-CSV-Upload-Modal' %}
-              <h5><strong>About Column Names</strong></h5>
-              <p>Make sure that the column headings (the first row in the file)contain text
-                matching following, exactly: <strong>placeholder</strong>.
+              {#              {% elif modal.id == 'Customer-CSV-Upload-Modal' %}#}
+              {#              {% elif modal.id == 'Personnel-CSV-Upload-Modal' %}#}
+              {% else %}
               <h5><strong>About Data Validation</strong></h5>
               <p>Please ensure that all data is valid. Valid names, for example, are 6-25 characters. E-mails must be 6-50
-                characters and be correctly formatted. <strong>placeholder</strong>
+                characters and be correctly formatted.
                 Any user rows which contain invalid data not matching this criteria will be rejected.</p>
-
               {% endif %}
 
               {#CSV Modal Footer#}

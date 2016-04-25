@@ -49,8 +49,7 @@
           <td>{{ c.name_first }}</td>
           <td>{{ c.phone1 }}</td>
           <td>{{ c.address_street }}, {% if c.address_suite %}{{ c.address_suite}},  {% endif %}
-              {{ c.address_city }}, {{ c.address_state }} {{ c.address_zip }}
-              {% if c.address_zip_extension %}-{{ c.address_zip_extension }}{% endif %}</td>
+              {{ c.address_city }}, {{ c.address_state }} {{ c.address_zip }}{% if c.address_zip_extension %}-{{ c.address_zip_extension }}{% endif %}</td>
         </tr>
       {% endfor %}
     </table>

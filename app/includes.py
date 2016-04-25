@@ -16,6 +16,8 @@ from validate_email import validate_email
 
 # - Classes
 class Import_Data():
+    formatted_rows = []
+
     def get_columns(self, rows):
         columns = []
         for key in rows[0]:
@@ -163,16 +165,24 @@ def validate_field(key, val, db_columns):
         key.lower()
         if key in validator_parameters == False:
             validity = False
-            errors = key.capitalize() + ' field not recognized as a valid selection.'
+            errors = 'The <strong>' + key + '</strong> field was not recognized as a valid selection.'
     elif validators == 'string':
-        if validator_parameters['max']:
-            if len(val) > validator_parameters['max']:
-                validity = False
-                errors = key.capitalize() + ' field has too many characters.'
-        if validator_parameters['min']:
-            if len(val) < validator_parameters['min']:
-                validity = False
-                errors = key.capitalize() + ' field has too few characters.'
+        try:
+            if validator_parameters['max']:
+                if len(val) > validator_parameters['max']:
+                    validity = False
+                    errors = 'The <strong>' + key + '</strong> field contained data (<strong>' + val + '</strong>) which exceeded the' \
+                             ' maximum characters requirement of <strong>' + str(validator_parameters['max']) + '</strong>.'
+        except KeyError:
+            validity = True
+        try:
+            if validator_parameters['min']:
+                if len(val) < validator_parameters['min']:
+                    validity = False
+                    errors = 'The <strong>' + key + '</strong> field contained data (<strong>' + val + '</strong>) which did not meet the' \
+                             ' minimum characters requirement of <strong>' + str(validator_parameters['min']) + '</strong>.'
+        except KeyError:
+            validity = True
 
     return validity, errors
 
@@ -180,19 +190,39 @@ def validate_field(key, val, db_columns):
 def validate_rows(import_data, data_context):
     db_columns = get_cols_from_context(data_context)
     rows = {'erroneous_rows': [], 'valid_rows': []}
+    formatted_rows = []
 
+    # Remove Empty Column(s)
     for row in import_data.rows:
+        for key, val in row.items():
+            if key == '':
+                del row[key]
+                break
+
+    # Remove Columns with Empty Values
+    for row in import_data.rows:
+        formatted_row = {}
+        for key, val in row.items():
+            if val != '':
+                formatted_row[key] = val
+        formatted_rows.append(formatted_row)
+    import_data.formatted_rows = formatted_rows
+
+    # Separate Valid/Erroneous Rows
+    # for row in import_data.rows:
+    for row in import_data.formatted_rows:
         error_count = 0
         for key, val in row.items():
-            validity, errors = validate_field(key, val, db_columns)
-            if validity == True:
-                continue
-            elif validity == False:
-                error_count += 1
-                erroneous_row = {}
-                erroneous_row['row_data'] = row
-                erroneous_row['errors'] = errors
-                rows['erroneous_rows'].append(erroneous_row)
+            if key != '':
+                validity, errors = validate_field(key, val, db_columns)
+                if validity == True:
+                    continue
+                elif validity == False:
+                    error_count += 1
+                    erroneous_row = {}
+                    erroneous_row['row_data'] = row
+                    erroneous_row['errors'] = errors
+                    rows['erroneous_rows'].append(erroneous_row)
         if error_count == 0:
             rows['valid_rows'].append(row)
 
@@ -200,32 +230,47 @@ def validate_rows(import_data, data_context):
 
 
 def validate_import(current_user, import_data, data_context):
-    # validate_columns(import_data, data_context)
     authority = True
     if data_context == 'User-CSV-Upload-Submit':
         authority = assess_import_permissions(current_user, import_data, data_context)
 
     if authority == True:
         rows = validate_rows(import_data, data_context)
-
         erroneous_rows = rows['erroneous_rows']
-        if erroneous_rows != []:
-            erroneous_row_string = ''
+
+        # Display errors.
+        if len(erroneous_rows) > 0:
+            erroneous_row_string = '<ul>'
             i = 1
+
             for erroneous_row in erroneous_rows:
-                erroneous_row_string += '<span style="text-decoration: underline">Row ' + str(i) + ': ' + \
-                    str(erroneous_row['errors']) + '</span><br/>' + str(erroneous_row['row_data']) + '<br/><br/>'
+                erroneous_row_string += '<li>Row ' + str(i) + ': ' + \
+                    str(erroneous_row['errors']) + '</li>'
                 i += 1
             erroneous_row_string = erroneous_row_string[:-1]
-            error_message = Markup('<strong>Import Error: Validation</strong>. Some rows did not pass validation, and were not imported. Please correct the following rows, and try '
+            erroneous_row_string += '</ul>'
+            error_message = Markup('<strong>Import Error: Validation</strong>. Some rows did not pass validation, and '
+                                   'thus no data has been imported. Please correct the following rows, and try '
                                    'importing again: <br/><br/>'+ erroneous_row_string)
+
+            # - Error Handling: Unfortunately, Flask's 'flash()' functionality will fail silently and display nothing if
+            # there is/are flashed message(s) which exceed a certain amount of characters. In personal trials, the
+            # maximum amount that I was able to successfully display was somewhere between a successful error message
+            # of '68,493' characters, and a silent error of a message containing '91,326' characters.
+            if len(error_message) > 68493:
+                error_message = Markup('<strong>Import Error: Validation</strong>. Some rows did not pass validation, '
+                                       'and thus no data has been imported. Please ensure that all fields meet the '
+                                       'required constraints.')
+
             flash(error_message, 'danger')
             redirect(request.referrer)
 
+        # Return valid rows.
         valid_rows = rows['valid_rows']
         return valid_rows
 
     elif authority == False:
+        flash('You do not have sufficient permissions to import this data.', 'warning')
         redirect(request.referrer)
 
     else:
@@ -234,56 +279,187 @@ def validate_import(current_user, import_data, data_context):
         redirect(request.referrer)
 
 
+# - Note: Currently unused. To handle possible KeyError exceptions, using row.get('key') instead of new_cell(row['key'])
+def new_cell(data):
+    try:
+        return data
+    except KeyError:
+        return ''
+
+
 def add_to_db(data_to_add, data_context):
     errors = []
+    i = 1
+
     if data_context == 'User-CSV-Upload-Submit':
         for row in data_to_add:
+            i += 1
             try:
-                db.session.add(User(username=row['username'], email=row['email'], password=row['password'],
-                                    admin_role=row['admin_role'], oms_role=row['oms_role'], crm_role=row['crm_role'],
-                                    hrm_role=row['hrm_role'], ams_role=row['ams_role'], mms_role=row['mms_role']))
+                db.session.add(User(username=row.get('username'),
+                                    email=row.get('email'),
+                                    password=row.get('password'),
+                                    admin_role=row.get('admin_role'),
+                                    oms_role=row.get('oms_role'),
+                                    crm_role=row.get('crm_role'),
+                                    hrm_role=row.get('hrm_role'),
+                                    ams_role=row.get('ams_role'),
+                                    mms_role=row.get('mms_role')
+                                    ))
                 db.session.commit()
             except:
                 db.session.rollback()
-                errors.append(row)
-                # error_message = Markup('<strong>DB Import Error:</strong> We\'re sorry, but an unexpected error '
-                #     'occurred while attempting to add records to the database. Please contact the application administrator.')
-                # flash(error_message, 'danger')
-    elif data_context == 'Customers-CSV-Upload-Submit':
+                errors.append(i)
+
+    elif data_context == 'Customer-CSV-Upload-Submit':
+
+        # - DEBUGGING
+        # flash(new_cell(data_to_add[0]['name_last']))
+        # flash(new_cell(data_to_add[0]['name_first']))
+        # flash(new_cell(data_to_add[0].get('name_prefix')))
+        # - DEBUGGING
+
         for row in data_to_add:
+            i += 1
             try:
                 # Need to flesh out either more parameters, or *args.
-                db.session.add(Customers(name_last=row['name_last'], name_first=row['name_first']))
+                db.session.add(Customers(name_last=row.get('name_last'),
+                                         name_first=row.get('name_first'),
+                                         name_prefix=row.get('name_prefix'),
+                                         name_suffix=row.get('name_suffix'),
+                                         name_middle=row.get('name_middle'),
+                                         email1=row.get('email1'),
+                                         email2=row.get('email2'),
+                                         phone1=row.get('phone1'),
+                                         phone2=row.get('phone2'),
+                                         phone3=row.get('phone3'),
+                                         phone4=row.get('phone4'),
+                                         phone5=row.get('phone5'),
+                                         pii_dob=row.get('pii_dob'),
+                                         pii_other=row.get('pii_other'),
+                                         phi=row.get('phi'),
+                                         pfi=row.get('pfi'),
+                                         address_street=row.get('address_street'),
+                                         address_suite=row.get('address_suite'),
+                                         address_city=row.get('address_city'),
+                                         address_state=row.get('address_state'),
+                                         address_county=row.get('address_county'),
+                                         address_zip=row.get('address_zip'),
+                                         address_zip_extension=row.get('address_zip_extension'),
+                                         billing_method=row.get('billing_method'),
+                                         billing_frequency=row.get('billing_frequency'),
+                                         billing_relation_name=row.get('billing_relation_name'),
+                                         billing_email=row.get('billing_email'),
+                                         billing_address_street=row.get('billing_address_street'),
+                                         billing_address_suite=row.get('billing_address_suite'),
+                                         billing_address_state=row.get('billing_address_state'),
+                                         billing_address_county=row.get('billing_address_county'),
+                                         billing_address_zip=row.get('billing_address_zip'),
+                                         billing_address_zip_extension=row.get('billing_address_zip_extension'),
+                                         billing_notes=row.get('billing_notes'),
+                                         relation_1_name=row.get('relation_1_name'),
+                                         relation_1_role=row.get('relation_1_role'),
+                                         relation_2_name=row.get('relation_2_name'),
+                                         relation_2_role=row.get('relation_2_role'),
+                                         relation_3_name=row.get('relation_3_name'),
+                                         relation_3_role=row.get('relation_3_role'),
+                                         relation_4_name=row.get('relation_4_name'),
+                                         relation_4_role=row.get('relation_4_role'),
+                                         relation_5_name=row.get('relation_5_name'),
+                                         relation_5_role=row.get('relation_5_role'),
+                                         customer_type=row.get('customer_type'),
+                                         customer_type_id1=row.get('customer_type_id1'),
+                                         customer_type_id2=row.get('customer_type_id2'),
+                                         customer_type_id3=row.get('customer_type_id3'),
+                                         service_1_id=row.get('service_1_id'),
+                                         service_1_day=row.get('service_1_day'),
+                                         service_1_hours=row.get('service_1_hours'),
+                                         service_1_type=row.get('service_1_type'),
+                                         service_1_rate=row.get('service_1_rate'),
+                                         service_2_id=row.get('service_2_id'),
+                                         service_2_day=row.get('service_2_day'),
+                                         service_2_hours=row.get('service_2_hours'),
+                                         service_2_type=row.get('service_2_type'),
+                                         service_2_rate=row.get('service_2_rate'),
+                                         service_3_id=row.get('service_3_id'),
+                                         service_3_day=row.get('service_3_day'),
+                                         service_3_hours=row.get('service_3_hours'),
+                                         service_3_type=row.get('service_3_type'),
+                                         service_3_rate=row.get('service_3_rate'),
+                                         service_4_id=row.get('service_4_id'),
+                                         service_4_day=row.get('service_4_day'),
+                                         service_4_hours=row.get('service_4_hours'),
+                                         service_4_type=row.get('service_4_type'),
+                                         service_4_rate=row.get('service_4_rate'),
+                                         service_5_id=row.get('service_5_id'),
+                                         service_5_day=row.get('service_5_day'),
+                                         service_5_hours=row.get('service_5_hours'),
+                                         service_5_type=row.get('service_5_type'),
+                                         service_5_rate=row.get('service_5_rate'),
+                                         service_6_id=row.get('service_6_id'),
+                                         service_6_day=row.get('service_6_day'),
+                                         service_6_hours=row.get('service_6_hours'),
+                                         service_6_type=row.get('service_6_type'),
+                                         service_6_rate=row.get('service_6_rate'),
+                                         notes_case=row.get('notes_case'),
+                                         notes_other=row.get('notes_other')
+                                         ))
                 db.session.commit()
             except:
                 db.session.rollback()
-                errors.append(row)
-                # flash('Validation error occurred. Make sure data is valid for all rows, and try uploading again.',
-                #       'danger')
+                errors.append(i)
+
     elif data_context == 'Personnel-CSV-Upload-Submit':
         for row in data_to_add:
+            i += 1
             try:
                 # Need to flesh out either more parameters, or *args.
-                db.session.add(Personnel(name_last=row['name_last']))
+                db.session.add(Personnel(name_last=row.get('name_last'),
+                                         name_first=row.get('name_first'),
+                                         name_prefix=row.get('name_prefix'),
+                                         name_suffix=row.get('name_suffix'),
+                                         name_middle=row.get('name_middle'),
+                                         email1=row.get('email1'),
+                                         email2=row.get('email2'),
+                                         phone1=row.get('phone1'),
+                                         phone2=row.get('phone2'),
+                                         phone3=row.get('phone3'),
+                                         phone4=row.get('phone4'),
+                                         phone5=row.get('phone5'),
+                                         pii_dob=row.get('pii_dob'),
+                                         pii_other=row.get('pii_other'),
+                                         phi=row.get('phi'),
+                                         pfi=row.get('pfi'),
+                                         address_street=row.get('address_street'),
+                                         address_suite=row.get('address_suite'),
+                                         address_city=row.get('address_city'),
+                                         address_state=row.get('address_state'),
+                                         address_county=row.get('address_county'),
+                                         address_zip=row.get('address_zip'),
+                                         address_zip_extension=row.get('address_zip_extension'),
+                                         relation_1_name=row.get('relation_1_name'),
+                                         relation_1_notes=row.get('relation_1_notes'),
+                                         relation_2_name=row.get('relation_2_name'),
+                                         relation_2_notes=row.get('relation_2_notes'),
+                                         notes_other=row.get('notes_other')
+                                         ))
                 db.session.commit()
             except:
                 db.session.rollback()
-                errors.append(row)
-                # flash('Validation error occurred. Make sure data is valid for all rows, and try uploading again.',
-                #       'danger')
+                errors.append(i)
+
     else:
         flash('Error occurred when attempting to import data. Upload was detected, but could not determine the source. '
               'Please contact the application administrator.', 'danger')
 
     if errors:
-        if errors != []:
+        if len(errors) > 0:
             record_errors = ''
             for error in errors:
-                record_errors += str(error) + '<br/>'
-            error_message = Markup('<strong>DB Import Error:</strong> We\'re sorry, but an error occurred while '
-                                   'attempting to add records to the database. The following entries were affected: '
-                                   '<br/><br/>{}'.format(record_errors) + '<br/><br/>It is possible that the record(s) '
-                                   'you are trying to add may already exist. If this is not the cae, please contact the '
+                record_errors += str(error) + ', '
+            error_message = Markup('<p><strong>DB Import Error:</strong> We\'re sorry, but an error occurred while '
+                                   'attempting to add records to the database.</p><p>The following row #\'s were affected (header row being row #1): '
+                                   '{}'.format(record_errors) + '</p><p>It is possible that the record(s) '
+                                   'you are trying to add may already exist. If this is not the case, please contact the '
                                    'application administrator.')
             flash(error_message, 'danger')
 
@@ -742,3 +918,15 @@ def delete_personnel(update_form):
         flash(personnel.id)
         flash('An error occurred while trying to delete personnel. User may not exist or otherwise already be deleted. '
               'If this is not the case, please contact the application administrator.', 'danger')
+
+def get_upload_columns(data_model):
+    upload_columns = {'reqruied': '', 'optional': ''}
+    upload_columns_lists = {'required': [], 'optional': []}
+    for column, metadata in data_model.db_columns.items():
+        if metadata['required'] == True:
+            upload_columns_lists['required'].append(column)
+        else:
+            upload_columns_lists['optional'].append(column)
+    upload_columns['required'] = make_string_list(upload_columns_lists['required'])
+    upload_columns['optional'] = make_string_list(upload_columns_lists['optional'])
+    return upload_columns

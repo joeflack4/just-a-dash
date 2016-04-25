@@ -1,3 +1,4 @@
+import codecs
 from flask import render_template, url_for, flash, redirect, request, Markup
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from app import app, db
@@ -28,7 +29,7 @@ from .includes import csv2json_conversion, Import_Data, validate_columns, valida
     check_permissions_to_delete_user, check_permissions_to_change_App_Naming_and_Aesthetics, \
     update_names_and_aesthetics, check_permissions_to_change_App_Secret_Key, update_secret_key, \
     check_permissions_to_change_App_Modules, update_modules, add_customer, update_customer, delete_customer, \
-    add_personnel, update_personnel, delete_personnel
+    add_personnel, update_personnel, delete_personnel, get_upload_columns
 from .route_decorators import app_basic_admin_required, app_super_admin_required, oms_basic_admin_required, \
     oms_super_admin_required, crm_basic_admin_required, crm_super_admin_required, hrm_basic_admin_required, \
     hrm_super_admin_required, ams_basic_admin_required, ams_super_admin_required, mms_basic_admin_required, \
@@ -194,6 +195,11 @@ def register():
 @app.route('/upload', methods=["POST"])
 def upload():
     f = request.files['data_file'].read().decode('utf-8')
+
+    # - debugging
+    # file_contents = codecs.open(file_contents, "r", encoding='utf-8', errors='ignore')
+    # f = codecs.open(request.files['data_file'], "r", encoding='utf-8', errors='ignore')
+    # f = codecs.decode(request.files['data_file'], 'utf-8', 'ignore')
     if not f:
         flash("Error. File upload attempt detected, but no file found. Please contact the application administrator.",
               'danger')
@@ -434,7 +440,8 @@ def user_management():
                            logged_in=logged_in,
                            modals=modals,
                            forms=forms,
-                           csv_upload_modal=user_csv_upload_modal)
+                           csv_upload_modal=user_csv_upload_modal,
+                           upload_columns=get_upload_columns(User))
 
 
 ############
@@ -606,7 +613,8 @@ def crm():
                            logged_in=logged_in,
                            modals=modals,
                            forms=forms,
-                           csv_upload_modal=customer_csv_upload_modal)
+                           csv_upload_modal=customer_csv_upload_modal,
+                           upload_columns=get_upload_columns(Customers))
 
 
 @app.route('/crm-settings')
@@ -721,7 +729,8 @@ def hrm():
                                 logged_in=logged_in,
                                 modals=modals,
                                 forms=forms,
-                                csv_upload_modal=personnel_csv_upload_modal)
+                                csv_upload_modal=personnel_csv_upload_modal,
+                                upload_columns=get_upload_columns(Personnel))
 
 
 @app.route('/hrm-settings')

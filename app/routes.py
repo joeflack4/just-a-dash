@@ -549,6 +549,14 @@ def crm():
     forms = {'Customer-Add-Form': add_form,
              'Customer-Update-Form': update_form,
              'Customer-Delete-Form': delete_form}
+    data_sections = [{'section': 'customer_contacts', 'label': 'Contact Info'},
+                     {'section': 'customer_identifiers', 'label': 'Identifiers'},
+                     {'section': 'customer_services_and_authorizations', 'label': 'Services & Authorizations'},
+                     {'section': 'customer_billing_info', 'label': 'Billing Info'},
+                     {'section': 'customer_case_notes', 'label': 'Case Notes'},
+                     {'section': 'customer_relationships', 'label': 'Relationships'},
+                     {'section': 'customer_other', 'label': 'Other'}]
+
     try:
         customers = db.session.query(Customers)
         # customers = CompanyContacts.get_customer_contacts()
@@ -614,7 +622,57 @@ def crm():
                            modals=modals,
                            forms=forms,
                            csv_upload_modal=customer_csv_upload_modal,
-                           upload_columns=get_upload_columns(Customers))
+                           upload_columns=get_upload_columns(Customers),
+                           data_sections=data_sections)
+
+
+@app.route('/customers/contacts', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def customer_contacts():
+    return redirect(url_for('crm'))
+
+
+@app.route('/customers/identifiers', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def customer_identifiers():
+    return redirect(url_for('crm'))
+
+
+@app.route('/customers/services-and-authorizations', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def customer_services_and_authorizations():
+    return redirect(url_for('crm'))
+
+
+@app.route('/customers/billing-info', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def customer_billing_info():
+    return redirect(url_for('crm'))
+
+
+@app.route('/customers/case-notes', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def customer_case_notes():
+    return redirect(url_for('crm'))
+
+
+@app.route('/customers/relationships', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def customer_relationships():
+    return redirect(url_for('crm'))
+
+
+@app.route('/customers/other', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def customer_other():
+    return redirect(url_for('crm'))
 
 
 @app.route('/crm-settings')

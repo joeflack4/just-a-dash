@@ -18,6 +18,7 @@
 
   <ol class="breadcrumb">
     <li>
+      {# Add New / Import CSV #}
       <div class="btn-group">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Customer-Add-Modal">
           Add New <span class="fa fa-user-plus"></span>
@@ -31,14 +32,20 @@
         </ul>
       </div>
     </li>
+    {# Data Filters #}
+    {% for item in data_sections %}
+      <li>
+        <a href="{{ url_for(item.section) }}">{{ item.label }}</a>
+      </li>
+    {% endfor %}
   </ol>
-
   <div>
     <table class="table">
       <tr>
           <th>#</th>
           <th>Last Name</th>
           <th>First Name</th>
+          <th>Type</th>
           <th>Phone #</th>
           <th>Address</th>
       </tr>
@@ -47,6 +54,7 @@
           <td>{{ loop.index }}</td>
           <td>{{ c.name_last }}</td>
           <td>{{ c.name_first }}</td>
+          <td>{{ c.customer_type }}</td>
           <td>{{ c.phone1 }}</td>
           <td>{{ c.address_street }}, {% if c.address_suite %}{{ c.address_suite}},  {% endif %}
               {{ c.address_city }}, {{ c.address_state }} {{ c.address_zip }}{% if c.address_zip_extension %}-{{ c.address_zip_extension }}{% endif %}</td>

@@ -103,7 +103,7 @@
 
                 {# Personnel Add Form #}
                 {% elif form.form_id == 'Personnel-Add-Form'%}
-                    <h3>Contact Information</h3>
+                    <h3>Basic Contact Information</h3>
                     {% for field in form %}
                       {% if field.render_kw['section'] == 'contact_info' %}
                         <div class="form-group">
@@ -478,7 +478,7 @@
                     {{ form.csrf_token }}
 
                     {# Personnel Update Form #}
-                        <h3>Contact Information</h3>
+                        <h3>Basic Contact Information</h3>
                         {% for field in form %}
                           {% if field.render_kw['section'] == 'contact_info' %}
                             <div class="form-group">

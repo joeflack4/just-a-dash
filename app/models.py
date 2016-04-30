@@ -23,8 +23,8 @@ db.Base = declarative_base()
 class Base_Model(db.Model):
     __abstract__ = True
 
-    created_on = db.Column(db.DateTime, default=db.func.now())
-    updated_on = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    created_on = db.Column(db.DateTime, default=db.func.now(), index=True)
+    updated_on = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now(), index=True)
 
 
 class Base_Config(Base_Model):
@@ -32,8 +32,8 @@ class Base_Config(Base_Model):
 
     key = db.Column(db.String(100), primary_key=True, nullable=False)
     value = db.Column(db.String(200), nullable=False)
-    permission_level = db.Column(db.Integer, nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
+    permission_level = db.Column(db.Integer, nullable=False, index=True)
+    active = db.Column(db.Boolean, nullable=False, index=True)
 
     def __init__(self, key, value, permission_level, active):
         self.key = key
@@ -55,10 +55,10 @@ class Modules(Base_Model):
     __tablename__ = 'app_module-registry'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    abbreviation = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False, index=True)
+    abbreviation = db.Column(db.String(20), unique=True, nullable=False, index=True)
     description = db.Column(db.String(200), nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
+    active = db.Column(db.Boolean, nullable=False, index=True)
 
     def __init__(self, name, abbreviation, description, active):
         self.name = name
@@ -88,15 +88,15 @@ class User(Base_Model):
     }
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(25), unique=True, nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(25), nullable=False)
-    admin_role = db.Column(db.String(20))
-    oms_role = db.Column(db.String(20))
-    crm_role = db.Column(db.String(20))
-    hrm_role = db.Column(db.String(20))
-    ams_role = db.Column(db.String(20))
-    mms_role = db.Column(db.String(20))
+    username = db.Column(db.String(25), unique=True, nullable=False, index=True)
+    email = db.Column(db.String(50), unique=True, nullable=False, index=True)
+    password = db.Column(db.String(200), nullable=False) # Many characters allowed to account for password hashing.
+    admin_role = db.Column(db.String(20), index=True)
+    oms_role = db.Column(db.String(20), index=True)
+    crm_role = db.Column(db.String(20), index=True)
+    hrm_role = db.Column(db.String(20), index=True)
+    ams_role = db.Column(db.String(20), index=True)
+    mms_role = db.Column(db.String(20), index=True)
 
     # - To Do: Figure out relational mapping.
     # http: // docs.sqlalchemy.org / en / latest / orm / basic_relationships.html  # many-to-many
@@ -244,7 +244,7 @@ class Permissions(Base_Model):
 
     module = db.Column(db.String(3), primary_key=True)
     role = db.Column(db.String(20), primary_key=True)
-    permission = db.Column(db.String(80), nullable=False)
+    permission = db.Column(db.String(80), nullable=False, index=True)
     read = db.Column(db.Boolean, nullable=False)
     write = db.Column(db.Boolean, nullable=False)
     update = db.Column(db.Boolean, nullable=False)
@@ -267,14 +267,14 @@ class Messages(Base_Model):
     __tablename__ = 'app_messages'
 
     id = db.Column(db.Integer, primary_key=True)
-    datetime = db.Column(db.DateTime)
-    type = db.Column(db.String(20))
+    datetime = db.Column(db.DateTime, index=True)
+    type = db.Column(db.String(20), index=True)
     # Type examples: UserMessages, Notifications, Tasks, etc.
-    subcategory = db.Column(db.String(20))
+    subcategory = db.Column(db.String(20), index=True)
     # Subcategory examples: News, updates, etc.
-    title = db.Column(db.String(30))
+    title = db.Column(db.String(30), index=True)
     body = db.Column(db.String(1000))
-    author = db.Column(db.String(30))
+    author = db.Column(db.String(30), index=True)
     delivery_methods = db.Column(db.String(200))
     # Delivery Method examples: To webapp, native app, push notification, SMS, e-mail, phone call, etc.
     notes = db.Column(db.String())
@@ -305,12 +305,12 @@ class AppNotifications(Base_Model):
     __tablename__ = 'app_notifications'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(30), unique=True)
-    datetime = db.Column(db.DateTime)
-    type = db.Column(db.String(20))
-    subcategory = db.Column(db.String(20))
+    title = db.Column(db.String(30), unique=True, index=True)
+    datetime = db.Column(db.DateTime, index=True)
+    type = db.Column(db.String(20), index=True)
+    subcategory = db.Column(db.String(20), index=True)
     body = db.Column(db.String(1000))
-    author = db.Column(db.String(30))
+    author = db.Column(db.String(30), index=True)
     delivery_methods = db.Column(db.String(200))
     notes = db.Column(db.String())
 
@@ -332,27 +332,29 @@ class Contacts(Base_Model):
     __tablename__ = 'app_contacts'
 
     id = db.Column(db.Integer, primary_key=True)
-    name_last = db.Column(db.String(80), nullable=False)
+    name_last = db.Column(db.String(80), nullable=False, index=True)
     name_first = db.Column(db.String(80), nullable=False)
     name_prefix = db.Column(db.String(80))
     name_suffix = db.Column(db.String(80))
     name_middle = db.Column(db.String(80))
-    email1 = db.Column(db.String(120))
-    email2 = db.Column(db.String(120))
-    phone1 = db.Column(db.String(20))
-    phone2 = db.Column(db.String(20))
+    email1 = db.Column(db.String(120), index=True)
+    email2 = db.Column(db.String(120), index=True)
+    phone1 = db.Column(db.String(20), index=True)
+    phone2 = db.Column(db.String(20), index=True)
     phone3 = db.Column(db.String(20))
     phone4 = db.Column(db.String(20))
     phone5 = db.Column(db.String(20))
-    pii_dob = db.Column(db.String(10))
+    pii_dob = db.Column(db.String(10), index=True)
+    pii_id = db.Column(db.String(30), index=True)
     pii_other = db.Column(db.String(500))
     phi = db.Column(db.String(500))
     pfi = db.Column(db.String(500))
-    address_street = db.Column(db.String(50))
+    address_street = db.Column(db.String(50), index=True)
     address_suite = db.Column(db.String(30))
-    address_state = db.Column(db.String(2))
-    address_county = db.Column(db.String(20))
-    address_zip = db.Column(db.String(5))
+    address_city = db.Column(db.String(30), index=True)
+    address_state = db.Column(db.String(2), index=True)
+    address_county = db.Column(db.String(20), index=True)
+    address_zip = db.Column(db.String(5), index=True)
     address_zip_extension = db.Column(db.String(4))
     relation_1_name = db.Column(db.String(100))
     relation_1_notes = db.Column(db.String(500))
@@ -461,33 +463,34 @@ class Customers(Base_Model):
     }
 
     id = db.Column(db.Integer, primary_key=True)
-    name_last = db.Column(db.String(80), nullable=False)
+    name_last = db.Column(db.String(80), nullable=False, index=True)
     name_first = db.Column(db.String(80), nullable=False)
     name_prefix = db.Column(db.String(80))
     name_suffix = db.Column(db.String(80))
     name_middle = db.Column(db.String(80))
-    email1 = db.Column(db.String(120))
-    email2 = db.Column(db.String(120))
-    phone1 = db.Column(db.String(20))
-    phone2 = db.Column(db.String(20))
+    email1 = db.Column(db.String(120), index=True)
+    email2 = db.Column(db.String(120), index=True)
+    phone1 = db.Column(db.String(20), index=True)
+    phone2 = db.Column(db.String(20), index=True)
     phone3 = db.Column(db.String(20))
     phone4 = db.Column(db.String(20))
     phone5 = db.Column(db.String(20))
-    pii_dob = db.Column(db.String(10))
+    pii_dob = db.Column(db.String(10), index=True)
+    pii_id = db.Column(db.String(30), index=True)
     pii_other = db.Column(db.String(500))
     phi = db.Column(db.String(500))
     pfi = db.Column(db.String(500))
-    address_street = db.Column(db.String(50))
+    address_street = db.Column(db.String(50), index=True)
     address_suite = db.Column(db.String(30))
-    address_city = db.Column(db.String(30))
-    address_state = db.Column(db.String(2))
-    address_county = db.Column(db.String(20))
-    address_zip = db.Column(db.String(5))
+    address_city = db.Column(db.String(30), index=True)
+    address_state = db.Column(db.String(2), index=True)
+    address_county = db.Column(db.String(20), index=True)
+    address_zip = db.Column(db.String(5), index=True)
     address_zip_extension = db.Column(db.String(4))
-    billing_method = db.Column(db.String(50))
-    billing_frequency = db.Column(db.String(50))
+    billing_method = db.Column(db.String(50), index=True)
+    billing_frequency = db.Column(db.String(50), index=True)
     billing_relation_name = db.Column(db.String(50))
-    billing_email = db.Column(db.String(50))
+    billing_email = db.Column(db.String(50), index=True)
     billing_address_street = db.Column(db.String(50))
     billing_address_suite = db.Column(db.String(30))
     billing_address_state = db.Column(db.String(2))
@@ -505,8 +508,8 @@ class Customers(Base_Model):
     relation_4_role = db.Column(db.String(100))
     relation_5_name = db.Column(db.String(100))
     relation_5_role = db.Column(db.String(100))
-    customer_type = db.Column(db.String(100))
-    customer_type_id1 = db.Column(db.String(100))
+    customer_type = db.Column(db.String(100), index=True)
+    customer_type_id1 = db.Column(db.String(100), index=True)
     customer_type_id2 = db.Column(db.String(100))
     customer_type_id3 = db.Column(db.String(100))
     service_1_id = db.Column(db.String(100))
@@ -644,8 +647,8 @@ class Agencies(Base_Model):
     __tablename__ = 'crm_agencies'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    abbreviation = db.Column(db.String(20), unique=True)
+    name = db.Column(db.String(80), unique=True, nullable=False, index=True)
+    abbreviation = db.Column(db.String(20), unique=True, index=True)
 
     def __init__(self, name):
         self.name = name
@@ -695,28 +698,29 @@ class Personnel(Base_Model):
     }
 
     id = db.Column(db.Integer, primary_key=True)
-    name_last = db.Column(db.String(80), nullable=False)
+    name_last = db.Column(db.String(80), nullable=False, index=True)
     name_first = db.Column(db.String(80), nullable=False)
     name_prefix = db.Column(db.String(80))
     name_suffix = db.Column(db.String(80))
     name_middle = db.Column(db.String(80))
-    email1 = db.Column(db.String(120))
-    email2 = db.Column(db.String(120))
-    phone1 = db.Column(db.String(20))
-    phone2 = db.Column(db.String(20))
+    email1 = db.Column(db.String(120), index=True)
+    email2 = db.Column(db.String(120), index=True)
+    phone1 = db.Column(db.String(20), index=True)
+    phone2 = db.Column(db.String(20), index=True)
     phone3 = db.Column(db.String(20))
     phone4 = db.Column(db.String(20))
     phone5 = db.Column(db.String(20))
-    pii_dob = db.Column(db.String(10))
+    pii_dob = db.Column(db.String(10), index=True)
+    pii_id = db.Column(db.String(30), index=True)
     pii_other = db.Column(db.String(500))
     phi = db.Column(db.String(500))
     pfi = db.Column(db.String(500))
-    address_street = db.Column(db.String(50))
+    address_street = db.Column(db.String(50), index=True)
     address_suite = db.Column(db.String(30))
-    address_city = db.Column(db.String(30))
-    address_state = db.Column(db.String(2))
+    address_city = db.Column(db.String(30), index=True)
+    address_state = db.Column(db.String(2), index=True)
     address_county = db.Column(db.String(20))
-    address_zip = db.Column(db.String(5))
+    address_zip = db.Column(db.String(5), index=True)
     address_zip_extension = db.Column(db.String(4))
     relation_1_name = db.Column(db.String(100))
     relation_1_notes = db.Column(db.String(500))
@@ -783,8 +787,8 @@ class Result(Base_Model):
     __tablename__ = 'mms_word-analysis-results'
 
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime)
-    url = db.Column(db.String(300))
+    date = db.Column(db.DateTime, index=True)
+    url = db.Column(db.String(300), index=True)
     result_all = db.Column(JSON)
     result_no_stop_words = db.Column(JSON)
 

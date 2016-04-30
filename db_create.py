@@ -242,7 +242,8 @@ except:
 print("")
 print("# # # Database creation and initialization complete. # # #")
 print("")
-print("Summary of exceptions: ")
-for error in errors:
-    print(error)
-print("")
+if len(errors) > 0:
+    print("Summary of exceptions: ")
+    for error in errors:
+        print(error)
+    print("")

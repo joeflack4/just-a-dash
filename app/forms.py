@@ -12,6 +12,8 @@ from flask_wtf import Form
 from wtforms import StringField, PasswordField, SelectField, BooleanField, HiddenField
 # from wtforms import SubmitField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, Optional
+from .includes import get_app_settings
+
 
 ##############
 # - Super Classes
@@ -26,37 +28,41 @@ class BaseForm(Form):
 ##############
 # - App Core Forms
 class LoginForm(Form):
-    username = StringField('Username', render_kw={"placeholder": "Username/E-mail"}, validators=[DataRequired()])
+    # username = StringField('Username', render_kw={"placeholder": "Username/E-mail"}, validators=[DataRequired()])
+    username = StringField('Username', render_kw={"placeholder": "Username"}, validators=[DataRequired()])
     password = PasswordField('Password', render_kw={"placeholder": "Password"}, validators=[DataRequired()])
     remember_me = BooleanField('Remember Me', default=False, id="remember_me")
 
 
 class RegisterForm(Form):
-    username = StringField('username', render_kw={"placeholder": "Username"},
+    username = StringField('Username', render_kw={"placeholder": "Username"},
                         validators=[DataRequired(), Length(min=6, max=25)])
-    email = StringField('email', render_kw={"placeholder": "E-mail"},
+    email = StringField('E-mail', render_kw={"placeholder": "E-mail"},
                         validators=[DataRequired(), Email(message=None), Length(min=6, max=50)])
-    password = PasswordField('password', render_kw={"placeholder": "Password"},
+    password = PasswordField('Password', render_kw={"placeholder": "Password"},
                         validators=[DataRequired(), Length(min=6, max=25)])
-    confirm = PasswordField('confirm password', render_kw={"placeholder": "Confirm Password..."},
+    confirm = PasswordField('Confirm Password', render_kw={"placeholder": "Confirm Password..."},
                         validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
 
 
 class Config_Names_and_Aesthetics(BaseForm):
-    form_id = 'Config_Name-and-Aesthetics-Form'
+    form_id = 'Config_Names-and-Aesthetics-Form'
     header = 'Application Naming & Aesthetics'
     crud_type = "Update"
     module = "App Administration"
     sub_module = "App Config"
 
-    app_name = StringField('app_name', render_kw={"placeholder": "App Name", 'label': 'App Name'},
-                       validators=[Optional(), Length(min=1, max=50)])
-    app_icon = StringField('app_icon', render_kw={"placeholder": "App Icon", 'label': 'App Icon'},
-                           validators=[Optional(), Length(min=1, max=100)])
-    app_title = StringField('app_title', render_kw={"placeholder": "App Title", 'label': 'App Title'},
-                           validators=[Optional(), Length(min=1, max=50)])
-    app_short_title = StringField('app_short_title', render_kw={"placeholder": "App Shortened Title", 'label': 'App Shortened Title'},
-                           validators=[Optional(), Length(min=1, max=50)])
+    # - Note: The 'value' render keywords shown below currently don't work, and are there as placeholders for potential
+    # future refactoring.
+    app_name = StringField('app_name', render_kw={"placeholder": "App Name", 'value': get_app_settings('App Name'),
+                           'label': 'App Name'}, validators=[Optional(), Length(min=1, max=50)])
+    app_icon = StringField('app_icon', render_kw={"placeholder": "App Icon", 'value': get_app_settings('App Icon'),
+                           'label': 'App Icon'}, validators=[Optional(), Length(min=1, max=100)])
+    app_title = StringField('app_title', render_kw={"placeholder": "App Title", 'value': get_app_settings('App Title'),
+                            'label': 'App Title'}, validators=[Optional(), Length(min=1, max=50)])
+    app_short_title = StringField('app_short_title', render_kw={"placeholder": "App Short-Title",
+                                  'value': get_app_settings('App Short-Title'), 'label': 'App Shortened Title'},
+                                  validators=[Optional(), Length(min=1, max=50)])
 
 
 class Config_Secret_Key(BaseForm):
@@ -66,8 +72,8 @@ class Config_Secret_Key(BaseForm):
     module = "App Administration"
     sub_module = "App Config"
 
-    secret_key = StringField('secret_key', render_kw={"placeholder": "Secret Key", 'label': 'Secret Key'},
-                           validators=[Optional(), Length(min=1, max=200)])
+    secret_key = StringField('secret_key', render_kw={"placeholder": "Secret Key", 'value': get_app_settings('Secret Key')
+                                 , 'label': 'Secret Key'}, validators=[Optional(), Length(min=1, max=200)])
 
 
 class Config_Modules(BaseForm):

@@ -2,6 +2,15 @@ from functools import wraps
 from flask import request, redirect, flash
 from flask.ext.login import current_user
 
+# - Note: This code doesn't seem to work.
+# from .forms import LoginForm
+# def use_commmon_route_variables(f):
+#     @wraps(f)
+#     def wrap(*args, **kwargs):
+#         logged_in = current_user.is_authenticated()
+#         login_form = LoginForm(request.form)
+#     return wrap
+
 
 def app_basic_admin_required(f):
     @wraps(f)

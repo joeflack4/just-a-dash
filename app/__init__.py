@@ -8,8 +8,6 @@ from flask.ext.bcrypt import Bcrypt
 from flask.ext.login import LoginManager
 from flask_adminlte import AdminLTE
 from .config import Config
-
-# 1. Tutorial 1 Import
 try:
     from flask.ext.sqlalchemy import SQLAlchemy
 except:
@@ -25,6 +23,12 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 ######################
+###     Init DB    ###
+######################
+db = SQLAlchemy(app)
+from .models import App_Config, User, Result
+
+######################
 ###   Init Config  ###
 ######################
 try:
@@ -36,10 +40,6 @@ except:
     # Backup exception.
     app.config.from_object(config.DevelopmentConfig)
 
-# - Initialize DB
-db = SQLAlchemy(app)
-from .models import Result
-
 ######################
 ###  Blueprints   ###
 ######################
@@ -48,8 +48,7 @@ from .models import Result
 ######################
 ###    Sessions    ###
 ######################
-from .models import User
-# - may need to change thsi
+app.secret_key = App_Config.query.filter_by(key='Secret Key').first().value
 login_manager.login_view = "login"
 
 @login_manager.user_loader

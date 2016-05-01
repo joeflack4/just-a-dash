@@ -24,12 +24,13 @@ from .modals import user_add_modal, user_update_modal, customer_add_modal, custo
 from .services.telephony.contacts import CompanyContacts
 from .services.telephony.sms import sms_response, sms_check_in_data
 from .services.telephony.calls import call_response, call_check_in_data
+from .includes import get_app_settings
 from .includes import csv2json_conversion, Import_Data, validate_columns, validate_import, add_to_db, \
     add_user, update_user, delete_user, check_permissions_to_update_user, check_permissions_to_assign_user_role, \
     check_permissions_to_delete_user, check_permissions_to_change_App_Naming_and_Aesthetics, \
     update_names_and_aesthetics, check_permissions_to_change_App_Secret_Key, update_secret_key, \
     check_permissions_to_change_App_Modules, update_modules, add_customer, update_customer, delete_customer, \
-    add_personnel, update_personnel, delete_personnel, get_upload_columns
+    add_personnel, update_personnel, delete_personnel, get_upload_columns, update_self
 from .route_decorators import app_basic_admin_required, app_super_admin_required, oms_basic_admin_required, \
     oms_super_admin_required, crm_basic_admin_required, crm_super_admin_required, hrm_basic_admin_required, \
     hrm_super_admin_required, ams_basic_admin_required, ams_super_admin_required, mms_basic_admin_required, \
@@ -67,6 +68,7 @@ def welcome():
                            page_name="Welcome",
                            icon="fa fa-star-o",
                            module_abbreviation="Home",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -85,6 +87,7 @@ def index():
                            page_name="Dashboard",
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -142,6 +145,7 @@ def login():
                            module_abbreviation="Home",
                            module_name="Just-a-Dash Control Panel",
                            page_name="Login",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -184,6 +188,7 @@ def register():
                            module_abbreviation="Registration",
                            module_name="Registration",
                            page_name="New Submission",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -192,7 +197,7 @@ def register():
                            logged_in=logged_in)
 
 
-@app.route('/upload', methods=["POST"])
+@app.route('/upload', methods=['POST'])
 def upload():
     f = request.files['data_file'].read().decode('utf-8')
 
@@ -223,18 +228,43 @@ def upload():
 
 ################
 # - App Core - Personal Routes
-@app.route('/account-settings')
+@app.route('/account-settings', methods=['GET', 'POST'])
 @login_required
 def account_settings():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
+    settings_form = UserUpdateForm(request.form)
+    generic_error = 'Error. Data appears to have been posted to the server, but could not determine type of form ' \
+                    'submission. Please contact the application administrator.'
+
+    if request.method == 'POST':
+        if request.form['form_submit']:
+            if request.form['form_submit'] == 'AccountSettingsForm':
+                authority = False
+                if int(current_user.id) == int(request.form['user_id']):
+                    authority = True
+                if authority == True:
+                    if settings_form.validate_on_submit():
+                        update_self(settings_form)
+                    else:
+                        flash(record_add_error, 'danger')
+                else:
+                    flash(generic_error, 'danger')
+            else:
+                flash(generic_error, 'danger')
+        else:
+            flash(generic_error, 'danger')
+        # return redirect((url_for('account_settings')))
+
     return render_template('core_modules/account_settings/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Account Settings",
                            module_name="Account Settings",
                            page_name="Account Settings Home",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
+                           settings_form=settings_form,
                            login_form=login_form,
                            current_user=current_user,
                            logged_in=logged_in)
@@ -245,12 +275,12 @@ def account_settings():
 def profile():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
-
     return render_template('core_modules/profile/index.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="Profile",
                            module_name="Profile",
                            page_name="Profile Home",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            profile_form=UserUpdateForm(request.form),
@@ -269,6 +299,7 @@ def notifications():
                            module_abbreviation="Profile",
                            module_name="Profile",
                            page_name="Notifications",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -286,6 +317,7 @@ def tasks():
                            module_abbreviation="Profile",
                            module_name="Profile",
                            page_name="Tasks",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -306,36 +338,37 @@ def app_settings():
     names_and_aesthetics_form = Config_Names_and_Aesthetics(request.form)
     secret_key_form = Config_Secret_Key(request.form)
     modules_form = Config_Modules(request.form)
+    setting_values = {'App Name': get_app_settings('App Name'),
+                        'App Icon': get_app_settings('App Icon'),
+                        'App Title': get_app_settings('App Title'),
+                        'App Short-Title': get_app_settings('App Short-Title'),
+                        'Secret Key': get_app_settings('Secret Key')}
     forms = {'Naming-and-Aesthetics-Form': names_and_aesthetics_form,
              'Secret-Key-Form': secret_key_form,
              'Modules-Form': modules_form}
 
+    # - Note: Will refactor to return 'authority = True' if the current_user is a super_admin. Right now the
+    #         App Settings page is simply inaccessible to non-super_admins.
     if request.method == 'POST':
         if request.form['form_submit']:
-            if request.form['form_submit'] == 'Naming-and-Aesthetics-Form':
-                # may need to change the following line, as it might deny all.
-                # authority = check_permissions_to_change_App_Modules(current_user)
+            if request.form['form_submit'] == 'Config_Names-and-Aesthetics-Form':
                 authority = True
                 if authority == True:
                     if names_and_aesthetics_form.validate_on_submit():
-                        update_names_and_aesthetics(names_and_aesthetics_form)
+                        update_names_and_aesthetics(current_user, names_and_aesthetics_form)
                     else:
                         flash(record_update_error, 'danger')
 
-            elif request.form['form_submit'] == 'Secret-Key-Form':
-                # may need to change the following line, as it might deny all.
-                # authority = check_permissions_to_change_App_Modules(current_user)
+            elif request.form['form_submit'] == 'Config_Secret-Key-Form':
                 authority = True
                 if authority == True:
                     if secret_key_form.validate_on_submit():
-                        update_secret_key(secret_key_form)
+                        update_secret_key(current_user, secret_key_form)
                     else:
                         flash(record_update_error, 'danger')
 
-
-            elif request.form['form_submit'] == 'Modules-Form':
-                # may need to change the following line, as it might deny all.
-                # authority = check_permissions_to_change_App_Modules(current_user)
+            # - Note: This form is currently hidden until the feature addition is complete.
+            elif request.form['form_submit'] == 'Config_Modules-Form':
                 authority = True
                 if authority == True:
                     if modules_form.validate_on_submit():
@@ -343,13 +376,12 @@ def app_settings():
                     else:
                         flash(record_update_error, 'danger')
             else:
-                flash(
-                    'An error occurred while processing the submitted form. Please correct the errors in your form submission. If you feel this message is in error, please contact the application administrator.',
+                flash('An error occurred while processing the submitted form. Please correct the errors in your form '
+                      'submission. If you feel this message is in error, please contact the application administrator.',
                     'danger')
         else:
-            flash(
-                'Error. Data appears to have been posted to the server, but could not determine type of form submission. Please contact the application administrator.',
-                'danger')
+            flash('Error. Data appears to have been posted to the server, but could not determine type of form'
+                  ' submission. Please contact the application administrator.', 'danger')
 
         return redirect((url_for('app_settings')))
 
@@ -358,6 +390,8 @@ def app_settings():
                            module_abbreviation="App Settings",
                            module_name="App Settings",
                            page_name="App Settings Home",
+                           app_config_settings=get_app_settings(),
+                           setting_values=setting_values,
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -432,6 +466,7 @@ def user_management():
                            module_abbreviation="App Settings",
                            module_name="App Settings",
                            page_name="User Management",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            users=db.session.query(User),
@@ -471,6 +506,7 @@ def operations(*args):
                            module_abbreviation="OMS",
                            module_name="Operations Management",
                            page_name="OMS Home",
+                           app_config_settings=get_app_settings(),
                            check_in_entries=check_in_entries,
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
@@ -510,6 +546,7 @@ def oms_settings():
                            module_abbreviation="OMS",
                            module_name="Operations Management",
                            page_name="OMS Settings",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            profile_form=UserUpdateForm(request.form),
@@ -613,6 +650,7 @@ def crm():
                            module_name="Customer Relationship Management",
                            page_name="CRM Home",
                            form_title="Customer",
+                           app_config_settings=get_app_settings(),
                            customers=customers,
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
@@ -686,6 +724,7 @@ def crm_settings():
                            module_abbreviation="CRM",
                            module_name="Customer Relationship Management",
                            page_name="CRM Settings",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            profile_form=UserUpdateForm(request.form),
@@ -774,21 +813,22 @@ def hrm():
         return redirect((url_for('hrm')))
 
     return render_template('modules/hrm/index.html',
-                                icon="fa fa-users",
-                                module_abbreviation="HRM",
-                                module_name="Human Resource Management",
-                                page_name="HRM Home",
-                                form_title="Personnel",
-                                personnel=personnel,
-                                messages=db.session.query(Messages),
-                                notifications=db.session.query(AppNotifications),
-                                login_form=login_form,
-                                current_user=current_user,
-                                logged_in=logged_in,
-                                modals=modals,
-                                forms=forms,
-                                csv_upload_modal=personnel_csv_upload_modal,
-                                upload_columns=get_upload_columns(Personnel))
+                           icon="fa fa-users",
+                           module_abbreviation="HRM",
+                           module_name="Human Resource Management",
+                           page_name="HRM Home",
+                           form_title="Personnel",
+                           app_config_settings=get_app_settings(),
+                           personnel=personnel,
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in,
+                           modals=modals,
+                           forms=forms,
+                           csv_upload_modal=personnel_csv_upload_modal,
+                           upload_columns=get_upload_columns(Personnel))
 
 
 @app.route('/hrm-settings')
@@ -802,6 +842,7 @@ def hrm_settings():
                            module_abbreviation="HRM",
                            module_name="Human Resources Management",
                            page_name="HRM Settings",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            profile_form=UserUpdateForm(request.form),
@@ -826,6 +867,7 @@ def accounting():
                            module_abbreviation="AMS",
                            module_name="Accounting Management",
                            page_name="AMS Home",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
@@ -844,6 +886,7 @@ def ams_settings():
                            module_abbreviation="AMS",
                            module_name="Accounting Management",
                            page_name="AMS Settings",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            profile_form=UserUpdateForm(request.form),
@@ -882,6 +925,7 @@ def marketing():
                                    module_abbreviation="MMS",
                                    module_name="Marketing Management",
                                    page_name="MMS Home",
+                                   app_config_settings=get_app_settings(),
                                    errors=errors,
                                    messages=db.session.query(Messages),
                                    notifications=db.session.query(AppNotifications),
@@ -927,6 +971,7 @@ def marketing():
                            module_abbreviation="MMS",
                            module_name="Marketing Management",
                            page_name="MMS Home",
+                           app_config_settings=get_app_settings(),
                            errors=errors,
                            results=results,
                            messages=db.session.query(Messages),
@@ -947,6 +992,7 @@ def mms_settings():
                            module_abbreviation="MMS",
                            module_name="Marketing Management",
                            page_name="MMS Settings",
+                           app_config_settings=get_app_settings(),
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            profile_form=UserUpdateForm(request.form),

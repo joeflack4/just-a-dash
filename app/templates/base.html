@@ -8,7 +8,8 @@
       <a href="{{ url_for('root_path') }}" class="logo">
           <!-- Add the class icon to your logo image or logo icon to add the margining -->
           {# Just-a-Dash #}
-          <span class="glyphicon glyphicon-equalizer" aria-hidden="true"> Just-a-Dash</span>
+          {#          <span class="glyphicon glyphicon-equalizer" aria-hidden="true"> Just-a-Dash</span>#}
+          <span aria-hidden="true"> <i class="{{ app_config_settings['App Icon'] }}"></i> {{ app_config_settings['App Name'] }}</span>
       </a>
 
       <!-- Header Navbar: style can be found in header.less -->

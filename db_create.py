@@ -1,5 +1,5 @@
-from app.models import *
-from app.config import string_generator
+from app.models import db, App_Config, Modules, OMS_Config, CRM_Config, HRM_Config, AMS_Config, MMS_Config, User, Roles, Permissions, AppNotifications
+from app.config import sk_generator
 # from psycopg2 import IntegrityError
 # from sqlalchemy.exc import IntegrityError
 # from sqlalchemy import update
@@ -19,11 +19,11 @@ db.create_all()
 # App config initialization.
 # IMPORTANT! - Post-deployment, you will want to make sure that you change the secret key value in your database.
 try:
-    db.session.add(Config("App Name", "Just-a-Dash", permission_level=1, active=True))
-    db.session.add(Config("App Icon", "glyphicon glyphicon-equalizer", permission_level=1, active=True))
-    db.session.add(Config("App Title", "Just-a-Dash Enterprise Management System", permission_level=1, active=True))
-    db.session.add(Config("App Short-Title", "Just-a-Dash", permission_level=1, active=True))
-    db.session.add(Config("Secret Key", string_generator(size=24), permission_level=1, active=True))
+    db.session.add(App_Config("App Name", "Just-a-Dash", permission_level=1, active=True))
+    db.session.add(App_Config("App Icon", "glyphicon glyphicon-equalizer", permission_level=1, active=True))
+    db.session.add(App_Config("App Title", "Just-a-Dash Enterprise Management System", permission_level=1, active=True))
+    db.session.add(App_Config("App Short-Title", "Just-a-Dash", permission_level=1, active=True))
+    db.session.add(App_Config("Secret Key", sk_generator(size=24), permission_level=1, active=True))
     # db.session.add(Config("Secret Key", "\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1", permission_level=1, active=True))
     db.session.commit()
 except:

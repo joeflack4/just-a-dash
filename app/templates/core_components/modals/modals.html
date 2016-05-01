@@ -767,7 +767,8 @@
             {{ login_form.csrf_token }}
             <div class="modal-body" align="left">
               <div class="form-group">
-                <label for="username">Username / E-mail</label>
+                {#                <label for="username">Username / E-mail</label>#}
+                <label for="username">Username</label>
                   <p>
                     {{ login_form.username(placeholder=login_form.username.render_kw['placeholder'], class="form-control") }}
                     <span class="error">

@@ -47,7 +47,7 @@ class Base_Config(Base_Model):
 
 ##############
 # - App Core Models
-class Config(Base_Config):
+class App_Config(Base_Config):
     __tablename__ = 'app_config'
 
 
@@ -801,3 +801,7 @@ class Result(Base_Model):
 
     def __repr__(self):
         return '<result id: {}>'.format(self.id)
+
+
+##############
+# - Variables

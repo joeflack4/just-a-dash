@@ -1,34 +1,20 @@
 import os
 import string
 import random
-#
-# try:
-#     app.config.from_object(os.environ['DATABASE_URL'])
-#     print(os.environ['DATABASE_URL'])
-# except KeyError as e:
-#     os.environ["DATABASE_URL"] = 'postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash'
-#     app.config.from_object(config.DevelopmentConfig)
-#     print(os.environ['DATABASE_URL'])
-# except:
-#     os.environ["DATABASE_URL"] = 'postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash'
-#     app.config.from_object(config.DevelopmentConfig)
-#     print(os.environ['DATABASE_URL'])
-#     pass
 
 
+##############
+# - Super Classes
 class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
     WTF_CSRF_ENABLED = True
-    # SECRET_KEY = '\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1\x19\xbfZ\xaa\x84\x8e;\x19'
-    SECRET_KEY = '\xa7\x16\x9b\x87\x80\x1aU&\x13Q\x1fL\xe7\xe1\x02\xb1'
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
-    # SQLALCHEMY_DATABASE_URI = os.environ['postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash']
-    # app.config['SQL_ALCHEMY_URI'] = 'postgresql+psycopg2://joeflack4:pizzaLatte186*@localhost/justadash'
 
-
+##############
+# - Classes
 class ProductionConfig(Config):
     DEBUG = False
 
@@ -49,5 +35,8 @@ class TestConfig(Config):
     WTF_CSRF_ENABLED = False
 
 
-def string_generator(size=24, chars=string.ascii_letters + string.digits):
+##############
+# - Functions
+# - Description: Used to generate a random string of characters for the purpose of making a secret key.
+def sk_generator(size=24, chars=string.ascii_letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

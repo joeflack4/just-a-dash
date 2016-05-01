@@ -7,7 +7,7 @@ from flask import flash, Markup, redirect, request
 from werkzeug.security import generate_password_hash
 from app import db
 # from requests import request
-from .models import User, Customers, Personnel
+from .models import User, App_Config, Customers, Personnel
 from validate_email import validate_email
 
 
@@ -35,6 +35,19 @@ class Import_Data():
 
 # - Functions
 # -- Shared Functions
+def get_app_settings(*args):
+    if not args:
+        app_config_settings = {'App Icon': App_Config.query.filter_by(key='App Icon').first().value,
+                               'App Name': App_Config.query.filter_by(key='App Name').first().value,
+                               'App Short-Title': App_Config.query.filter_by(key='App Short-Title').first().value,
+                               'App Title': App_Config.query.filter_by(key='App Title').first().value,
+                               'Secret Key': App_Config.query.filter_by(key='Secret Key').first().value}
+        return app_config_settings
+    else:
+        setting = App_Config.query.filter_by(key=args).first().value
+        return setting
+
+
 def csv2json_conversion(file):
     # - Reference: Taken from https://gist.github.com/tonywhittaker/93fc9768fa135149edd3
     def csv2json(data):
@@ -469,16 +482,57 @@ def check_permissions_to_change_App_Naming_and_Aesthetics(current_user):
     return
 
 
-def update_names_and_aesthetics(current_user):
-    return
+def update_names_and_aesthetics(current_user, names_and_aesthetics_form):
+    try:
+        fields_to_update = 0
+        form = names_and_aesthetics_form
+        settings = ((form.app_name.data, App_Config.query.filter_by(key='App Name')),
+                    (form.app_icon.data, App_Config.query.filter_by(key='App Icon')),
+                    (form.app_title.data, App_Config.query.filter_by(key='App Title')),
+                    (form.app_short_title.data, App_Config.query.filter_by(key='App Short-Title')))
+
+        for form_data, setting in settings:
+            if  form_data != setting.first().value and form_data != '':
+                fields_to_update += 1
+                setting.update({'value': form_data})
+                db.session.commit()
+
+        if fields_to_update == 0:
+            flash('No changes to user were detected in form submission. Data has been left unchanged.', 'info')
+        else:
+            flash('Settings successfully updated!', 'success')
+    except:
+        db.session.rollback()
+        flash('Sorry! It seems an issue occurred while attempting to update settings. Please contact the application '
+              'administrator.', 'warning')
 
 
 def check_permissions_to_change_App_Secret_Key(current_user):
     return
 
 
-def update_secret_key(current_user):
-    return
+def update_secret_key(current_user, secret_key_form):
+    try:
+        fields_to_update = 0
+        form = secret_key_form
+        settings = ((form.secret_key.data, App_Config.query.filter_by(key='Secret Key')),)
+
+        for form_data, setting in settings:
+            # flash(form_data)
+            # flash(setting.first().value)
+            if form_data != setting.first().value and form_data != '':
+                fields_to_update += 1
+                setting.update({'value': form_data})
+                db.session.commit()
+
+        if fields_to_update == 0:
+            flash('No changes to user were detected in form submission. Data has been left unchanged.', 'info')
+        else:
+            flash('Settings successfully updated!', 'success')
+    except:
+        db.session.rollback()
+        flash('Sorry! It seems an issue occurred while attempting to update settings. Please contact the application '
+              'administrator.', 'warning')
 
 
 def check_permissions_to_change_App_Modules(current_user):
@@ -644,6 +698,34 @@ def update_user(update_form, role_superiorities):
     except:
         db.session.rollback()
         flash('Sorry! It seems an issue occurred while attempting to add/update user. Please contact the application administrator.', 'warning')
+
+
+def update_self(update_form):
+    try:
+        fields_to_update = {}
+
+        user_id = update_form.user_id.data
+        user = User.query.filter_by(id=user_id)
+
+        if update_form.username.data != user.first().username:
+            fields_to_update['username'] = update_form.username.data
+        if update_form.email.data != user.first().email:
+            fields_to_update['email'] = update_form.email.data
+        if len(update_form.password.data) > 0:
+            password = generate_password_hash(update_form.password.data)
+            fields_to_update['password'] = password
+
+        if len(fields_to_update) == 0:
+            flash('No changes to user were detected in form submission. User has been left unchanged.', 'info')
+        else:
+            user.update(dict(fields_to_update))
+            db.session.commit()
+            flash('User successfully updated!', 'success')
+    except:
+        db.session.rollback()
+        flash('Sorry! It seems an issue occurred while attempting to add/update user. It may be possible that you have '
+              'attempted to change unique information (ie. username, e-mail) that already exists for another user. If '
+              'this is not the case, please contact the application administrator.', 'warning')
 
 
 def check_permissions_to_delete_user(delete_form, current_user):
@@ -930,3 +1012,7 @@ def get_upload_columns(data_model):
     upload_columns['required'] = make_string_list(upload_columns_lists['required'])
     upload_columns['optional'] = make_string_list(upload_columns_lists['optional'])
     return upload_columns
+
+
+##############
+# - Variables

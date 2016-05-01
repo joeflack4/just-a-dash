@@ -14,7 +14,43 @@
     {# - Use html of super-block template.#}
     {{ super() }}
 
-   Placeholder text.
+  <form id="AccountSettingsForm" role="form" method='POST' action="{{ url_for('account_settings') }}">
+    {{ settings_form.csrf_token }}
+        <h3>Account Information</h3>
+        {% for field in settings_form %}
+          {% if field.render_kw['section'] == 'account' %}
+            <div class="form-group">
+              {% if field.name == 'username' %}
+                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                {{ field(placeholder=field.render_kw['placeholder'], class='form-control', value=current_user.username) }}
+              {% elif field.name == 'email' %}
+                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                {{ field(placeholder=field.render_kw['placeholder'], class='form-control', value=current_user.email) }}
+              {% else %}
+                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+              {% endif %}
+              <p><span class="error">
+                {% if field.errors %}
+                {% for error in field.errors %} {{ error }} {% endfor %}
+            {% endif %}</span></p></div>
+          {% endif %}
+        {% endfor %}
+        {{ settings_form.user_id(value=current_user.id) }}
+        <div>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" name="form_submit" value="AccountSettingsForm" class="btn btn-primary">Submit</button>
+        </div>
+  </form>
+  <h3>Roles and Permissions</h3>
+    {% if current_user.admin_role != 'master' %}<p style="color: red">Roles and permissions can only be changed by a senior administrator.</p>{% endif %}
+    {% if current_user.admin_role != 'None' %}<p><strong>User/App Administration: </strong>{{ current_user.admin_role }} administrator</p>{% endif %}
+    {% if current_user.oms_role != 'None' %}<p><strong>Operations Management Module: </strong>{{ current_user.oms_role }} administrator</p>{% endif %}
+    {% if current_user.crm_role != 'None' %}<p><strong>Customer Relations Module: </strong>{{ current_user.crm_role }} administrator</p>{% endif %}
+    {% if current_user.hrm_role != 'None' %}<p><strong>Human Resources Module: </strong>{{ current_user.hrm_role }} administrator</p>{% endif %}
+    {% if current_user.ams_role != 'None' %}<p><strong>Accounting Management Module: </strong>{{ current_user.ams_role }} administrator</p>{% endif %}
+    {% if current_user.mms_role != 'None' %}<p><strong>Marketing Management Module: </strong>{{ current_user.mms_role }} administrator</p>{% endif %}
+
 
 {%- endblock content %}
 

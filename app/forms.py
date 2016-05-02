@@ -185,6 +185,18 @@ class OMS_Settings(Form):
                            'label': 'Twilio Auth Token', 'field_type': 'StringField'}, validators=[Optional(), Length(min=1, max=100)])
     twilio_phone_number = IntegerField('Twilio Phone Number', render_kw={"placeholder": "Twilio Phone Number", 'value': get_oms_settings('Twilio Phone Number'),
                             'label': 'Twilio Phone Number', 'field_type': 'StringField'}, validators=[Optional(), NumberRange(min=0, max=99999999999999999999999999)])
+    call_response_mp3 = StringField('Call Response MP3', render_kw={"placeholder": "Call Response MP3",
+                            'value': get_oms_settings('Call Response MP3'), 'label': 'Call Response MP3', 'field_type': 'StringField'},
+                            validators=[Optional(), Length(min=1, max=1000)])
+    call_response_text_to_speech = StringField('Call Response Text-to-Speech', render_kw={"placeholder": "Call Response Text-to-Speech",
+                                    'value': get_oms_settings('Call Response Text-to-Speech'), 'label': 'Call Response Text-to-Speech',
+                                    'field_type': 'StringField'}, validators=[Optional(), Length(min=1, max=1000)])
+    call_response_mp3_toggle = BooleanField('Call Response MP3 Toggle', id='Call Response MP3 Toggle',
+                                        render_kw={'label': 'Call Response MP3 Toggle', 'field_type': 'BooleanField',
+                                        'placeholder': 'Call Response MP3 Toggle'})
+    call_response_text_to_speech_toggle = BooleanField('Call Response Text-to-Speech Toggle', id='Call Response Text-to-Speech Toggle',
+                                        render_kw={'label': 'Call Response Text-to-Speech Toggle', 'field_type': 'BooleanField',
+                                        'placeholder': 'Call Response Text-to-Speech Toggle'})
     phone_number_visibility = BooleanField('Phone Number Visibility', id='Phone Number Visibility',
                                 render_kw={'label': 'Phone Number Visibility', 'field_type': 'BooleanField',
                                 'placeholder': 'Phone Number Visibility'})

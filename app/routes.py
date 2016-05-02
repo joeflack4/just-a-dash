@@ -488,9 +488,13 @@ def module_settings():
     login_form = LoginForm(request.form)
     oms_settings_form = OMS_Settings(request.form)
     oms_setting_values = {'Twilio Account SID': get_oms_settings('Twilio Account SID'),
-                        'Twilio Auth Token': get_oms_settings('Twilio Auth Token'),
-                        'Twilio Phone Number': get_oms_settings('Twilio Phone Number'),
-                        'Phone Number Visibility': get_oms_settings('Phone Number Visibility')}
+                          'Twilio Auth Token': get_oms_settings('Twilio Auth Token'),
+                          'Twilio Phone Number': get_oms_settings('Twilio Phone Number'),
+                          'Call Response MP3': get_oms_settings('Call Response MP3'),
+                          'Call Response MP3 Toggle': get_oms_settings('Call Response MP3 Toggle'),
+                          'Call Response Text-to-Speech': get_oms_settings('Call Response Text-to-Speech'),
+                          'Call Response Text-to-Speech Toggle': get_oms_settings('Call Response Text-to-Speech Toggle'),
+                          'Phone Number Visibility': get_oms_settings('Phone Number Visibility')}
     forms = {'OMS-Settings-Form': oms_settings_form}
 
     # - Note: Will refactor to return 'authority = True' if the current_user is a super_admin. Right this page is simply
@@ -598,6 +602,10 @@ def oms_settings():
     oms_setting_values = {'Twilio Account SID': get_oms_settings('Twilio Account SID'),
                           'Twilio Auth Token': get_oms_settings('Twilio Auth Token'),
                           'Twilio Phone Number': get_oms_settings('Twilio Phone Number'),
+                          'Call Response MP3': get_oms_settings('Call Response MP3'),
+                          'Call Response MP3 Toggle': get_oms_settings('Call Response MP3 Toggle'),
+                          'Call Response Text-to-Speech': get_oms_settings('Call Response Text-to-Speech'),
+                          'Call Response Text-to-Speech Toggle': get_oms_settings('Call Response Text-to-Speech Toggle'),
                           'Phone Number Visibility': get_oms_settings('Phone Number Visibility')}
     forms = {'OMS-Settings-Form': oms_settings_form}
 

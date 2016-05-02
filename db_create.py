@@ -58,6 +58,10 @@ try:
     db.session.add(OMS_Config("Twilio Auth Token", "", permission_level=1, active=True))
     db.session.add(OMS_Config("Twilio Phone Number", "+10000000000", permission_level=1, active=True))
     db.session.add(OMS_Config("Phone Number Visibility", 'false', permission_level=1, active=True))
+    db.session.add(OMS_Config("Call Response MP3", 'http://www.you-should-upload-an-mp3-to-some-file-storage-and-then-enter-the-url-address-here.com/some_sound_file.mp3', permission_level=1, active=True))
+    db.session.add(OMS_Config("Call Response MP3 Toggle", 'false', permission_level=1, active=True))
+    db.session.add(OMS_Config("Call Response Text-to-Speech", 'You have successfully checked in. Thank you, and have a wonderful day!', permission_level=1, active=True))
+    db.session.add(OMS_Config("Call Response Text-to-Speech Toggle", 'true', permission_level=1, active=True))
     db.session.commit()
 except:
     errors.append(integrity_error.format("OMS Module Config"))

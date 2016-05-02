@@ -489,10 +489,14 @@ def get_oms_settings(*args):
         oms_config_settings = {'Twilio Account SID': OMS_Config.query.filter_by(key='Twilio Account SID').first().value,
                                'Twilio Auth Token': OMS_Config.query.filter_by(key='Twilio Auth Token').first().value,
                                'Twilio Phone Number': OMS_Config.query.filter_by(key='Twilio Phone Number').first().value,
-                               'Phone Number Visibility': bool(OMS_Config.query.filter_by(key='Phone Number Visibility').first().value)}
+                               'Call Response MP3': OMS_Config.query.filter_by(key='Call Response MP3').first().value,
+                               'Call Response MP3 Toggle': OMS_Config.query.filter_by(key='Call Response MP3 Toggle').first().value,
+                               'Call Response Text-to-Speech': OMS_Config.query.filter_by(key='Call Response Text-to-Speech').first().value,
+                               'Call Response Text-to-Speech Toggle': OMS_Config.query.filter_by(key='Call Response Text-to-Speech Toggle').first().value,
+                               'Phone Number Visibility': OMS_Config.query.filter_by(key='Phone Number Visibility').first().value}
         return oms_config_settings
     else:
-        if args[0] == 'Phone Number Visibility':
+        if args[0] == 'Phone Number Visibility' or args[0] == 'Call Response Random Selection':
             setting = OMS_Config.query.filter_by(key=args).first().value
             if setting.lower() == 'true':
                 setting = True

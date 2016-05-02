@@ -7,7 +7,7 @@ from flask import flash, Markup, redirect, request
 from werkzeug.security import generate_password_hash
 from app import db
 # from requests import request
-from .models import User, App_Config, Customers, Personnel
+from .models import User, App_Config, OMS_Config, Customers, Personnel
 from validate_email import validate_email
 
 
@@ -35,19 +35,6 @@ class Import_Data():
 
 # - Functions
 # -- Shared Functions
-def get_app_settings(*args):
-    if not args:
-        app_config_settings = {'App Icon': App_Config.query.filter_by(key='App Icon').first().value,
-                               'App Name': App_Config.query.filter_by(key='App Name').first().value,
-                               'App Short-Title': App_Config.query.filter_by(key='App Short-Title').first().value,
-                               'App Title': App_Config.query.filter_by(key='App Title').first().value,
-                               'Secret Key': App_Config.query.filter_by(key='Secret Key').first().value}
-        return app_config_settings
-    else:
-        setting = App_Config.query.filter_by(key=args).first().value
-        return setting
-
-
 def csv2json_conversion(file):
     # - Reference: Taken from https://gist.github.com/tonywhittaker/93fc9768fa135149edd3
     def csv2json(data):
@@ -69,6 +56,12 @@ def make_string_list(list):
         string += item + ', '
     string = string[:-2]
     return string
+
+def format_phone_number(phone_number):
+    if phone_number[:1] == 1:
+        return phone_number
+    else:
+        return '1' + str(phone_number)
 
 
 def check_for_missing_required_columns(db_columns, import_data_columns):
@@ -478,6 +471,38 @@ def add_to_db(data_to_add, data_context):
 
 
 # -- App Settings
+def get_app_settings(*args):
+    if not args:
+        app_config_settings = {'App Icon': App_Config.query.filter_by(key='App Icon').first().value,
+                               'App Name': App_Config.query.filter_by(key='App Name').first().value,
+                               'App Short-Title': App_Config.query.filter_by(key='App Short-Title').first().value,
+                               'App Title': App_Config.query.filter_by(key='App Title').first().value,
+                               'Secret Key': App_Config.query.filter_by(key='Secret Key').first().value}
+        return app_config_settings
+    else:
+        setting = App_Config.query.filter_by(key=args).first().value
+        return setting
+
+
+def get_oms_settings(*args):
+    if not args:
+        oms_config_settings = {'Twilio Account SID': OMS_Config.query.filter_by(key='Twilio Account SID').first().value,
+                               'Twilio Auth Token': OMS_Config.query.filter_by(key='Twilio Auth Token').first().value,
+                               'Twilio Phone Number': OMS_Config.query.filter_by(key='Twilio Phone Number').first().value,
+                               'Phone Number Visibility': bool(OMS_Config.query.filter_by(key='Phone Number Visibility').first().value)}
+        return oms_config_settings
+    else:
+        if args[0] == 'Phone Number Visibility':
+            setting = OMS_Config.query.filter_by(key=args).first().value
+            if setting.lower() == 'true':
+                setting = True
+            elif setting.lower() == 'false':
+                setting = False
+        else:
+            setting = OMS_Config.query.filter_by(key=args).first().value
+        return setting
+
+
 def check_permissions_to_change_App_Naming_and_Aesthetics(current_user):
     return
 
@@ -542,6 +567,30 @@ def check_permissions_to_change_App_Modules(current_user):
 def update_modules(current_user):
     return
 
+
+def update_oms_settings(current_user, oms_settings_form):
+    try:
+        fields_to_update = 0
+        form = oms_settings_form
+        settings = ((form.twilio_account_sid.data, OMS_Config.query.filter_by(key='Twilio Account SID')),
+                    (form.twilio_auth_token.data, OMS_Config.query.filter_by(key='Twilio Auth Token')),
+                    (form.twilio_phone_number.data, OMS_Config.query.filter_by(key='Twilio Phone Number')),
+                    (form.phone_number_visibility.data, OMS_Config.query.filter_by(key='Phone Number Visibility')))
+
+        for form_data, setting in settings:
+            if form_data != setting.first().value and form_data != '':
+                fields_to_update += 1
+                setting.update({'value': form_data})
+                db.session.commit()
+
+        if fields_to_update == 0:
+            flash('No changes to user were detected in form submission. Data has been left unchanged.', 'info')
+        else:
+            flash('Settings successfully updated!', 'success')
+    except:
+        db.session.rollback()
+        flash('Sorry! It seems an issue occurred while attempting to update settings. Please contact the application '
+              'administrator.', 'warning')
 
 # -- User Management
 def add_user(add_form):
@@ -912,7 +961,7 @@ def add_personnel(add_form):
         new_personnel = Personnel(
             name_last=add_form.name_last.data,
             name_first=add_form.name_first.data,
-            phone1=add_form.phone1.data,
+            phone1=format_phone_number(add_form.phone1.data),
             email1=add_form.email1.data,
             name_prefix='',
             name_suffix='',

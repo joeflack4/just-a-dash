@@ -6,14 +6,17 @@
 import random
 import twilio.twiml
 from twilio.rest import TwilioRestClient
+from app.models import OMS_Config, Customers, Personnel
+# from app.models import Contacts
 try:
     from .contacts import CompanyContacts
 except:
     from contacts import CompanyContacts
 
 # - Variables
-account_sid = "ACe0b46c755c8f0b144c1a31e0a9170cea"
-auth_token = "c98aa40b61818e730920459b83ec0f4d"
+account_sid = OMS_Config.query.filter_by(key='Twilio Account SID').first().value
+auth_token = OMS_Config.query.filter_by(key='Twilio Auth Token').first().value
+twilio_number = '+' + OMS_Config.query.filter_by(key='Twilio Phone Number').first().value
 
 
 # - Functions
@@ -66,18 +69,37 @@ def get_timestamps(id=account_sid, pw=auth_token):
 
 # Sub-function of: call_check_in_data
 def get_individual(identifier):
-    customer_contact = CompanyContacts.get_customer_contact(primary_phone=identifier)
-    contact = CompanyContacts.get_contact(primary_phone=identifier)
+    individual = {}
+    phone_identifier = str(identifier)[1:]
 
-    if identifier in customer_contact:
-        individual = {"first_name": contact[identifier]["first_name"],
-                      "last_name": contact[identifier]["last_name"],
+    customer_contact = Customers.query.filter_by(phone1=phone_identifier).first()
+    customer_contact_secondary_number = Customers.query.filter_by(phone2=phone_identifier).first()
+    personnel_contact = Personnel.query.filter_by(phone1=phone_identifier).first()
+    personnel_contact_secondary_number = Personnel.query.filter_by(phone1=phone_identifier).first()
+    other_contact = Personnel.query.filter_by(phone1=phone_identifier).first()
+    other_contact_secondary_number = Personnel.query.filter_by(phone2=phone_identifier).first()
+
+    contact_lookup_methods = (customer_contact, customer_contact_secondary_number, personnel_contact,
+                              personnel_contact_secondary_number, other_contact, other_contact_secondary_number)
+
+    try:
+        for method in contact_lookup_methods:
+            try:
+                if type(method) != None:
+                    individual = {"first_name": method.name_first,
+                                  "last_name": method.name_last,
+                                  "primary_phone": method.phone1}
+                    break
+                else:
+                    continue
+            except:
+                continue
+    except:
+        individual = {"first_name": "Unknown",
+                      "last_name": "Unknown",
                       "primary_phone": identifier}
-    elif identifier in contact:
-        individual = {"first_name": contact[identifier]["first_name"],
-                      "last_name": contact[identifier]["last_name"],
-                      "primary_phone": identifier}
-    else:
+
+    if individual == {}:
         individual = {"first_name": "Unknown",
                       "last_name": "Unknown",
                       "primary_phone": identifier}
@@ -89,19 +111,18 @@ def call_check_in_data():
     identifiers = get_incoming_call_phone_numbers()
     timestamps = get_timestamps()
     check_in_data = []
-    entry_number = 0
     export = {}
+    i = 0
+    list_id = 0
 
     for identifier in identifiers:
-        entry_number += 1
+        i += 1
         individual = get_individual(identifier)
-        entry = {"id": entry_number, "contact": individual, "phone_number": identifier}
-        check_in_data.insert(entry_number - 1, entry)
-
-    entry_number = 0
+        entry = {"id": i, "contact": individual, "phone_number": identifier}
+        check_in_data.insert(i - 1, entry)
 
     for entry in check_in_data:
-        entry_number += 1
+        list_id += 1
         id = entry["id"]
         contact = entry["contact"]
         first_name = contact["first_name"]
@@ -109,7 +130,7 @@ def call_check_in_data():
         phone_number = entry["phone_number"]
         timestamp = timestamps[id - 1]
 
-        export[entry_number] = {"timestamp": timestamp, "first_name": first_name, "last_name": last_name, "phone_number": phone_number}
+        export[list_id] = {"timestamp": timestamp, "first_name": first_name, "last_name": last_name, "phone_number": phone_number}
 
     return export
 

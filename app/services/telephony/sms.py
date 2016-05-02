@@ -5,21 +5,24 @@
 # - Imports
 import twilio.twiml
 from twilio.rest import TwilioRestClient
+from app.models import OMS_Config
 try:
     from .contacts import CompanyContacts
 except:
     from contacts import CompanyContacts
 
 # - Variables
-account_sid = "ACe0b46c755c8f0b144c1a31e0a9170cea"
-auth_token = "c98aa40b61818e730920459b83ec0f4d"
+account_sid = OMS_Config.query.filter_by(key='Twilio Account SID').first().value
+auth_token = OMS_Config.query.filter_by(key='Twilio Auth Token').first().value
+twilio_number = '+' + OMS_Config.query.filter_by(key='Twilio Phone Number').first().value
 
 
 # - Functions
 def manually_send_message():
     client = TwilioRestClient(account_sid, auth_token)
+    # - Note: Not sure at the moment what the below number represents.
     to = "+12316851234"
-    # To Do: Replace 'from' later on when using the Twilio API.
+    # - To Do: Replace 'from' later on when using the Twilio API.
     from_ = "+10000000000"
     body = CompanyContacts.check_in(from_)
     # message = client.messages.create(to, from_, body)
@@ -41,7 +44,7 @@ def get_incoming_sms_phone_numbers(id=account_sid, pw=auth_token):
     incoming_sms_phone_numbers = []
 
     for message in messages:
-        if message.from_ != "+18508981787":
+        if message.from_ != twilio_number:
             incoming_sms_phone_numbers.append(message.from_)
     return incoming_sms_phone_numbers
 
@@ -52,7 +55,7 @@ def get_timestamps(id=account_sid, pw=auth_token):
     timestamps = []
 
     for message in messages:
-        if message.from_ != "+18508981787":
+        if message.from_ != twilio_number:
             timestamps.append(str(message.date_created))
 
     return timestamps

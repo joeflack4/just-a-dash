@@ -9,10 +9,10 @@
 
 # - This is from RealPython
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, SelectField, BooleanField, HiddenField
+from wtforms import StringField, IntegerField, PasswordField, SelectField, BooleanField, HiddenField
 # from wtforms import SubmitField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, Optional
-from .includes import get_app_settings
+from wtforms.validators import DataRequired, Length, Email, EqualTo, Optional, NumberRange
+from .includes import get_app_settings, get_oms_settings
 
 
 ##############
@@ -166,6 +166,32 @@ class UserDeleteForm(BaseForm):
     sub_module = "User Management"
 
     user_id = HiddenField('user_id', validators=[Length(min=1, max=12)])
+
+
+##############
+# - OMS Forms
+class OMS_Settings(Form):
+    form_id = 'OMS-Settings-Form'
+    header = 'Operations Management Settings'
+    crud_type = "Update"
+    module = "App Administration"
+    sub_module = "App Config"
+
+    # - Note: The 'value' render keywords shown below currently don't work, and are there as placeholders for potential
+    # future refactoring.
+    twilio_account_sid = StringField('Twilio Account SID', render_kw={"placeholder": "Twilio Account SID", 'value': get_oms_settings('Twilio Account SID'),
+                           'label': 'Twilio Account SID', 'field_type': 'StringField'}, validators=[Optional(), Length(min=1, max=50)])
+    twilio_auth_token = StringField('Twilio Auth Token', render_kw={"placeholder": "Twilio Auth Token", 'value': get_oms_settings('Twilio Auth Token'),
+                           'label': 'Twilio Auth Token', 'field_type': 'StringField'}, validators=[Optional(), Length(min=1, max=100)])
+    twilio_phone_number = IntegerField('Twilio Phone Number', render_kw={"placeholder": "Twilio Phone Number", 'value': get_oms_settings('Twilio Phone Number'),
+                            'label': 'Twilio Phone Number', 'field_type': 'StringField'}, validators=[Optional(), NumberRange(min=0, max=99999999999999999999999999)])
+    phone_number_visibility = BooleanField('Phone Number Visibility', id='Phone Number Visibility',
+                                render_kw={'label': 'Phone Number Visibility', 'field_type': 'BooleanField',
+                                'placeholder': 'Phone Number Visibility'})
+    # - Note: Getting default check box value based on present DB value was annoying. Below commented code is left for reference of the wrong way to do it.
+    # phone_number_visibility = BooleanField('Phone Number Visibility', id='Phone Number Visibility', render_kw={'label': 'Phone Number Visibility',
+    #                         'field_type': 'BooleanField', 'placeholder': 'Phone Number Visibility', 'value': get_oms_settings('Phone Number Visibility')
+    #                             }, default=get_oms_settings('Phone Number Visibility'))
 
 
 ##############

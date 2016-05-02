@@ -57,6 +57,7 @@ try:
     db.session.add(OMS_Config("Twilio Account SID", "", permission_level=1, active=True))
     db.session.add(OMS_Config("Twilio Auth Token", "", permission_level=1, active=True))
     db.session.add(OMS_Config("Twilio Phone Number", "+10000000000", permission_level=1, active=True))
+    db.session.add(OMS_Config("Phone Number Visibility", 'false', permission_level=1, active=True))
     db.session.commit()
 except:
     errors.append(integrity_error.format("OMS Module Config"))

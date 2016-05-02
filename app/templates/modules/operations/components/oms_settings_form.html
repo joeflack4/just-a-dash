@@ -1,0 +1,24 @@
+    {% set form = forms['OMS-Settings-Form'] %}
+    <h3>{{ form.header }}</h3>
+    <form id="{{ form.form_id }}" role="form" method='POST' action="{{ url_for('module_settings') }}">
+    {#    <form id="{{ form.form_id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">#}
+      {{ form.csrf_token }}
+
+      {% for field in form %}
+        {% if field.id != 'csrf_token' %}
+          {% if field.render_kw['field_type'] == 'StringField' %}
+            <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+            {{ field(placeholder=field.render_kw['placeholder'], value=oms_setting_values[field.render_kw['placeholder']], class='form-control') }}
+            <p><span class="error">{% if field.errors %}{% for error in field.errors %} {{ error }} {% endfor %}{% endif %}</span></p>
+          {% elif field.render_kw['field_type'] == 'BooleanField' %}
+            <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+            {#            <p>On/Off: &nbsp;{{ field(class='form-control', value=oms_setting_values[field.render_kw['value']]) }}</p>#}
+            {#            <p>On/Off: &nbsp;{{ field(class='form-control', checked=oms_setting_values[field.render_kw['placeholder']]) }}</p>#}
+            <p>On/Off: &nbsp;{{ field(class='form-control', checked=oms_setting_values[field.render_kw['placeholder']]) }}</p>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      <br/>
+      <div><button type="submit" name="form_submit" value="{{ form.form_id }}" class="btn btn-primary">Submit</button></div>
+    </form>

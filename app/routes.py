@@ -1,4 +1,4 @@
-import codecs
+# import codecs
 from flask import render_template, url_for, flash, redirect, request, Markup
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from app import app, db
@@ -14,23 +14,24 @@ import nltk
 # Marketing Module imports - from w/in app.
 from .stop_words import stops
 
-from .models import User, Customers, Personnel, Messages, Result, AppNotifications
+from .models import User, Customers, Personnel, Messages, Result, AppNotifications, OMS_Config
 from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDeleteForm, CustomerAddForm, \
     CustomerUpdateForm, CustomerDeleteForm, PersonnelAddForm, PersonnelUpdateForm, PersonelDeleteForm, \
-    Config_Names_and_Aesthetics, Config_Secret_Key, Config_Modules
+    Config_Names_and_Aesthetics, Config_Secret_Key, Config_Modules, OMS_Settings
 from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, \
     personnel_update_modal, user_csv_upload_modal, customer_csv_upload_modal, \
     personnel_csv_upload_modal
-from .services.telephony.contacts import CompanyContacts
+# from .services.telephony.contacts import CompanyContacts
 from .services.telephony.sms import sms_response, sms_check_in_data
 from .services.telephony.calls import call_response, call_check_in_data
-from .includes import get_app_settings
+from .includes import get_app_settings, get_oms_settings
 from .includes import csv2json_conversion, Import_Data, validate_columns, validate_import, add_to_db, \
     add_user, update_user, delete_user, check_permissions_to_update_user, check_permissions_to_assign_user_role, \
-    check_permissions_to_delete_user, check_permissions_to_change_App_Naming_and_Aesthetics, \
-    update_names_and_aesthetics, check_permissions_to_change_App_Secret_Key, update_secret_key, \
-    check_permissions_to_change_App_Modules, update_modules, add_customer, update_customer, delete_customer, \
-    add_personnel, update_personnel, delete_personnel, get_upload_columns, update_self
+    check_permissions_to_delete_user, update_names_and_aesthetics, update_secret_key, update_modules, add_customer, \
+    update_customer, delete_customer, add_personnel, update_personnel, delete_personnel, get_upload_columns, \
+    update_self, update_oms_settings
+# from .includes import check_permissions_to_change_App_Naming_and_Aesthetics, check_permissions_to_change_App_Secret_Key, \
+#     check_permissions_to_change_App_Modules
 from .route_decorators import app_basic_admin_required, app_super_admin_required, oms_basic_admin_required, \
     oms_super_admin_required, crm_basic_admin_required, crm_super_admin_required, hrm_basic_admin_required, \
     hrm_super_admin_required, ams_basic_admin_required, ams_super_admin_required, mms_basic_admin_required, \
@@ -348,7 +349,7 @@ def app_settings():
              'Modules-Form': modules_form}
 
     # - Note: Will refactor to return 'authority = True' if the current_user is a super_admin. Right now the
-    #         App Settings page is simply inaccessible to non-super_admins.
+    #   App Settings page is simply inaccessible to non-super_admins.
     if request.method == 'POST':
         if request.form['form_submit']:
             if request.form['form_submit'] == 'Config_Names-and-Aesthetics-Form':
@@ -479,6 +480,54 @@ def user_management():
                            upload_columns=get_upload_columns(User))
 
 
+@app.route('/module-settings', methods=['GET', 'POST'])
+@login_required
+@app_super_admin_required
+def module_settings():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    oms_settings_form = OMS_Settings(request.form)
+    oms_setting_values = {'Twilio Account SID': get_oms_settings('Twilio Account SID'),
+                        'Twilio Auth Token': get_oms_settings('Twilio Auth Token'),
+                        'Twilio Phone Number': get_oms_settings('Twilio Phone Number'),
+                        'Phone Number Visibility': get_oms_settings('Phone Number Visibility')}
+    forms = {'OMS-Settings-Form': oms_settings_form}
+
+    # - Note: Will refactor to return 'authority = True' if the current_user is a super_admin. Right this page is simply
+    #   inaccessible to non-super_admins.
+    if request.method == 'POST':
+        if request.form['form_submit']:
+            if request.form['form_submit'] == 'OMS-Settings-Form':
+                authority = True
+                if authority == True:
+                    if oms_settings_form.validate_on_submit():
+                        update_oms_settings(current_user, oms_settings_form)
+                    else:
+                        flash(record_update_error, 'danger')
+
+            else:
+                flash('An error occurred while processing the submitted form. Please correct the errors in your form '
+                      'submission. If you feel this message is in error, please contact the application administrator.',
+                    'danger')
+        else:
+            flash('Error. Data appears to have been posted to the server, but could not determine type of form'
+                  ' submission. Please contact the application administrator.', 'danger')
+        return redirect((url_for('module_settings')))
+
+    return render_template('core_modules/app_settings/module_settings.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="App Settings",
+                           module_name="App Settings",
+                           page_name="Module Settings",
+                           app_config_settings=get_app_settings(),
+                           oms_setting_values=oms_setting_values,
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in,
+                           forms=forms)
+
 ############
 # - Modules - OMS
 @app.route('/operations')
@@ -487,6 +536,9 @@ def user_management():
 def operations(*args):
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
+    render_settings = {'Phone Number Visibility': OMS_Config.query.filter_by(key='Phone Number Visibility').first().value.lower(),
+                       'Twilio Phone Number': OMS_Config.query.filter_by(key='Twilio Phone Number').first().value}
+
     try:
         check_in_type = args[0]
     except:
@@ -512,7 +564,8 @@ def operations(*args):
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            current_user=current_user,
-                           logged_in=logged_in)
+                           logged_in=logged_in,
+                           render_settings=render_settings)
 
 
 @app.route('/checkin')
@@ -541,18 +594,27 @@ def sms_check_in():
 def oms_settings():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
+    oms_settings_form = OMS_Settings(request.form)
+    oms_setting_values = {'Twilio Account SID': get_oms_settings('Twilio Account SID'),
+                          'Twilio Auth Token': get_oms_settings('Twilio Auth Token'),
+                          'Twilio Phone Number': get_oms_settings('Twilio Phone Number'),
+                          'Phone Number Visibility': get_oms_settings('Phone Number Visibility')}
+    forms = {'OMS-Settings-Form': oms_settings_form}
+
     return render_template('modules/operations/settings.html',
                            icon="fa fa-dashboard",
                            module_abbreviation="OMS",
                            module_name="Operations Management",
                            page_name="OMS Settings",
                            app_config_settings=get_app_settings(),
+                           oms_setting_values=oms_setting_values,
                            messages=db.session.query(Messages),
                            notifications=db.session.query(AppNotifications),
                            profile_form=UserUpdateForm(request.form),
                            login_form=login_form,
                            current_user=current_user,
-                           logged_in=logged_in)
+                           logged_in=logged_in,
+                           forms=forms)
 
 
 # - OMS Services

@@ -198,7 +198,7 @@ class OMS_Settings(Form):
                                         render_kw={'label': 'Call Response Text-to-Speech Toggle', 'field_type': 'BooleanField',
                                         'placeholder': 'Call Response Text-to-Speech Toggle'})
     phone_number_visibility = BooleanField('Phone Number Visibility', id='Phone Number Visibility',
-                                render_kw={'label': 'Phone Number Visibility', 'field_type': 'BooleanField',
+                                render_kw={'label': 'Phone Number Visibility in Personnel Check-in Table', 'field_type': 'BooleanField',
                                 'placeholder': 'Phone Number Visibility'})
     # - Note: Getting default check box value based on present DB value was annoying. Below commented code is left for reference of the wrong way to do it.
     # phone_number_visibility = BooleanField('Phone Number Visibility', id='Phone Number Visibility', render_kw={'label': 'Phone Number Visibility',

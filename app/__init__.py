@@ -48,8 +48,14 @@ except:
 ######################
 ###    Sessions    ###
 ######################
-app.secret_key = App_Config.query.filter_by(key='Secret Key').first().value
-login_manager.login_view = "login"
+try:
+    app.secret_key = App_Config.query.filter_by(key='Secret Key').first().value
+except:
+    print('Exception. Main __init__.py attempted to set Secret Key value based on DB value, but an error occurred.'
+          'This is likely due to one of the following reasons: (1) You are running db_create.py, or (2) You are '
+          'attempting to run the application for the first time, but have not populated the database by running '
+          'db_create.py. If (2), run db_create.py. If (1), this error is expected, and perfectly alright.')
+login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(user_id):

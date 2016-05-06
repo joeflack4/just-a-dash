@@ -17,6 +17,7 @@ except:
 ######################
 ### Initialize App ###
 ######################
+exceptions = {}
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
@@ -51,13 +52,8 @@ except:
 try:
     app.secret_key = App_Config.query.filter_by(key='Secret Key').first().value
 except:
-    exceptions = True
-    print('')
-    print('Exception #1. Main __init__.py attempted to set Secret Key value based on DB value, but an error occurred.'
-          'This is likely due to one of the following reasons: (1) You are running db_create.py, or (2) You are '
-          'attempting to run the application for the first time, but have not populated the database by running '
-          'db_create.py. If (2), run db_create.py. If (1), this error is expected, and perfectly alright.')
-    print('')
+    exceptions[1: True]
+
 login_manager.login_view = 'login'
 
 @login_manager.user_loader
@@ -71,8 +67,15 @@ try:
     from app import routes
     AdminLTE(app)
 except:
-    exceptions =  True
+    exceptions[1: True]
 
+if exceptions[1] == True:
+    print('')
+    print('Exception #1. Main __init__.py attempted to set Secret Key value based on DB value, but an error occurred.'
+          'This is likely due to one of the following reasons: (1) You are running db_create.py, or (2) You are '
+          'attempting to run the application for the first time, but have not populated the database by running '
+          'db_create.py. If (2), run db_create.py. If (1), this error is expected, and perfectly alright.')
+    print('')
 
 # - Contingencies
 if __name__ == '__main__':

@@ -20,13 +20,8 @@ twilio_number = '+' + OMS_Config.query.filter_by(key='Twilio Phone Number').firs
 
 
 # - Functions
-def manually_call():  # <- Unused
-    # client = TwilioRestClient(account_sid, auth_token)
-    # to = "+12316851234"
-    # from_ = "+10000000000"
-    # body = CompanyContacts.check_in(from_)
-    # client.messages.create(to, from_, body)
-    return ""
+def manually_call():
+    return
 
 
 def call_response():
@@ -34,12 +29,16 @@ def call_response():
 
     # Randomly chooses confirmation that is either pre-recording, or text-to-speech.
     confirmation = random.choice(["say", "play"])
+    text_to_speech = OMS_Config.query.filter_by(key='Call Response Text-to-Speech').first().value
     if confirmation == "play":
-        resp.play("http://www.sonshinecompanioncare.com/scccheckin01.mp3")
+        # resp.play("http://www.sonshinecompanioncare.com/scccheckin01.mp3")
+        resp.play(OMS_Config.query.filter_by(key='Call Response MP3').first().value)
     elif confirmation == "say":
-        resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!", voice="alice")
+        # resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!", voice="alice")
+        resp.say(text_to_speech, voice='alice')
     else:
-        resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!")
+        resp.say(text_to_speech)
+        # resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!")
 
     return str(resp)
 

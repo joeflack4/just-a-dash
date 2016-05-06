@@ -20,19 +20,19 @@ twilio_number = '+' + OMS_Config.query.filter_by(key='Twilio Phone Number').firs
 # - Functions
 def manually_send_message():
     client = TwilioRestClient(account_sid, auth_token)
-    # - Note: Not sure at the moment what the below number represents.
-    to = "+12316851234"
-    # - To Do: Replace 'from' later on when using the Twilio API.
-    from_ = "+10000000000"
+    # - Note: The from_ number must be a valid Twilio phone number. The to number can be any outgoing number.
+    # to = "+12316851234"
+    # from_ = "+10000000000"
+    phone_number = 'some number'
+    to = phone_number
+    from_ = twilio_number
     body = CompanyContacts.check_in(from_)
-    # message = client.messages.create(to, from_, body)
     client.messages.create(to, from_, body)
 
 
 def sms_response():
     resp = twilio.twiml.Response()
-    # To Do: Replace 'from' later on when using the Twilio API.
-    from_ = "+10000000000"
+    from_ = twilio_number
     body = CompanyContacts.check_in(from_)
     resp.message(body)
     return str(resp)

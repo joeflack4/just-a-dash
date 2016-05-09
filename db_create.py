@@ -66,6 +66,7 @@ try:
 except:
     errors.append(integrity_error.format("OMS Module Config"))
     db.session.rollback()
+
 # - CRM
 try:
     db.session.add(CRM_Config("Module Name", "Customer Relations", permission_level=1, active=True))
@@ -77,6 +78,7 @@ try:
 except:
     errors.append(integrity_error.format("CRM Module Config"))
     db.session.rollback()
+
 # - HRM
 try:
     db.session.add(HRM_Config("Module Name", "Human Resources", permission_level=1, active=True))
@@ -88,6 +90,7 @@ try:
 except:
     errors.append(integrity_error.format("HRM Module Config"))
     db.session.rollback()
+
 # - AMS
 try:
     db.session.add(AMS_Config("Module Name", "Accounting", permission_level=1, active=True))
@@ -99,6 +102,7 @@ try:
 except:
     errors.append(integrity_error.format("AMS Module Config"))
     db.session.rollback()
+
 # - MMS
 try:
     db.session.add(MMS_Config("App Name", "Marketing", permission_level=1, active=True))
@@ -106,7 +110,6 @@ try:
     db.session.add(MMS_Config("App Icon", "fa fa-line-chart", permission_level=1, active=True))
     db.session.add(MMS_Config("App Title", "Marketing Management System", permission_level=1, active=True))
     db.session.add(MMS_Config("App Short-Title", "Marketing Management", permission_level=1, active=True))
-
     db.session.commit()
 except:
     errors.append(integrity_error.format("MMS Module Config"))

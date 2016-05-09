@@ -571,7 +571,8 @@ def operations(*args):
             error_message = Markup('One or more errors occurred related to check-in submodule settings. The following '
                                    'setting(s) have not yet been configured, and may cause this submodule to behave '
                                    'incorrectly: {}'.format(make_string_list(critical_settings_errors)) +
-                                   '. Please have the master user update module settings.')
+                                   '. Please have the master user update module settings, then have the server '
+                                   'administrator reset the server to apply settings.')
             flash(error_message, 'danger')
 
         return render_template('modules/operations/index.html',
@@ -589,7 +590,8 @@ def operations(*args):
                                render_settings=render_settings)
     except:
         flash('Attempted to load check-in submodule, but an error occurred. Module settings may not be configured '
-              'correctly. Please have the master user update module settings, and try again.', 'danger')
+              'correctly. Please have the master user update module settings, then have the server administrator reset '
+              'the server to apply settings.', 'danger')
         return redirect(url_for('root_path'))
 
 

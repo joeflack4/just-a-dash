@@ -614,6 +614,9 @@ def update_oms_settings(current_user, oms_settings_form):
             flash('No changes to user were detected in form submission. Data has been left unchanged.', 'info')
         else:
             flash('Settings successfully updated!', 'success')
+            flash('Now that you have updated these settings, the server will need to restart. Restart is currently not '
+                  'automatic. Please have your server administrator restart the application server to fully apply these'
+                  'changes.', 'info')
     except:
         db.session.rollback()
         flash('Sorry! It seems an issue occurred while attempting to update settings. Please contact the application '

@@ -52,7 +52,7 @@ except:
 try:
     app.secret_key = App_Config.query.filter_by(key='Secret Key').first().value
 except:
-    exceptions[1: True]
+    exceptions['1': True]
 
 login_manager.login_view = 'login'
 
@@ -67,10 +67,10 @@ try:
     from app import routes
     AdminLTE(app)
 except:
-    exceptions['Exception 1': True]
+    exceptions['1': True]
 
 if exceptions != {}:
-    if exceptions['Exception 1'] == True:
+    if exceptions['1'] == True:
         print('')
         print('Exception #1. Main __init__.py attempted to set Secret Key value based on DB value, but an error occurred.'
               'This is likely due to one of the following reasons: (1) You are running db_create.py, or (2) You are '

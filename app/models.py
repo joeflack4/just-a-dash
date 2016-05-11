@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from hashlib import md5
 
 
 db.Base = declarative_base()
@@ -128,6 +129,23 @@ class User(Base_Model):
         self.hrm_role = hrm_role
         self.ams_role = ams_role
         self.mms_role = mms_role
+
+    @staticmethod
+    def make_unique_username(username):
+        if User.query.filter_by(username=username).first() is None:
+            return username
+        version = 2
+        new_username = ''
+        while True:
+            new_username = username + str(version)
+            if User.query.filter_by(username=new_username).first() is None:
+                break
+            version += 1
+        return new_username
+
+    def avatar(self, size):
+        return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % \
+            (md5(self.email.encode('utf-8')).hexdigest(), size)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

@@ -11,6 +11,10 @@ class Config(object):
     CSRF_ENABLED = True
     WTF_CSRF_ENABLED = True
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    # try:
+    #     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    # except KeyError as e:
+    #     print('{}: Database URI could not be loaded into memory. This is normal if running local scripts.'.format(e))
 
 
 ##############

@@ -19,6 +19,7 @@ except:
 ######################
 exceptions = {}
 app = Flask(__name__)
+# app.config.from_object('config')
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)

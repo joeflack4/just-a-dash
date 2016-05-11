@@ -46,34 +46,46 @@ class TestCase(unittest.TestCase):
         # app.config['WTF_CSRF_ENABLED'] = False
         # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
         self.app = app.test_client()
-        db.create_all()
+        # - Note: This doesn't seem necessary.
+        # db.create_all()
+        self.test_users = [User(username='john', email='john@example.com', password='', admin_role='basic',
+                                oms_role='basic', crm_role='basic', hrm_role='basic', mms_role='basic',
+                                ams_role='basic')]
 
     def tearDown(self):
         db.session.remove()
-        db.drop_all()
+        # - Note: This doesn't seem necessary.
+        # db.drop_all()
 
     # Variables
-    test_users = [User(username='john', email='john@example.com', password='', admin_role='basic', oms_role='basic',
-                       crm_role='basic', hrm_role='basic', mms_role='basic', ams_role='basic')]
+    # test_users = [User(username='john', email='john@example.com', password='', admin_role='basic', oms_role='basic',
+    #                    crm_role='basic', hrm_role='basic', mms_role='basic', ams_role='basic')]
 
     # Test Cases
-    def test_make_unique_username(self, users=test_users):
-        for user in users:
-            db.session.add(user)
-            db.session.commit()
-            username = User.make_unique_username('john')
-            assert username != 'john'
-            comparison_user = User(username=username, email='susan@example.com', password='', admin_role='basic',
+    # def test_make_unique_username(self, users=test_users):
+    def test_make_unique_username(self):
+        # for user in users:
+        for user in self.test_users:
+            new_username = User.make_unique_username(user.username)
+            new_unique_user = User(username=new_username, email='john2@example.com', password='', admin_role='basic',
                                    oms_role='basic', crm_role='basic', hrm_role='basic', mms_role='basic',
                                    ams_role='basic')
-            db.session.add(comparison_user)
+            db.session.add(new_unique_user)
             db.session.commit()
-            username2 = User.make_unique_username('john')
-            assert username2 != 'john'
-            assert username2 != username
+            new_username2 = User.make_unique_username(new_username)
+            new_unique_comparison_user = User(username=new_username2, email='john3@example.com', password='',
+                                              admin_role='basic', oms_role='basic', crm_role='basic', hrm_role='basic',
+                                              mms_role='basic', ams_role='basic')
+            db.session.add(new_unique_comparison_user)
+            db.session.commit()
+            assert new_username2 != new_username
 
-    def test_avatar(self, users=test_users):
-        for user in users:
+            User.query.filter_by(username=new_username).delete()
+            User.query.filter_by(username=new_username2).delete()
+            db.session.commit()
+
+    def test_avatar(self):
+        for user in self.test_users:
             avatar = user.avatar(128)
             expected = 'http://www.gravatar.com/avatar/' + \
                 'd4c74594d841139328695756648b6bd6'

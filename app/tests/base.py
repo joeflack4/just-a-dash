@@ -46,11 +46,13 @@ class TestCase(unittest.TestCase):
         # app.config['WTF_CSRF_ENABLED'] = False
         # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
         self.app = app.test_client()
-        db.create_all()
+        # - Note: This doesn't seem necessary.
+        # db.create_all()
 
     def tearDown(self):
         db.session.remove()
-        db.drop_all()
+        # - Note: This doesn't seem necessary.
+        # db.drop_all()
 
     # Variables
     test_users = [User(username='john', email='john@example.com', password='', admin_role='basic', oms_role='basic',

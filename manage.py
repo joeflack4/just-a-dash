@@ -1,3 +1,4 @@
+import sys
 import unittest
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
@@ -9,10 +10,6 @@ from app import app, db
 env = EnvironmentContext.configure
 # This will allow migrations to listen to column type changes.
 env.compare_type = True
-
-print("")
-print("# # # Running DB Manager, using Alembic and Flask-Migrate. # # #")
-print("# # # DB: '", app.config['SQLALCHEMY_DATABASE_URI'], "' # # #")
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -31,4 +28,9 @@ def test():
         return 1
 
 if __name__ == '__main__':
+    if sys.argv[1] == 'db':
+        print("")
+        print("# # # Ran DB Manager, using Alembic and Flask-Migrate. # # #")
+        print("# # # DB: '", app.config['SQLALCHEMY_DATABASE_URI'], "' # # #")
+
     manager.run()

@@ -33,6 +33,7 @@ SQLAlchemy==0.9.7
 requests
 beautifulsoup4
 nltk
+pytest
 
 # - Services
 twilio

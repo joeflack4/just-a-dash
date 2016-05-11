@@ -57,22 +57,23 @@ class TestCase(unittest.TestCase):
                        crm_role='basic', hrm_role='basic', mms_role='basic', ams_role='basic')]
 
     # Test Cases
-    def test_make_unique_username(self, test_users):
-        for user in test_users:
+    def test_make_unique_username(self, users=test_users):
+        for user in users:
             db.session.add(user)
             db.session.commit()
             username = User.make_unique_username('john')
             assert username != 'john'
-            comparison_user = User(username=username, email='susan@example.com', password='', admin_role='basic', oms_role='basic',
-                       crm_role='basic', hrm_role='basic', mms_role='basic', ams_role='basic')
+            comparison_user = User(username=username, email='susan@example.com', password='', admin_role='basic',
+                                   oms_role='basic', crm_role='basic', hrm_role='basic', mms_role='basic',
+                                   ams_role='basic')
             db.session.add(comparison_user)
             db.session.commit()
             username2 = User.make_unique_username('john')
             assert username2 != 'john'
             assert username2 != username
 
-    def test_avatar(self, test_users):
-        for user in test_users:
+    def test_avatar(self, users=test_users):
+        for user in users:
             avatar = user.avatar(128)
             expected = 'http://www.gravatar.com/avatar/' + \
                 'd4c74594d841139328695756648b6bd6'

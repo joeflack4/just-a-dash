@@ -36,11 +36,9 @@
 
   {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->
 {% else %}
-    <h3>Modules</h3>
+    <h3>Sections</h3>
     <ul>
-      <li><a href="{{ url_for('operations') }}">Operations Management</a></li>
-      <li><a href="{{ url_for('crm') }}">Customer Relations Management</a></li>
-      <li><a href="{{ url_for('hrm') }}">Human Resource Management</a></li>
+      <li><a href="{{ url_for('crm') }}">Customer List</a></li>
     </ul>
 {% endif %}
 

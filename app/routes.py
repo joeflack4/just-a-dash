@@ -535,6 +535,27 @@ def module_settings():
 
 ############
 # - Modules - OMS
+@app.route('/oms-home')
+@login_required
+@oms_basic_admin_required
+def oms_home():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+
+    return render_template('modules/operations/home.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="OMS",
+                           module_name="Operations Management",
+                           page_name="OMS Home",
+                           app_config_settings=get_app_settings(),
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
 @app.route('/operations')
 @login_required
 @oms_basic_admin_required
@@ -667,6 +688,27 @@ def call():
 
 ############
 # - Modules - CRM
+@app.route('/crm-home')
+@login_required
+@crm_basic_admin_required
+def crm_home():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+
+    return render_template('modules/crm/home.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="CRM",
+                           module_name="Customer Relationship Management",
+                           page_name="CRM Home",
+                           app_config_settings=get_app_settings(),
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
 @app.route('/crm', methods=['GET', 'POST'])
 @login_required
 @crm_basic_admin_required
@@ -829,6 +871,27 @@ def crm_settings():
 
 ############
 # - Modules - HRM
+@app.route('/hrm-home')
+@login_required
+@hrm_basic_admin_required
+def hrm_home():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+
+    return render_template('modules/hrm/home.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="HRM",
+                           module_name="Human Resource Management",
+                           page_name="HRM Home",
+                           app_config_settings=get_app_settings(),
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           profile_form=UserUpdateForm(request.form),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
+
 @app.route('/hr', methods=['GET', 'POST'])
 @app.route('/hrm', methods=['GET', 'POST'])
 @login_required

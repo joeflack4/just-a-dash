@@ -40,7 +40,9 @@
                       <a href="#"><i class="fa fa-cog"></i> <span>Personal Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
                       <ul class="treeview-menu">
                         <li><a href="{{ url_for('account_settings') }}"><i class="fa fa-genderless"></i> <span>Account</span></a></li>
-                        <li><a href="{{ url_for('profile') }}"><i class="fa fa-genderless"></i> <span>Profile</span></a></li>
+                        {% if app_config_settings['Toggle Placeholders'] == 'true' %}
+                          <li><a href="{{ url_for('profile') }}"><i class="fa fa-genderless"></i> <span>Profile</span></a></li>
+                        {% endif %}
                       </ul>
                   </li>
                   <li class="treeview">
@@ -66,9 +68,11 @@
             <li class="treeview">
               <a href="#"><i class="fa fa-fort-awesome"></i> <span>Operations</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('operations') }}"><i class="fa fa-home"></i> <span>OMS Home</span></a></li>
+                <li><a href="{{ url_for('oms_home') }}"><i class="fa fa-home"></i> <span>OMS Home</span></a></li>
                 <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Personnel Check-in</span></a></li>
-                <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Scheduling</span></a></li>
+                {% if app_config_settings['Toggle Placeholders'] == 'true' %}
+                  <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Scheduling</span></a></li>
+                {% endif %}
                 {% if current_user.oms_role == 'super' or current_user.admin_role == 'master' %}
                   <li><a href="{{ url_for('oms_settings') }}"><i class="fa fa-cogs"></i> <span>OMS Settings</span></a></li>
                 {% endif %}
@@ -80,7 +84,7 @@
             <li class="treeview">
               <a href="#"><i class="ion-person-stalker"></i> <span>Customer Relations</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('crm') }}">  <i class="fa fa-home"></i> <span>CRM Home</span></a></li>
+                <li><a href="{{ url_for('crm_home') }}">  <i class="fa fa-home"></i> <span>CRM Home</span></a></li>
                 <li><a href="{{ url_for('crm') }}">  <i class="fa fa-chevron-circle-right"></i> <span>Customer List</span></a></li>
                 {% if current_user.crm_role == 'super' or current_user.admin_role == 'master' %}
                   <li><a href="{{ url_for('crm_settings') }}"><i class="fa fa-cogs"></i> <span>CRM Settings</span></a></li>
@@ -93,7 +97,7 @@
             <li class="treeview">
               <a href="#"><i class="fa fa-users"></i> <span>Human Resources</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
-                <li><a href="{{ url_for('hrm') }}"><i class="fa fa-home"></i> <span>HRM Home</span></a></li>
+                <li><a href="{{ url_for('hrm_home') }}"><i class="fa fa-home"></i> <span>HRM Home</span></a></li>
                 <li><a href="{{ url_for('hrm') }}"><i class="fa fa-chevron-circle-right"></i> <span>Personnel List</span></a></li>
                 {% if current_user.hrm_role == 'super' or current_user.admin_role == 'master' %}
                   <li><a href="{{ url_for('hrm_settings') }}"><i class="fa fa-cogs"></i> <span>HRM Settings</span></a></li>
@@ -102,6 +106,7 @@
             </li>
             {% endif %}
 
+          {% if app_config_settings['Toggle Placeholders'] == 'true' %}
             {% if current_user.ams_role == 'basic' or current_user.ams_role == 'super' or current_user.ams_role == 'master' %}
             <li class="treeview">
               <a href="#"><i class="fa fa-bar-chart"></i> <span>Accounting</span> <i class="fa fa-angle-left pull-right"></i></a>
@@ -131,6 +136,7 @@
               </ul>
             </li>
             {% endif %}
+          {% endif %}
 
           </ul>
         </section>

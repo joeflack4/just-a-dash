@@ -63,6 +63,9 @@ class Config_Names_and_Aesthetics(BaseForm):
     app_short_title = StringField('app_short_title', render_kw={"placeholder": "App Short-Title",
                                   'value': get_app_settings('App Short-Title'), 'label': 'App Shortened Title'},
                                   validators=[Optional(), Length(min=1, max=50)])
+    placeholders_toggle = BooleanField('Toggle Placeholders', id='Toggle Placeholders', render_kw={'label':
+                                        'Toggle Placeholders', 'field_type': 'BooleanField', 'placeholder':
+                                        'Toggle Placeholders'})
 
 
 class Config_Secret_Key(BaseForm):

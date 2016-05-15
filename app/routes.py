@@ -343,7 +343,8 @@ def app_settings():
                         'App Icon': get_app_settings('App Icon'),
                         'App Title': get_app_settings('App Title'),
                         'App Short-Title': get_app_settings('App Short-Title'),
-                        'Secret Key': get_app_settings('Secret Key')}
+                        'Secret Key': get_app_settings('Secret Key'),
+                        'Toggle Placeholders': get_app_settings('Toggle Placeholders')}
     forms = {'Naming-and-Aesthetics-Form': names_and_aesthetics_form,
              'Secret-Key-Form': secret_key_form,
              'Modules-Form': modules_form}

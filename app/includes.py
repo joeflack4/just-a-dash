@@ -478,7 +478,8 @@ def get_app_settings(*args):
                                    'App Name': App_Config.query.filter_by(key='App Name').first().value,
                                    'App Short-Title': App_Config.query.filter_by(key='App Short-Title').first().value,
                                    'App Title': App_Config.query.filter_by(key='App Title').first().value,
-                                   'Secret Key': App_Config.query.filter_by(key='Secret Key').first().value}
+                                   'Secret Key': App_Config.query.filter_by(key='Secret Key').first().value,
+                                   'Toggle Placeholders': App_Config.query.filter_by(key='Toggle Placeholders').first().value,}
         except:
             app_config_settings = False
         return app_config_settings

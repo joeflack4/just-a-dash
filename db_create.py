@@ -35,8 +35,7 @@ app_config_rows = [["App Name", "Just-a-Dash", 1, True],
     ["App Title", "Just-a-Dash Enterprise Management System", 1, True],
     ["App Short-Title", "Just-a-Dash", 1, True],
     ["Toggle Placeholders", "false", 1, True],
-    ["Secret Key", sk_generator(size=24), 1, True],
-    ['test', 'test', 1, True]]
+    ["Secret Key", sk_generator(size=24), 1, True]]
 add_rows_to_config_table('App Config', App_Config, app_config_rows)
 
 

@@ -538,7 +538,8 @@ def update_names_and_aesthetics(current_user, names_and_aesthetics_form):
         settings = ((form.app_name.data, App_Config.query.filter_by(key='App Name')),
                     (form.app_icon.data, App_Config.query.filter_by(key='App Icon')),
                     (form.app_title.data, App_Config.query.filter_by(key='App Title')),
-                    (form.app_short_title.data, App_Config.query.filter_by(key='App Short-Title')))
+                    (form.app_short_title.data, App_Config.query.filter_by(key='App Short-Title')),
+                    (form.placeholders_toggle.data, App_Config.query.filter_by(key='Toggle Placeholders')))
 
         for form_data, setting in settings:
             if  form_data != setting.first().value and form_data != '':

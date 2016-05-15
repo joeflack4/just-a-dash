@@ -23,9 +23,21 @@
 
       {% for field in form %}
         {% if field.id != 'csrf_token' %}
-          <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
-          {{ field(placeholder=field.render_kw['placeholder'], value=setting_values[field.render_kw['placeholder']], class='form-control') }}
+          {% if field.render_kw['field_type'] == 'BooleanField' %}
+            {# <p>On/Off: &nbsp;{{ field(class='form-control', value=setting_values[field.render_kw['value']]) }}</p>#}
+            {# <p>On/Off: &nbsp;{{ field(class='form-control', checked=setting_values[field.render_kw['placeholder']]) }}</p>#}
+            {% if setting_values[field.render_kw['placeholder']] == 'true' %}
+              <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+              <p>On/Off: &nbsp;{{ field(class='form-control', checked=setting_values[field.render_kw['placeholder']]) }}</p>
+            {% else %}
+              <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+              <p>On/Off: &nbsp;{{ field(class='form-control') }}</p>
+            {% endif %}
+          {% else %}
+            <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+            {{ field(placeholder=field.render_kw['placeholder'], value=setting_values[field.render_kw['placeholder']], class='form-control') }}
           <p><span class="error">{% if field.errors %}{% for error in field.errors %} {{ error }} {% endfor %}{% endif %}</span></p>
+          {% endif %}
         {% endif %}
       {% endfor %}
 

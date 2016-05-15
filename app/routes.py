@@ -65,7 +65,7 @@ def welcome():
     register_form = RegisterForm(request.form)
 
     return render_template('core_modules/welcome/index.html',
-                           module_name="Just-a-Dash Control Panel",
+                           module_name=get_app_settings('App Name') + " Control Panel",
                            page_name="Welcome",
                            icon="fa fa-star-o",
                            module_abbreviation="Home",

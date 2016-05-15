@@ -84,7 +84,7 @@ def index():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
     return render_template('core_modules/dashboard/index.html',
-                           module_name="Just-a-Dash Control Panel",
+                           module_name=get_app_settings('App Name') + " Control Panel",
                            page_name="Dashboard",
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",

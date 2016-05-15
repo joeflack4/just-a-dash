@@ -69,7 +69,7 @@
                 <li><a href="{{ url_for('operations') }}"><i class="fa fa-home"></i> <span>OMS Home</span></a></li>
                 <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Personnel Check-in</span></a></li>
                 <li><a href="{{ url_for('operations') }}"><i class="fa fa-chevron-circle-right"></i> <span>Scheduling</span></a></li>
-                {% if current_user.oms_role == 'super' %}
+                {% if current_user.oms_role == 'super' or current_user.admin_role == 'master' %}
                   <li><a href="{{ url_for('oms_settings') }}"><i class="fa fa-cogs"></i> <span>OMS Settings</span></a></li>
                 {% endif %}
               </ul>
@@ -82,7 +82,7 @@
               <ul class="treeview-menu">
                 <li><a href="{{ url_for('crm') }}">  <i class="fa fa-home"></i> <span>CRM Home</span></a></li>
                 <li><a href="{{ url_for('crm') }}">  <i class="fa fa-chevron-circle-right"></i> <span>Customer List</span></a></li>
-                {% if current_user.crm_role == 'super' %}
+                {% if current_user.crm_role == 'super' or current_user.admin_role == 'master' %}
                   <li><a href="{{ url_for('crm_settings') }}"><i class="fa fa-cogs"></i> <span>CRM Settings</span></a></li>
                 {% endif %}
               </ul>
@@ -95,7 +95,7 @@
               <ul class="treeview-menu">
                 <li><a href="{{ url_for('hrm') }}"><i class="fa fa-home"></i> <span>HRM Home</span></a></li>
                 <li><a href="{{ url_for('hrm') }}"><i class="fa fa-chevron-circle-right"></i> <span>Personnel List</span></a></li>
-                {% if current_user.hrm_role == 'super' %}
+                {% if current_user.hrm_role == 'super' or current_user.admin_role == 'master' %}
                   <li><a href="{{ url_for('hrm_settings') }}"><i class="fa fa-cogs"></i> <span>HRM Settings</span></a></li>
                 {% endif %}
               </ul>
@@ -109,7 +109,7 @@
                 <li><a href="{{ url_for('accounting') }}"><i class="fa fa-home"></i> <span>AMS Home</span></a></li>
                 <li><a href="{{ url_for('accounting') }}"><i class="fa fa-chevron-circle-right"></i> <span>Billing Reports</span></a></li>
                 <li><a href="{{ url_for('accounting') }}"><i class="fa fa-chevron-circle-right"></i> <span>Financial Reports</span></a></li>
-                {% if current_user.ams_role == 'super' %}
+                {% if current_user.ams_role == 'super' or current_user.admin_role == 'master' %}
                   <li><a href="{{ url_for('ams_settings') }}"><i class="fa fa-cogs"></i> <span>AMS Settings</span></a></li>
                 {% endif %}
               </ul>
@@ -125,7 +125,7 @@
                 <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Internal Metrics</span></a></li>
                 <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>A/B Testing Studies</span></a></li>
                 <li><a href="{{ url_for('marketing') }}"><i class="fa fa-chevron-circle-right"></i> <span>Market Statistics</span></a></li>
-                {% if current_user.mms_role == 'super' %}
+                {% if current_user.mms_role == 'super' or current_user.admin_role == 'master' %}
                   <li><a href="{{ url_for('mms_settings') }}"><i class="fa fa-cogs"></i> <span>MMS Settings</span></a></li>
                 {% endif %}
               </ul>

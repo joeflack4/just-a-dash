@@ -38,3 +38,7 @@ Currently none.
 ![Mobile Alpha 01](http://joeflack.net/wp-content/uploads/2016/02/JustADash_Alpha01-337x600.png)
 
 ![Codeship Badge](https://codeship.com/projects/2fa50860-c274-0133-9ee2-2aea6de455b7/status?branch=master)
+
+## Docs
+#### User Guide
+Check out the new .pdf User Guide! – http://www.joeflack.net/justadash/user-guide

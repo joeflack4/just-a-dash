@@ -1,0 +1,44 @@
+/* Gallery Module */
+/* - Note: LESS code for whenever I install LESS.
+.gallery_icon {
+    text-shadow: 5px 5px 5px #ccc;
+    font-size: 50vmin;
+}
+
+.gallery-icon-green{
+    .gallery_icon;
+    color: green;
+}
+*/
+.gallery-container{
+    position: relative;
+    width: 25%;
+    height: auto;
+    text-align: center;
+    border: 0 solid black;
+}
+
+.gallery-icon-green{
+    text-shadow: 5px 5px 5px #ccc;
+    color: green;
+}
+
+.gallery-icon-red{
+    text-shadow: 5px 5px 5px #ccc;
+    color: red;
+}
+
+.gallery-icon-purple{
+    text-shadow: 5px 5px 5px #ccc;
+    color: purple;
+}
+
+.gallery-icon-blue{
+    text-shadow: 5px 5px 5px #ccc;
+    color: blue;
+}
+
+.gallery-icon-orange{
+    text-shadow: 5px 5px 5px #ccc;
+    color: orange;
+}

@@ -533,6 +533,26 @@ def module_settings():
                            logged_in=logged_in,
                            forms=forms)
 
+
+@app.route('/gallery', methods=['GET', 'POST'])
+@login_required
+@app_basic_admin_required
+def gallery():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+
+    return render_template('core_modules/app_settings/gallery.html',
+                           icon="fa fa-picture-o",
+                           module_abbreviation="App Settings",
+                           module_name="App Settings",
+                           page_name="Image Gallery",
+                           app_config_settings=get_app_settings(),
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in)
+
 ############
 # - Modules - OMS
 @app.route('/oms-home')

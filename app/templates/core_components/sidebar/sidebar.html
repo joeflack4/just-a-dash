@@ -31,11 +31,14 @@
 
             <li><a href="{{ url_for('root_path') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
 
+            {# Settings #}
             <li class="treeview">
               <a href="#"><i class="fa fa-cogs"></i> <span>Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
 
+                {# Admin Settings Group #}
                 {% if current_user.admin_role == 'basic' or current_user.admin_role == 'super' or current_user.admin_role == 'master' %}
+                  {# Personal Settings #}
                   <li class="treeview">
                       <a href="#"><i class="fa fa-cog"></i> <span>Personal Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
                       <ul class="treeview-menu">
@@ -45,15 +48,19 @@
                         {% endif %}
                       </ul>
                   </li>
+
+                  {# App Settings #}
                   <li class="treeview">
                       <a href="#"><i class="fa fa-cogs"></i> <span>Application Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
                       <ul class="treeview-menu">
                         <li><a href="{{ url_for('user_management') }}"><i class="fa fa-genderless"></i> <span>User Management</span></a></li>
                         <li><a href="{{ url_for('app_settings') }}"><i class="fa fa-genderless"></i> <span>App Config</span></a></li>
-                          <li><a href="{{ url_for('module_settings') }}"><i class="fa fa-genderless"></i> <span>Module Settings</span></a></li>
+                        <li><a href="{{ url_for('module_settings') }}"><i class="fa fa-genderless"></i> <span>Module Settings</span></a></li>
+                        <li><a href="{{ url_for('gallery') }}"><i class="fa fa-genderless"></i> <span>Gallery</span></a></li>
                       </ul>
                   </li>
 
+                {# User Settings Group #}
                 {% else %}
                   <li><a href="{{ url_for('account_settings') }}"><i class="fa fa-cog"></i> <span>Account</span></a></li>
                   <li><a href="{{ url_for('profile') }}"><i class="fa fa-cog"></i> <span>Profile</span></a></li>
@@ -62,6 +69,8 @@
               </ul>
             </li>
 
+
+            {# Modules #}
             {% if logged_in == True %}<li class="header"></li>{% endif %}
 
             {% if current_user.oms_role == 'basic' or current_user.oms_role == 'super' or current_user.oms_role == 'master' %}

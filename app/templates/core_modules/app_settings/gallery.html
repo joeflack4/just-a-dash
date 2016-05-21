@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+    {{ super() }}
+
+  <h3 class="content-header">{{ page_name }}</h3>
+
+  <div class="gallery-container" style="position: relative; width: 300px; height: auto; text-align: center;
+    border: 1px solid black;">
+
+    Placeholder
+
+    <i class="fa fa-upload" style="color: green;
+      text-shadow: 1px 1px 1px #ccc;
+      font-size: 50vmin;"></i>
+
+    Placeholder
+
+  </div>
+
+{%- endblock content %}

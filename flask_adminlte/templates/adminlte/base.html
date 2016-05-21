@@ -5,26 +5,29 @@
 
 
   <head>
-    {%- block head %}
+  {%- block head %}
     <title>{% block title %}{% endblock title %}</title>
+
     {%- block metas %}
-    <meta charset="UTF-8">
-    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+      <meta charset="UTF-8">
+      <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     {%- endblock metas %}
+
     {%- block styles %}
-    <!-- Bootstrap 3.3.6
-      <link href="{{ adminlte_find_resource('css/bootstrap.css', cdn='local') }}" rel="stylesheet" type="text/css" /> -->
-      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <!-- Font Awesome 4.5.0
-      <link href="{{ adminlte_find_resource('css/font-awesome.css', cdn='local') }}" rel="stylesheet" type="text/css" /> -->
-      <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <!-- Ionicons
-      <link href="{{ adminlte_find_resource('css/ionicons.css', cdn='local') }}" rel="stylesheet" type="text/css" /> -->
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.css" rel="stylesheet" type="text/css" />
-    <!-- Theme style -->
-      <link href="{{ adminlte_find_resource('css/AdminLTE.css', cdn='local', use_minified=False) }}" rel="stylesheet" type="text/css" />
+      <!-- Bootstrap 3.3.6
+        <link href="{{ adminlte_find_resource('css/bootstrap.css', cdn='local') }}" rel="stylesheet" type="text/css" /> -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+      <!-- Font Awesome 4.5.0
+        <link href="{{ adminlte_find_resource('css/font-awesome.css', cdn='local') }}" rel="stylesheet" type="text/css" /> -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+      <!-- Ionicons
+        <link href="{{ adminlte_find_resource('css/ionicons.css', cdn='local') }}" rel="stylesheet" type="text/css" /> -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.css" rel="stylesheet" type="text/css" />
+      <!-- Theme style -->
+        <link href="{{ adminlte_find_resource('css/AdminLTE.css', cdn='local', use_minified=False) }}" rel="stylesheet" type="text/css" />
     {%- endblock styles %}
-    {%- endblock head %}
+
+  {%- endblock head %}
   </head>
 
 
@@ -76,12 +79,12 @@
 
     {% block scripts %}
       {# Jquery #}
-      <script src="{{ adminlte_find_resource('jquery.js', cdn='jquery') }}"></script>
+        <script src="{{ adminlte_find_resource('jquery.js', cdn='jquery') }}"></script>
       {# Bootstrap #}
-      <!-- <script src="{{ adminlte_find_resource('js/bootstrap.js', cdn='local') }}"></script> -->
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
+        <!-- <script src="{{ adminlte_find_resource('js/bootstrap.js', cdn='local') }}"></script> -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
       {# AdminLTE #}
-      <script src="{{ adminlte_find_resource('js/AdminLTE/app.js', cdn='local', use_minified=False) }}"></script>
+        <script src="{{ adminlte_find_resource('js/AdminLTE/app.js', cdn='local', use_minified=False) }}"></script>
     {%- endblock scripts %}
 
   {%- endblock body %}

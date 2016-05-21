@@ -1,6 +1,13 @@
 {% extends "adminlte/base.html" %}
 {% import "adminlte/fixes.html" as fixes %}
 
+<!-- Styles -->
+{% block styles -%}
+  {# Bootstrap, Font Awesome, Ionicons, AdminLTE #}
+    {{ super() }}
+  {# Proprietary Styles #}
+    <link href="../static/css/justadash.main.css" rel="stylesheet" type="text/css" />
+{%- endblock styles %}
 
 <!-- Header -->
 {%  block header -%}
@@ -65,3 +72,14 @@
 {% block modals -%}
   {% include "core_components/modals/modals.html" %}
 {%- endblock modals %}
+
+
+<!-- Scripts -->
+{% block scripts -%}
+    {# Jquery, Bootstrap, & AdminLTE #}
+      {{ super() }}
+    {# AngularJS #}
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    {# Proprietary Scripts #}
+      <script src="../static/js/justadash.main.js"></script>
+{%- endblock scripts %}

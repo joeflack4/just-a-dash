@@ -21,7 +21,7 @@ from .api import ApiAuth
 ### Initialize App ###
 ######################
 exceptions = {}
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 # app.config.from_object('config')
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()

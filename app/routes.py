@@ -540,6 +540,7 @@ def module_settings():
 def gallery():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
+    route_scripts = ('app.includes.js', '/components/gallery/galleryController.js')
 
     return render_template('core_modules/app_settings/gallery.html',
                            icon="fa fa-picture-o",
@@ -551,7 +552,8 @@ def gallery():
                            notifications=db.session.query(AppNotifications),
                            login_form=login_form,
                            current_user=current_user,
-                           logged_in=logged_in)
+                           logged_in=logged_in,
+                           route_scripts=route_scripts)
 
 ############
 # - Modules - OMS

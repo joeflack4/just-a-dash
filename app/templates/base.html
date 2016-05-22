@@ -80,6 +80,9 @@
       {{ super() }}
     {# AngularJS #}
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+      <script src="../static/js/app.module.js"></script>
     {# Proprietary Scripts #}
-      <script src="../static/js/app.includes.js"></script>
+      {% for script_path in route_scripts %}
+        <script src="../static/js/{{ script_path }}"></script>
+      {% endfor %}
 {%- endblock scripts %}

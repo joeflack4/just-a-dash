@@ -115,9 +115,6 @@ permissions_api_blueprint = api_manager.create_api(Permissions, collection_name=
 modules_api_blueprint = api_manager.create_api(Modules, collection_name='modules', methods=['GET', 'POST', 'DELETE',
                                                'PUT'], preprocessors=dict(GET_SINGLE=[ApiAuth.super_admin],
                                                 GET_MANY=[ApiAuth.super_admin]))
-app_config_api_blueprint = api_manager.create_api(AppConfig, collection_name='app-config', methods=['GET', 'POST',
-                                                  'DELETE', 'PUT'], preprocessors=dict(
-                                                  GET_SINGLE=[ApiAuth.super_admin], GET_MANY=[ApiAuth.super_admin]))
 crm_config_api_blueprint = api_manager.create_api(CrmConfig, collection_name='crm-config', methods=['GET', 'POST',
                                                   'DELETE', 'PUT'], preprocessors=dict(
                                                   GET_SINGLE=[ApiAuth.super_admin], GET_MANY=[ApiAuth.super_admin]))
@@ -130,6 +127,16 @@ oms_config_api_blueprint = api_manager.create_api(OmsConfig, collection_name='om
 mms_config_api_blueprint = api_manager.create_api(MmsConfig, collection_name='mms-config', methods=['GET', 'POST',
                                                   'DELETE', 'PUT'], preprocessors=dict(
                                                   GET_SINGLE=[ApiAuth.super_admin], GET_MANY=[ApiAuth.super_admin]))
+app_config_api_blueprint = api_manager.create_api(AppConfig, collection_name='app-config', methods=['GET', 'POST',
+                                                  'DELETE', 'PUT'], preprocessors=dict(GET_SINGLE=[ApiAuth.super_admin],
+                                                  GET_MANY=[ApiAuth.super_admin]))
+
+# - API's requiring super admin status.
+# -- Note: This API is just a redundant copy of the 'app-config' API under a different name and permission setting. It
+# exists solely to test the 'master admin' permissions requirement.
+master_config_api_blueprint = api_manager.create_api(AppConfig, collection_name='master-config', methods=['GET', 'POST',
+                                                     'DELETE', 'PUT'], preprocessors=dict(
+                                                      GET_SINGLE=[ApiAuth.master_admin], GET_MANY=[ApiAuth.master_admin]))
 
 ######################
 ### Initialize UI  ###

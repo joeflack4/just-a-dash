@@ -5,16 +5,16 @@
 # - Imports
 import twilio.twiml
 from twilio.rest import TwilioRestClient
-from app.models import OMS_Config
+from app.models import OmsConfig
 try:
     from .contacts import CompanyContacts
 except:
     from contacts import CompanyContacts
 
 # - Variables
-account_sid = OMS_Config.query.filter_by(key='Twilio Account SID').first().value
-auth_token = OMS_Config.query.filter_by(key='Twilio Auth Token').first().value
-twilio_number = '+' + OMS_Config.query.filter_by(key='Twilio Phone Number').first().value
+account_sid = OmsConfig.query.filter_by(key='Twilio Account SID').first().value
+auth_token = OmsConfig.query.filter_by(key='Twilio Auth Token').first().value
+twilio_number = '+' + OmsConfig.query.filter_by(key='Twilio Phone Number').first().value
 
 
 # - Functions

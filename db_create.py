@@ -1,4 +1,4 @@
-from app.models import db, App_Config, Modules, OMS_Config, CRM_Config, HRM_Config, AMS_Config, MMS_Config, User, Roles, Permissions, AppNotifications
+from app.models import db, AppConfig, Modules, OmsConfig, CrmConfig, HrmConfig, AmsConfig, MmsConfig, User, Roles, Permissions, AppNotifications
 from app.config import sk_generator
 # from psycopg2 import IntegrityError
 # from sqlalchemy.exc import IntegrityError
@@ -36,7 +36,7 @@ app_config_rows = [["App Name", "Just-a-Dash", 1, True],
     ["App Short-Title", "Just-a-Dash", 1, True],
     ["Toggle Placeholders", "false", 1, True],
     ["Secret Key", sk_generator(size=24), 1, True]]
-add_rows_to_config_table('App Config', App_Config, app_config_rows)
+add_rows_to_config_table('App Config', AppConfig, app_config_rows)
 
 
 # Module registry initialization.
@@ -65,7 +65,7 @@ oms_config_rows = [["Module Name", "Operations", 1, True],
     ["Call Response MP3 Toggle", 'false', 1, True],
     ["Call Response Text-to-Speech", 'You have successfully checked in. Thank you, and have a wonderful day!', 1, True],
     ["Call Response Text-to-Speech Toggle", 'true', 1, True]]
-add_rows_to_config_table('OMS Module Config', OMS_Config, oms_config_rows)
+add_rows_to_config_table('OMS Module Config', OmsConfig, oms_config_rows)
 
 
 # - CRM
@@ -74,7 +74,7 @@ crm_config_rows = [["Module Name", "Customer Relations", 1, True],
     ["Module Icon", "ion-person-stalker", 1, True],
     ["Module Title", "Customer Relationship Management System", 1, True],
     ["Module Short-Title", "Customer Relations Management", 1, True]]
-add_rows_to_config_table('CRM Module Config', CRM_Config, crm_config_rows)
+add_rows_to_config_table('CRM Module Config', CrmConfig, crm_config_rows)
 
 
 # - HRM
@@ -83,7 +83,7 @@ hrm_config_rows = [["Module Name", "Human Resources", 1, True],
     ["Module Icon", "fa fa-users", 1, True],
     ["Module Title", "Human Resource Management System", 1, True],
     ["Module Short-Title", "Human Resources Management", 1, True]]
-add_rows_to_config_table('HRM Module Config', HRM_Config, hrm_config_rows)
+add_rows_to_config_table('HRM Module Config', HrmConfig, hrm_config_rows)
 
 
 # - AMS
@@ -92,7 +92,7 @@ ams_config_rows = [["Module Name", "Accounting", 1, True],
     ["Module Icon", "fa fa-bar-chart", 1, True],
     ["Module Title", "Accounting Management System", 1, True],
     ["Module Short-Title", "Accounting Management", 1, True]]
-add_rows_to_config_table('AMS Module Config', AMS_Config, ams_config_rows)
+add_rows_to_config_table('AMS Module Config', AmsConfig, ams_config_rows)
 
 
 # - MMS
@@ -101,7 +101,7 @@ mms_config_rows = [["App Name", "Marketing", 1, True],
     ["App Icon", "fa fa-line-chart", 1, True],
     ["App Title", "Marketing Management System", 1, True],
     ["App Short-Title", "Marketing Management", 1, True]]
-add_rows_to_config_table('MMS Module Config', MMS_Config, mms_config_rows)
+add_rows_to_config_table('MMS Module Config', MmsConfig, mms_config_rows)
 
 
 # Default users initialization.

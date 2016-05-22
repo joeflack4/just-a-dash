@@ -22,14 +22,14 @@ db.Base = declarative_base()
 
 ##############
 # - Super Classes
-class Base_Model(db.Model):
+class BaseModel(db.Model):
     __abstract__ = True
 
     created_on = db.Column(db.DateTime, default=db.func.now(), index=True)
     updated_on = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now(), index=True)
 
 
-class Base_Config(Base_Model):
+class BaseConfig(BaseModel):
     __abstract__ = True
 
     key = db.Column(db.String(100), primary_key=True, nullable=False)
@@ -49,11 +49,11 @@ class Base_Config(Base_Model):
 
 ##############
 # - App Core Models
-class App_Config(Base_Config):
+class AppConfig(BaseConfig):
     __tablename__ = 'app_config'
 
 
-class Modules(Base_Model):
+class Modules(BaseModel):
     __tablename__ = 'app_module-registry'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -72,8 +72,8 @@ class Modules(Base_Model):
         return '<module name: {}>'.format(self.id)
 
 
-class User(Base_Model):
-# class User(Base_Model, UserMixin):
+# class User(BaseModel, UserMixin):
+class User(BaseModel):
     __tablename__ = 'app_users'
     # - db_columns is used for validating .csv imports.
     role_selectors = ('super', 'basic', 'none', '')
@@ -93,7 +93,7 @@ class User(Base_Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True, nullable=False, index=True)
     email = db.Column(db.String(50), unique=True, nullable=False, index=True)
-    password = db.Column(db.String(200), nullable=False) # Many characters allowed to account for password hashing.
+    password = db.Column(db.String(200), nullable=False)  # Many characters allowed to account for password hashing.
     admin_role = db.Column(db.String(20), index=True)
     oms_role = db.Column(db.String(20), index=True)
     crm_role = db.Column(db.String(20), index=True)
@@ -156,46 +156,50 @@ class User(Base_Model):
         return check_password_hash(self.password, password)
 
     # - Note: Will not use following 4 methods if instead using the 'UserMixin' class inheritance.
-    def is_authenticated(self):
+    @staticmethod
+    def is_authenticated():
         return True
 
-    def is_active(self):
+    @staticmethod
+    def is_active():
         return True
 
-    def is_anonymous(self):
+    @staticmethod
+    def is_anonymous():
         return True
 
     def get_id(self):
-        # Due to a weird pycharm bug, or perhaps dependency issue with python environment, it may sometimes falseley state that 'unicode' is not a valid reference.
+        # Due to a weird pycharm bug, or perhaps dependency issue with python environment, it may sometimes falseley
+        # state that 'unicode' is not a valid reference.
         return self.id
 
     def check_administrative_superiority(self, role, role_value):
         role_val = role_value.lower()
         user_rank = int
 
-        def determine_rank(role_val):
+        def determine_rank(v):
             # unrecognized_role_values = []
-            rank = int
-            if role_val == 'master':
+            if v == 'master':
                 rank = 0
-            elif role_val == 'super':
+            elif v == 'super':
                 rank = 1
-            elif role_val == 'basic':
+            elif v == 'basic':
                 rank = 2
-            elif role_val == 'None':
+            elif v == 'None':
                 rank = 3
-            elif role_val == 'none':
+            elif v == 'none':
                 rank = 3
-            elif role_val == '':
+            elif v == '':
                 rank = 3
-            elif role_val == False:
+            elif not v:
                 rank = 3
             else:
                 # Number below chosen randomly. Let's hope that 777+ ranks aren't necessary for any users. If so, this
                 # will have to be re-factored.
-                error_message = Markup('An error occurred while trying to assess user permissions. The following permission level was '
-                      'not recognized: <strong>{}</strong>'.format(role_value) + '. Only the following permission levels are valid: '
-                      '"master", "super, "basic", and "none". Please change value of permission level(s) and try again.')
+                error_message = Markup('An error occurred while trying to assess user permissions. The following '
+                                       'permission level wasnot recognized: <strong>{}</strong>'.format(role_value) +
+                                       '. Only the following permission levels are valid: "master", "super, "basic", '
+                                       'and "none". Please change value of permission level(s) and try again.')
                 flash(error_message, 'danger')
                 rank = 777
                 # unrecognized_role_values.append(role_value)
@@ -220,7 +224,7 @@ class User(Base_Model):
         if user_rank < user_to_compare_rank:
             is_superior = True
         elif user_to_compare_rank <= user_rank:
-           is_superior = False
+            is_superior = False
         return is_superior
 
     def check_administrative_authority(self, role, role_values_to_assign):
@@ -231,7 +235,7 @@ class User(Base_Model):
         return '<user id: {}>'.format(self.id)
 
 
-class Roles(Base_Model):
+class Roles(BaseModel):
     __tablename__ = 'app_roles'
     # - admin role permissions
     # 	- role (pk)  /  permission name / r / w / u / d
@@ -250,7 +254,7 @@ class Roles(Base_Model):
         return '<role/module: {}/{}>'.format(self.role, self.module_abbreviation)
 
 
-class Permissions(Base_Model):
+class Permissions(BaseModel):
     __tablename__ = 'app_permissions'
     __table_args__ = tuple(UniqueConstraint("module", "role"))
 
@@ -263,7 +267,8 @@ class Permissions(Base_Model):
     # role = db.Column(db.String(20), foreign_key=True)
     # module = db.Column(db.String(3), foreign_key=True)
 
-    module = db.Column(db.String(30), primary_key=True) # Length of 30 to account for changes, but length of 3 would account for abbreviation.
+    module = db.Column(db.String(30), primary_key=True)
+    # Module length of 30 to account for changes, but length of 3 would account for abbreviation.
     role = db.Column(db.String(30), primary_key=True)
     permission = db.Column(db.String(80), nullable=False, index=True)
     read = db.Column(db.Boolean, nullable=False)
@@ -284,7 +289,7 @@ class Permissions(Base_Model):
         return '<role/module permission: {}/{} {}>'.format(self.role, self.module, self.permission)
 
 
-class Messages(Base_Model):
+class Messages(BaseModel):
     __tablename__ = 'app_messages'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -322,7 +327,7 @@ class Messages(Base_Model):
         return '<message id: {}>'.format(self.id)
 
 
-class AppNotifications(Base_Model):
+class AppNotifications(BaseModel):
     __tablename__ = 'app_notifications'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -349,7 +354,7 @@ class AppNotifications(Base_Model):
         return '<message id: {}>'.format(self.id)
 
 
-class Contacts(Base_Model):
+class Contacts(BaseModel):
     __tablename__ = 'app_contacts'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -393,11 +398,11 @@ class Contacts(Base_Model):
 
 ##############
 # - CRM Models
-class CRM_Config(Base_Config):
+class CrmConfig(BaseConfig):
     __tablename__ = 'crm_config'
 
 
-class Customers(Base_Model):
+class Customers(BaseModel):
     __tablename__ = 'crm_customers'
     # - db_columns is used for validating .csv imports.
     db_columns = {
@@ -433,7 +438,8 @@ class Customers(Base_Model):
         'billing_address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
-        'billing_address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters':
+                                          {'max': 50}},
         'billing_notes': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 1000}},
         'relation_1_name': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'relation_1_role': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
@@ -661,11 +667,12 @@ class Customers(Base_Model):
         self.notes_case = notes_case
         self.notes_other = notes_other
 
+
 def __repr__(self):
         return '<customer id: {}>'.format(self.id)
 
 
-class Agencies(Base_Model):
+class Agencies(BaseModel):
     __tablename__ = 'crm_agencies'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -681,11 +688,11 @@ class Agencies(Base_Model):
 
 ##############
 # - HRM Models
-class HRM_Config(Base_Config):
+class HrmConfig(BaseConfig):
     __tablename__ = 'hrm_config'
 
 
-class Personnel(Base_Model):
+class Personnel(BaseModel):
     __tablename__ = 'hrm_personnel'
     # - db_columns is used for validating .csv imports.
     db_columns = {
@@ -789,23 +796,24 @@ class Personnel(Base_Model):
 
 ##############
 # - Operations Management Models
-class OMS_Config(Base_Config):
+class OmsConfig(BaseConfig):
     __tablename__ = 'oms_config'
 
 
 ##############
 # - Accounting Management Models
-class AMS_Config(Base_Config):
+class AmsConfig(BaseConfig):
     __tablename__ = 'ams_config'
 
 
 ##############
 # - Marketing Models
-class MMS_Config(Base_Config):
+class MmsConfig(BaseConfig):
     __tablename__ = 'mms_config'
 
+
 # - Linguistic analysis sub-module models.
-class Result(Base_Model):
+class Result(BaseModel):
     __tablename__ = 'mms_word-analysis-results'
 
     id = db.Column(db.Integer, primary_key=True)

@@ -6,7 +6,7 @@
 import random
 import twilio.twiml
 from twilio.rest import TwilioRestClient
-from app.models import OMS_Config, Customers, Personnel
+from app.models import OmsConfig, Customers, Personnel
 # from app.models import Contacts
 try:
     from .contacts import CompanyContacts
@@ -14,9 +14,9 @@ except:
     from contacts import CompanyContacts
 
 # - Variables
-account_sid = OMS_Config.query.filter_by(key='Twilio Account SID').first().value
-auth_token = OMS_Config.query.filter_by(key='Twilio Auth Token').first().value
-twilio_number = '+' + OMS_Config.query.filter_by(key='Twilio Phone Number').first().value
+account_sid = OmsConfig.query.filter_by(key='Twilio Account SID').first().value
+auth_token = OmsConfig.query.filter_by(key='Twilio Auth Token').first().value
+twilio_number = '+' + OmsConfig.query.filter_by(key='Twilio Phone Number').first().value
 
 
 # - Functions
@@ -29,10 +29,10 @@ def call_response():
 
     # Randomly chooses confirmation that is either pre-recording, or text-to-speech.
     confirmation = random.choice(["say", "play"])
-    text_to_speech = OMS_Config.query.filter_by(key='Call Response Text-to-Speech').first().value
+    text_to_speech = OmsConfig.query.filter_by(key='Call Response Text-to-Speech').first().value
     if confirmation == "play":
         # resp.play("http://www.sonshinecompanioncare.com/scccheckin01.mp3")
-        resp.play(OMS_Config.query.filter_by(key='Call Response MP3').first().value)
+        resp.play(OmsConfig.query.filter_by(key='Call Response MP3').first().value)
     elif confirmation == "say":
         # resp.say("You have successfully checked in. Thank you for using Sunshine Companion Care, and have a wonderful day!", voice="alice")
         resp.say(text_to_speech, voice='alice')

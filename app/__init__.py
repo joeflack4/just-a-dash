@@ -31,9 +31,9 @@ login_manager.init_app(app)
 ###     Init DB    ###
 ######################
 db = SQLAlchemy(app)
-from .models import App_Config, User, Result, Customers, Personnel
-from .models import Modules, Roles, Permissions, Messages, AppNotifications, Contacts, CRM_Config, Agencies, OMS_Config,\
-    MMS_Config, HRM_Config
+from .models import AppConfig, User, Result, Customers, Personnel
+from .models import Modules, Roles, Permissions, Messages, AppNotifications, Contacts, CrmConfig, Agencies, OmsConfig,\
+    MmsConfig, HrmConfig
 
 ######################
 ###   Init Config  ###
@@ -56,7 +56,7 @@ except:
 ###    Sessions    ###
 ######################
 try:
-    app.secret_key = App_Config.query.filter_by(key='Secret Key').first().value
+    app.secret_key = AppConfig.query.filter_by(key='Secret Key').first().value
 except:
     exceptions[1] = True
 
@@ -105,15 +105,15 @@ contacts_api_blueprint = api_manager.create_api(Contacts, collection_name='conta
 #                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
 # permissions_api_blueprint = api_manager.create_api(Permissions, collection_name='user-permissions', methods=['GET', 'POST', 'DELETE', 'PUT'],
 #                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
-# app_config_api_blueprint = api_manager.create_api(App_Config, collection_name='app-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+# app_config_api_blueprint = api_manager.create_api(AppConfig, collection_name='app-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
 #                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
-# crm_config_api_blueprint = api_manager.create_api(CRM_Config, collection_name='crm-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+# crm_config_api_blueprint = api_manager.create_api(CrmConfig, collection_name='crm-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
 #                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
-# hrm_config_api_blueprint = api_manager.create_api(HRM_Config, collection_name='hrm-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+# hrm_config_api_blueprint = api_manager.create_api(HrmConfig, collection_name='hrm-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
 #                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
-# oms_config_api_blueprint = api_manager.create_api(OMS_Config, collection_name='oms-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+# oms_config_api_blueprint = api_manager.create_api(OmsConfig, collection_name='oms-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
 #                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
-# mms_config_api_blueprint = api_manager.create_api(MMS_Config, collection_name='mms-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+# mms_config_api_blueprint = api_manager.create_api(MmsConfig, collection_name='mms-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
 #                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
 
 ######################

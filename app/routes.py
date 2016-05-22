@@ -14,7 +14,7 @@ import nltk
 # Marketing Module imports - from w/in app.
 from .stop_words import stops
 
-from .models import User, Customers, Personnel, Messages, Result, AppNotifications, OMS_Config
+from .models import User, Customers, Personnel, Messages, Result, AppNotifications, OmsConfig
 from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDeleteForm, CustomerAddForm, \
     CustomerUpdateForm, CustomerDeleteForm, PersonnelAddForm, PersonnelUpdateForm, PersonelDeleteForm, \
     Config_Names_and_Aesthetics, Config_Secret_Key, Config_Modules, OMS_Settings
@@ -582,8 +582,8 @@ def oms_home():
 def operations(*args):
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
-    render_settings = {'Phone Number Visibility': OMS_Config.query.filter_by(key='Phone Number Visibility').first().value.lower(),
-                       'Twilio Phone Number': OMS_Config.query.filter_by(key='Twilio Phone Number').first().value}
+    render_settings = {'Phone Number Visibility': OmsConfig.query.filter_by(key='Phone Number Visibility').first().value.lower(),
+                       'Twilio Phone Number': OmsConfig.query.filter_by(key='Twilio Phone Number').first().value}
 
     try:
         check_in_type = args[0]
@@ -605,9 +605,9 @@ def operations(*args):
         critical_settings = ('Twilio Phone Number', 'Twilio Auth Token', 'Twilio Account SID')
         critical_settings_errors = []
         for setting in critical_settings:
-            if OMS_Config.query.filter_by(key=setting).first().value == '':
+            if OmsConfig.query.filter_by(key=setting).first().value == '':
                 critical_settings_errors.append(setting)
-            elif not OMS_Config.query.filter_by(key=setting).first().value:
+            elif not OmsConfig.query.filter_by(key=setting).first().value:
                 critical_settings_errors.append(setting)
         if critical_settings_errors != []:
             error_message = Markup('One or more errors occurred related to check-in submodule settings. The following '

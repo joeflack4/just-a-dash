@@ -7,7 +7,7 @@ from flask import flash, Markup, redirect, request
 from werkzeug.security import generate_password_hash
 from app import db
 # from requests import request
-from .models import User, App_Config, OMS_Config, Customers, Personnel
+from .models import User, AppConfig, OmsConfig, Customers, Personnel
 from validate_email import validate_email
 
 
@@ -474,18 +474,18 @@ def add_to_db(data_to_add, data_context):
 def get_app_settings(*args):
     if not args:
         try:
-            app_config_settings = {'App Icon': App_Config.query.filter_by(key='App Icon').first().value,
-                                   'App Name': App_Config.query.filter_by(key='App Name').first().value,
-                                   'App Short-Title': App_Config.query.filter_by(key='App Short-Title').first().value,
-                                   'App Title': App_Config.query.filter_by(key='App Title').first().value,
-                                   'Secret Key': App_Config.query.filter_by(key='Secret Key').first().value,
-                                   'Toggle Placeholders': App_Config.query.filter_by(key='Toggle Placeholders').first().value,}
+            app_config_settings = {'App Icon': AppConfig.query.filter_by(key='App Icon').first().value,
+                                   'App Name': AppConfig.query.filter_by(key='App Name').first().value,
+                                   'App Short-Title': AppConfig.query.filter_by(key='App Short-Title').first().value,
+                                   'App Title': AppConfig.query.filter_by(key='App Title').first().value,
+                                   'Secret Key': AppConfig.query.filter_by(key='Secret Key').first().value,
+                                   'Toggle Placeholders': AppConfig.query.filter_by(key='Toggle Placeholders').first().value,}
         except:
             app_config_settings = False
         return app_config_settings
     else:
         try:
-            setting = App_Config.query.filter_by(key=args).first().value
+            setting = AppConfig.query.filter_by(key=args).first().value
         except:
             setting = False
         return setting
@@ -494,14 +494,14 @@ def get_app_settings(*args):
 def get_oms_settings(*args):
     if not args:
         try:
-            oms_config_settings = {'Twilio Account SID': OMS_Config.query.filter_by(key='Twilio Account SID').first().value,
-                                   'Twilio Auth Token': OMS_Config.query.filter_by(key='Twilio Auth Token').first().value,
-                                   'Twilio Phone Number': OMS_Config.query.filter_by(key='Twilio Phone Number').first().value,
-                                   'Call Response MP3': OMS_Config.query.filter_by(key='Call Response MP3').first().value,
-                                   'Call Response MP3 Toggle': OMS_Config.query.filter_by(key='Call Response MP3 Toggle').first().value,
-                                   'Call Response Text-to-Speech': OMS_Config.query.filter_by(key='Call Response Text-to-Speech').first().value,
-                                   'Call Response Text-to-Speech Toggle': OMS_Config.query.filter_by(key='Call Response Text-to-Speech Toggle').first().value,
-                                   'Phone Number Visibility': OMS_Config.query.filter_by(key='Phone Number Visibility').first().value}
+            oms_config_settings = {'Twilio Account SID': OmsConfig.query.filter_by(key='Twilio Account SID').first().value,
+                                   'Twilio Auth Token': OmsConfig.query.filter_by(key='Twilio Auth Token').first().value,
+                                   'Twilio Phone Number': OmsConfig.query.filter_by(key='Twilio Phone Number').first().value,
+                                   'Call Response MP3': OmsConfig.query.filter_by(key='Call Response MP3').first().value,
+                                   'Call Response MP3 Toggle': OmsConfig.query.filter_by(key='Call Response MP3 Toggle').first().value,
+                                   'Call Response Text-to-Speech': OmsConfig.query.filter_by(key='Call Response Text-to-Speech').first().value,
+                                   'Call Response Text-to-Speech Toggle': OmsConfig.query.filter_by(key='Call Response Text-to-Speech Toggle').first().value,
+                                   'Phone Number Visibility': OmsConfig.query.filter_by(key='Phone Number Visibility').first().value}
         except:
             oms_config_settings = False
         return oms_config_settings
@@ -512,7 +512,7 @@ def get_oms_settings(*args):
         # if args[0] == 'Phone Number Visibility' or args[0] == 'Call Response MP3 Toggle' or args[0] == 'Call Response Text-to-Speech Toggle':
         if args == 'Phone Number Visibility' or args == 'Call Response MP3 Toggle' or args == 'Call Response Text-to-Speech Toggle':
             try:
-                setting_inquiry = OMS_Config.query.filter_by(key=args).first().value
+                setting_inquiry = OmsConfig.query.filter_by(key=args).first().value
                 if setting_inquiry.lower() == 'true':
                     setting = 'checked'
                 elif setting_inquiry.lower() == 'false':
@@ -521,7 +521,7 @@ def get_oms_settings(*args):
                 setting = False
         else:
             try:
-                setting = OMS_Config.query.filter_by(key=args).first().value
+                setting = OmsConfig.query.filter_by(key=args).first().value
             except:
                 setting = False
         return setting
@@ -535,11 +535,11 @@ def update_names_and_aesthetics(current_user, names_and_aesthetics_form):
     try:
         fields_to_update = 0
         form = names_and_aesthetics_form
-        settings = ((form.app_name.data, App_Config.query.filter_by(key='App Name')),
-                    (form.app_icon.data, App_Config.query.filter_by(key='App Icon')),
-                    (form.app_title.data, App_Config.query.filter_by(key='App Title')),
-                    (form.app_short_title.data, App_Config.query.filter_by(key='App Short-Title')),
-                    (form.placeholders_toggle.data, App_Config.query.filter_by(key='Toggle Placeholders')))
+        settings = ((form.app_name.data, AppConfig.query.filter_by(key='App Name')),
+                    (form.app_icon.data, AppConfig.query.filter_by(key='App Icon')),
+                    (form.app_title.data, AppConfig.query.filter_by(key='App Title')),
+                    (form.app_short_title.data, AppConfig.query.filter_by(key='App Short-Title')),
+                    (form.placeholders_toggle.data, AppConfig.query.filter_by(key='Toggle Placeholders')))
 
         for form_data, setting in settings:
             if  form_data != setting.first().value and form_data != '':
@@ -565,7 +565,7 @@ def update_secret_key(current_user, secret_key_form):
     try:
         fields_to_update = 0
         form = secret_key_form
-        settings = ((form.secret_key.data, App_Config.query.filter_by(key='Secret Key')),)
+        settings = ((form.secret_key.data, AppConfig.query.filter_by(key='Secret Key')),)
 
         for form_data, setting in settings:
             # flash(form_data)
@@ -597,14 +597,14 @@ def update_oms_settings(current_user, oms_settings_form):
     try:
         fields_to_update = 0
         form = oms_settings_form
-        settings = ((form.twilio_account_sid.data, OMS_Config.query.filter_by(key='Twilio Account SID')),
-                    (form.twilio_auth_token.data, OMS_Config.query.filter_by(key='Twilio Auth Token')),
-                    (form.twilio_phone_number.data, OMS_Config.query.filter_by(key='Twilio Phone Number')),
-                    (form.call_response_mp3.data, OMS_Config.query.filter_by(key='Call Response MP3')),
-                    (form.call_response_text_to_speech.data, OMS_Config.query.filter_by(key='Call Response Text-to-Speech')),
-                    (form.call_response_mp3_toggle.data, OMS_Config.query.filter_by(key='Call Response MP3 Toggle')),
-                    (form.call_response_text_to_speech_toggle.data, OMS_Config.query.filter_by(key='Call Response Text-to-Speech Toggle')),
-                    (form.phone_number_visibility.data, OMS_Config.query.filter_by(key='Phone Number Visibility')))
+        settings = ((form.twilio_account_sid.data, OmsConfig.query.filter_by(key='Twilio Account SID')),
+                    (form.twilio_auth_token.data, OmsConfig.query.filter_by(key='Twilio Auth Token')),
+                    (form.twilio_phone_number.data, OmsConfig.query.filter_by(key='Twilio Phone Number')),
+                    (form.call_response_mp3.data, OmsConfig.query.filter_by(key='Call Response MP3')),
+                    (form.call_response_text_to_speech.data, OmsConfig.query.filter_by(key='Call Response Text-to-Speech')),
+                    (form.call_response_mp3_toggle.data, OmsConfig.query.filter_by(key='Call Response MP3 Toggle')),
+                    (form.call_response_text_to_speech_toggle.data, OmsConfig.query.filter_by(key='Call Response Text-to-Speech Toggle')),
+                    (form.phone_number_visibility.data, OmsConfig.query.filter_by(key='Phone Number Visibility')))
 
         for form_data, setting in settings:
             if form_data != setting.first().value and form_data != '':

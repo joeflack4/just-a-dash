@@ -7,11 +7,14 @@ import os
 import sys
 from flask import Flask
 from flask.ext.bcrypt import Bcrypt
-from flask.ext.login import LoginManager, current_user
+from flask.ext.login import LoginManager
+# from flask.ext.login import LoginManager, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.restless import APIManager, ProcessingException
+from flask.ext.restless import APIManager
+# from flask.ext.restless import APIManager, ProcessingException
 from flask_adminlte import AdminLTE
 from .config import Config
+from .api import ApiAuth
 
 
 ######################
@@ -68,34 +71,15 @@ def load_user(user_id):
 ######################
 api_manager = APIManager(app, flask_sqlalchemy_db=db)
 
-def auth_func(**kwargs):
-    if not current_user.is_authenticated():
-        raise ProcessingException(description='Not Authorized. Please log in first.', code=401)
-# - debugging
-    # if 'constraints' in kwargs:
-    #     raise ProcessingException(description='Not Authorized. Basic administrative permissions or higher required.', code=401)
+# - API's which connect to current user data. (yet unimplemented)
+# messages_api_blueprint = api_manager.create_api(Messages, collection_name='messages', methods=['GET', 'POST', 'DELETE',
+#                                                 'PUT'], preprocessors=dict(GET_SINGLE=[API_Auth.logged_in],
+#                                                 GET_MANY=[API_Auth.logged_in]))
 
-def basic_admin_auth_func(**kwargs):
-    if current_user.admin_role != 'basic':
-        raise ProcessingException(description='Not Authorized. Basic administrative permissions or higher required.', code=401)
-# - debugging
-
-# - Note: Currently unused API's.
-# -- These need to only select from current user, passed as KW arg.
-# messages_api_blueprint = api_manager.create_api(Messages, collection_name='messages', methods=['GET', 'POST', 'DELETE', 'PUT'],
-#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
-
-# -- These need basic admin status, passed as KW arg.
-# - debugging
-contacts_api_blueprint = api_manager.create_api(Contacts, collection_name='contacts',
-                                                methods=['GET', 'POST', 'DELETE', 'PUT'],
-                                                preprocessors=dict(
-                                                    GET_SINGLE=[auth_func, basic_admin_auth_func],
-                                                    GET_MANY=[auth_func, basic_admin_auth_func]))
-# contacts_api_blueprint = api_manager.create_api(Contacts, collection_name='contacts', methods=['GET', 'POST', 'DELETE', 'PUT'],
-#                                                 preprocessors=dict(GET_SINGLE=[auth_func(constraints={'basic-admin': True})],
-#                                                     GET_MANY=[auth_func(constraints={'basic-admin': True})]))
-# - debugging
+# - API's requiring basic admin status.
+contacts_api_blueprint = api_manager.create_api(Contacts, collection_name='contacts', methods=['GET', 'POST', 'DELETE',
+                                                'PUT'],preprocessors=dict(GET_SINGLE = [ApiAuth.basic_admin],
+                                                GET_MANY = [ApiAuth.basic_admin]))
 
 # customers_api_blueprint = api_manager.create_api(Customers, collection_name='customers',
 #                                                  methods=['GET', 'POST', 'DELETE', 'PUT'],
@@ -114,7 +98,7 @@ contacts_api_blueprint = api_manager.create_api(Contacts, collection_name='conta
 #                                                methods=['GET', 'POST', 'DELETE', 'PUT'],
 #                                                preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
 
-# -- These need super-admin status, passed as KW arg.
+# - API's requiring super admin status.
 # app_notifications_api_blueprint = api_manager.create_api(AppNotifications, collection_name='app-notifications', methods=['GET', 'POST', 'DELETE', 'PUT'],
 #                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
 # roles_api_blueprint = api_manager.create_api(Roles, collection_name='user-roles', methods=['GET', 'POST', 'DELETE', 'PUT'],

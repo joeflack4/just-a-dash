@@ -7,22 +7,11 @@ import os
 import sys
 from flask import Flask
 from flask.ext.bcrypt import Bcrypt
-from flask.ext.login import LoginManager
+from flask.ext.login import LoginManager, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.restless import APIManager
-# - careful
-# import flask
-# import flask.ext.sqlalchemy
-# import flask.ext.restless
-
-
+from flask.ext.restless import APIManager, ProcessingException
 from flask_adminlte import AdminLTE
 from .config import Config
-# - careful
-# try:
-#     from flask.ext.sqlalchemy import SQLAlchemy
-# except:
-#     from flask_sqlalchemy import SQLAlchemy
 
 
 ######################
@@ -39,30 +28,9 @@ login_manager.init_app(app)
 ###     Init DB    ###
 ######################
 db = SQLAlchemy(app)
-# - careful
-# db = flask.ext.sqlalchemy.SQLAlchemy(app)
 from .models import App_Config, User, Result, Customers, Personnel
-from .models import Modules, Roles, Permissions, Messages, AppNotifications, Contacts, CRM_Config, Agencies, OMS_Config, MMS_Config
-
-######################
-###      API       ###
-######################
-api_manager = APIManager(app, flask_sqlalchemy_db=db)
-api_manager.create_api(Customers, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(App_Config, methods=['GET', 'POST', 'DELETE', 'PUT']) # OK
-api_manager.create_api(Result, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(Personnel, methods=['GET', 'POST', 'DELETE', 'PUT'])
-
-api_manager.create_api(Modules, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(Roles, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(Permissions, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(Messages, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(AppNotifications, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(Contacts, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(CRM_Config, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(Agencies, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(OMS_Config, methods=['GET', 'POST', 'DELETE', 'PUT'])
-api_manager.create_api(MMS_Config, methods=['GET', 'POST', 'DELETE', 'PUT'])
+from .models import Modules, Roles, Permissions, Messages, AppNotifications, Contacts, CRM_Config, Agencies, OMS_Config,\
+    MMS_Config, HRM_Config
 
 ######################
 ###   Init Config  ###
@@ -94,6 +62,75 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.filter(User.id == int(user_id)).first()
+
+######################
+###      API       ###
+######################
+api_manager = APIManager(app, flask_sqlalchemy_db=db)
+
+def auth_func(**kwargs):
+    if not current_user.is_authenticated():
+        raise ProcessingException(description='Not Authorized. Please log in first.', code=401)
+# - debugging
+    # if 'constraints' in kwargs:
+    #     raise ProcessingException(description='Not Authorized. Basic administrative permissions or higher required.', code=401)
+
+def basic_admin_auth_func(**kwargs):
+    if current_user.admin_role != 'basic':
+        raise ProcessingException(description='Not Authorized. Basic administrative permissions or higher required.', code=401)
+# - debugging
+
+# - Note: Currently unused API's.
+# -- These need to only select from current user, passed as KW arg.
+# messages_api_blueprint = api_manager.create_api(Messages, collection_name='messages', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+
+# -- These need basic admin status, passed as KW arg.
+# - debugging
+contacts_api_blueprint = api_manager.create_api(Contacts, collection_name='contacts',
+                                                methods=['GET', 'POST', 'DELETE', 'PUT'],
+                                                preprocessors=dict(
+                                                    GET_SINGLE=[auth_func, basic_admin_auth_func],
+                                                    GET_MANY=[auth_func, basic_admin_auth_func]))
+# contacts_api_blueprint = api_manager.create_api(Contacts, collection_name='contacts', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func(constraints={'basic-admin': True})],
+#                                                     GET_MANY=[auth_func(constraints={'basic-admin': True})]))
+# - debugging
+
+# customers_api_blueprint = api_manager.create_api(Customers, collection_name='customers',
+#                                                  methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                  preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# personnel_api_blueprint = api_manager.create_api(Personnel, collection_name='personnel',
+#                                                  methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                  preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+
+# result_api_blueprint = api_manager.create_api(Result, collection_name='keyword-analysis-results',
+#                                               methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                               preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# agencies_api_blueprint = api_manager.create_api(Agencies, collection_name='agencies',
+#                                                 methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# modules_api_blueprint = api_manager.create_api(Modules, collection_name='modules',
+#                                                methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+
+# -- These need super-admin status, passed as KW arg.
+# app_notifications_api_blueprint = api_manager.create_api(AppNotifications, collection_name='app-notifications', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# roles_api_blueprint = api_manager.create_api(Roles, collection_name='user-roles', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# permissions_api_blueprint = api_manager.create_api(Permissions, collection_name='user-permissions', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# app_config_api_blueprint = api_manager.create_api(App_Config, collection_name='app-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# crm_config_api_blueprint = api_manager.create_api(CRM_Config, collection_name='crm-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# hrm_config_api_blueprint = api_manager.create_api(HRM_Config, collection_name='hrm-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# oms_config_api_blueprint = api_manager.create_api(OMS_Config, collection_name='oms-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
+# mms_config_api_blueprint = api_manager.create_api(MMS_Config, collection_name='mms-config', methods=['GET', 'POST', 'DELETE', 'PUT'],
+#                                                 preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
 
 ######################
 ### Initialize UI  ###

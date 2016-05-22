@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from hashlib import md5
+# from flask.ext.login import UserMixin
 
 
 db.Base = declarative_base()
@@ -72,6 +73,7 @@ class Modules(Base_Model):
 
 
 class User(Base_Model):
+# class User(Base_Model, UserMixin):
     __tablename__ = 'app_users'
     # - db_columns is used for validating .csv imports.
     role_selectors = ('super', 'basic', 'none', '')
@@ -153,6 +155,7 @@ class User(Base_Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+    # - Note: Will not use following 4 methods if instead using the 'UserMixin' class inheritance.
     def is_authenticated(self):
         return True
 

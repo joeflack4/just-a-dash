@@ -11,8 +11,8 @@ $(document).ready(function() {
     // Gallery Module //
     var fontIconAutoSizer = function(){
         var fontSize = parseInt($(".gallery-container").width())+"px";
-        // $(".gallery-container span").css('font-size', fontSize);
         $(".gallery-container i").css('font-size', fontSize);
+        // $(".gallery-container span").css('font-size', fontSize);
     };
 
     /////////////
@@ -24,15 +24,16 @@ $(document).ready(function() {
     // Event Listeners //
     /////////////////////
     // Gallery Module //
-    $(window).resize(fontIconAutoSizer);
+    $(window).on('resize', fontIconAutoSizer);
 
     // - Note: The below code is simply reference. I had a bit of a difficult time messing with selectors due to my poor
     // JS syntax understanding at the time.
-    // $(window).resize(function(){
+    // 1: $(window).resize(fontIconAutoSizer);
+    // 2: $(window).resize(function(){
     //     fontIconAutoSizer
     // });
-    // $(window).resize(function(){alert('hi')});
-    // $('#red-icon')[0].onclick = fontIconAutoSizer;
-    // $('#red-icon')[0].onclick = function(){alert('hi')};
+    // 3: $(window).resize(function(){alert('hi')});
+    // 4: $('#red-icon')[0].onclick = fontIconAutoSizer;
+    // 5: $('#red-icon')[0].onclick = function(){alert('hi')};
 
 })();

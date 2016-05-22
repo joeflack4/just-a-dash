@@ -8,12 +8,21 @@ import sys
 from flask import Flask
 from flask.ext.bcrypt import Bcrypt
 from flask.ext.login import LoginManager
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.restless import APIManager
+# - careful
+# import flask
+# import flask.ext.sqlalchemy
+# import flask.ext.restless
+
+
 from flask_adminlte import AdminLTE
 from .config import Config
-try:
-    from flask.ext.sqlalchemy import SQLAlchemy
-except:
-    from flask_sqlalchemy import SQLAlchemy
+# - careful
+# try:
+#     from flask.ext.sqlalchemy import SQLAlchemy
+# except:
+#     from flask_sqlalchemy import SQLAlchemy
 
 
 ######################
@@ -30,7 +39,30 @@ login_manager.init_app(app)
 ###     Init DB    ###
 ######################
 db = SQLAlchemy(app)
-from .models import App_Config, User, Result
+# - careful
+# db = flask.ext.sqlalchemy.SQLAlchemy(app)
+from .models import App_Config, User, Result, Customers, Personnel
+from .models import Modules, Roles, Permissions, Messages, AppNotifications, Contacts, CRM_Config, Agencies, OMS_Config, MMS_Config
+
+######################
+###      API       ###
+######################
+api_manager = APIManager(app, flask_sqlalchemy_db=db)
+api_manager.create_api(Customers, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(App_Config, methods=['GET', 'POST', 'DELETE', 'PUT']) # OK
+api_manager.create_api(Result, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(Personnel, methods=['GET', 'POST', 'DELETE', 'PUT'])
+
+api_manager.create_api(Modules, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(Roles, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(Permissions, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(Messages, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(AppNotifications, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(Contacts, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(CRM_Config, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(Agencies, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(OMS_Config, methods=['GET', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(MMS_Config, methods=['GET', 'POST', 'DELETE', 'PUT'])
 
 ######################
 ###   Init Config  ###

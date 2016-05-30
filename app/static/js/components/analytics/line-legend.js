@@ -631,7 +631,7 @@ var config = {
         },
         title: {
             display: true,
-            text: 'Joviality of Zimmerman Employees (to Date / Time)'
+            text: 'Joviality of Zimmerman Employees (Avg to Date / Time)'
         }
     }
 };

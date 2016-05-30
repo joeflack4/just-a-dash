@@ -1190,6 +1190,7 @@ def cool_analytics():
     modular_cdn_scripts = ('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js', )
     # shared_local_scripts = ('js/Chart.js/dist/chart.bundle.min.js', 'js/require.js/require.min.js')
     modular_local_scripts = ('js/components/analytics/line-legend.js', )
+    testy = ('js/components/analytics/line-legend.js', '')
     # modular_local_scripts = ('templates/modules/analytics/static/js/line-legend.js', 'static/js/line-legend.js',
     #                         'line-legend.js', 'templates/test.js', 'test.js')
 
@@ -1207,7 +1208,9 @@ def cool_analytics():
                            current_user=current_user,
                            logged_in=logged_in,
                            modular_cdn_scripts=modular_cdn_scripts,
-                           module_route_scripts=modular_local_scripts)
+                           # modular_cdn_scripts=('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js', 'http://kjdfkljl.com'),
+                           modular_local_scripts=modular_local_scripts,
+                           testy=testy)
 
 
 if __name__ == "__main__":

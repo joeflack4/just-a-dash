@@ -2,34 +2,29 @@
 
 
 <!-- Content -->
+{% block body_attribs -%}
+  {{ super() }}
+  ng-app="app" ng-controller="GalleryController as app"
+{%- endblock body_attribs %}
+
 {% block content_header -%}
   {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
 {%- endblock content_header %}
 
 {% block content -%}
-    {{ super() }}
+  {{ super() }}
 
   <h3 class="content-header">{{ page_name }}</h3>
 
+
   <div class="gallery-container">
 
-      {# <i class="fa fa-android gallery-icon-red" id="red-icon"></i> #}
+    <div ng-repeat="item in app.gallery">
       <div class="item-container">
-        <i class="fa fa-android gallery-icon-red"></i>
-        <p>Placeholder text.</p>
+        <i class="{a item.class a}"></i>
+        <p>{a item.description a}</p>
       </div>
-      <div class="item-container">
-        <i class="fa fa-leaf gallery-icon-green"></i>
-        <p>Placeholder text.</p>
-      </div>
-      <div class="item-container">
-        <i class="fa fa-legal gallery-icon-blue"></i>
-        <p>Placeholder text.</p>
-      </div>
-      <div class="item-container">
-        <i class="fa fa-trophy gallery-icon-orange"></i>
-        <p>Placeholder text.</p>
-      </div>
+    </div>
 
   </div>
 

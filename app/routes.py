@@ -540,7 +540,7 @@ def module_settings():
 def gallery():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
-    route_scripts = ('app.includes.js', '/components/gallery/galleryController.js')
+    shared_route_scripts = ('app.includes.js', 'components/gallery/galleryController.js')
 
     return render_template('core_modules/app_settings/gallery.html',
                            icon="fa fa-picture-o",
@@ -553,7 +553,7 @@ def gallery():
                            login_form=login_form,
                            current_user=current_user,
                            logged_in=logged_in,
-                           route_scripts=route_scripts)
+                           shared_route_scripts=shared_route_scripts)
 
 ############
 # - Modules - OMS
@@ -751,6 +751,7 @@ def crm():
                      {'section': 'customer_case_notes', 'label': 'Case Notes'},
                      {'section': 'customer_relationships', 'label': 'Relationships'},
                      {'section': 'customer_other', 'label': 'Other'}]
+    shared_route_scripts = ('components/crm/crmController.js', )
 
     try:
         customers = db.session.query(Customers)
@@ -819,7 +820,8 @@ def crm():
                            forms=forms,
                            csv_upload_modal=customer_csv_upload_modal,
                            upload_columns=get_upload_columns(Customers),
-                           data_sections=data_sections)
+                           data_sections=data_sections,
+                           shared_route_scripts=shared_route_scripts)
 
 
 @app.route('/customers/contacts', methods=['GET', 'POST'])
@@ -1178,6 +1180,33 @@ def mms_settings():
                            login_form=login_form,
                            current_user=current_user,
                            logged_in=logged_in)
+
+
+@app.route('/cool-analytics')
+# @login_required
+def cool_analytics():
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    shared_route_scripts = ('Chart.js/dist/chart.bundle.min.js', 'components/analytics/line-legend.js',
+                            'require.js/require.min.js')
+    module_route_scripts = ('templates/modules/analytics/static/js/line-legend.js', 'static/js/line-legend.js',
+                            'line-legend.js', 'templates/test.js', 'test.js')
+
+    return render_template('modules/analytics/index.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="Dashboard",
+                           module_name='Dashboard',
+                           page_name="Cool Analytics",
+                           app_config_settings=get_app_settings(),
+                           # messages='',
+                           # notifications='',
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in,
+                           shared_route_scripts=shared_route_scripts,
+                           module_route_scripts=module_route_scripts)
 
 
 if __name__ == "__main__":

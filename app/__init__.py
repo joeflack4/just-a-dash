@@ -21,7 +21,8 @@ from .api import ApiAuth
 ### Initialize App ###
 ######################
 exceptions = {}
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__)
+# app = Flask(__name__, static_url_path='')
 # app.config.from_object('config')
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
@@ -143,9 +144,14 @@ master_config_api_blueprint = api_manager.create_api(AppConfig, collection_name=
 ######################
 try:
     from app import routes
+
+except:
+    exceptions[1] = True
+try:
     AdminLTE(app)
 except:
     exceptions[1] = True
+
 
 if exceptions != {}:
     if exceptions[1]:

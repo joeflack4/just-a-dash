@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+
+    <div style="width:75%;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <br>
+    <br>
+    <div style="width: 75%; text-align: center">
+      <a href='https://www.glassdoor.com/index.htm'>powered by <img
+              src='https://www.glassdoor.com/static/img/api/glassdoor_logo_80.png' title='Job Search' /></a>
+    </div>
+{#    <button id="randomizeData">Randomize Data</button>#}
+{#    <button id="addDataset">Add Dataset</button>#}
+{#    <button id="removeDataset">Remove Dataset</button>#}
+{#    <button id="addData">Add Data</button>#}
+{#    <button id="removeData">Remove Data</button>#}
+
+
+{%- endblock content %}

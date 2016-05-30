@@ -540,7 +540,7 @@ def module_settings():
 def gallery():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
-    shared_route_scripts = ('app.includes.js', 'components/gallery/galleryController.js')
+    shared_route_scripts = ('js/app.includes.js', 'js/components/gallery/galleryController.js')
 
     return render_template('core_modules/app_settings/gallery.html',
                            icon="fa fa-picture-o",
@@ -751,7 +751,7 @@ def crm():
                      {'section': 'customer_case_notes', 'label': 'Case Notes'},
                      {'section': 'customer_relationships', 'label': 'Relationships'},
                      {'section': 'customer_other', 'label': 'Other'}]
-    shared_route_scripts = ('components/crm/crmController.js', )
+    shared_route_scripts = ('js/components/crm/crmController.js', )
 
     try:
         customers = db.session.query(Customers)
@@ -1187,10 +1187,10 @@ def mms_settings():
 def cool_analytics():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
-    shared_route_scripts = ('Chart.js/dist/chart.bundle.min.js', 'components/analytics/line-legend.js',
-                            'require.js/require.min.js')
-    module_route_scripts = ('templates/modules/analytics/static/js/line-legend.js', 'static/js/line-legend.js',
-                            'line-legend.js', 'templates/test.js', 'test.js')
+    shared_route_scripts = ('js/Chart.js/dist/chart.bundle.min.js', 'js/require.js/require.min.js')
+    module_route_scripts = ('js/components/analytics/line-legend.js', )
+    # module_route_scripts = ('templates/modules/analytics/static/js/line-legend.js', 'static/js/line-legend.js',
+    #                         'line-legend.js', 'templates/test.js', 'test.js')
 
     return render_template('modules/analytics/index.html',
                            icon="fa fa-dashboard",

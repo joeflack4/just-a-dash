@@ -1,0 +1,121 @@
+  {% if users %}
+    {% for user in users %}
+        {# Variables #}
+
+        <div class="modal fade" id="User-Update-Modal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="User-Update-Modal{{ user.id }}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="User-Update-Modal{{ user.id }}">Update User: {{ user.username }}</h4>
+              </div>
+
+              {# Form #}
+              <div class="modal-body" align="left">
+
+{#                        <div class="alert alert-info alert-dismissible" role="alert" style="padding: 10px">#}
+                <div class="alert alert-info" role="alert" style="padding: 7px; margin-bottom: 5px">
+{#                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>#}
+                  <strong>Note:</strong> Fields left blank will leave their values unchanged.
+                </div>
+
+                <form id="User-Update-Form{{ user.id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
+                    {% set form = forms['User-Update-Form'] %}
+                    {{ form.csrf_token }}
+
+                    {# User Update Form #}
+                        <h3>Account Information</h3>
+                        {% for field in form %}
+                          {% if field.render_kw['section'] == 'account' %}
+                            <div class="form-group">
+                              {% if field.render_kw['placeholder'] == 'Username' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=user.username, class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'E-mail' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=user.email, class='form-control') }}
+                              {% else %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                              {% endif %}
+                              <p><span class="error">
+                                {% if field.errors %}
+                                {% for error in field.errors %} {{ error }} {% endfor %}
+                            {% endif %}</span></p></div>
+                          {% endif %}
+                        {% endfor %}
+                        <h3>Roles and Permissions</h3>
+                        {# User/App Administration Roles #}
+                        {% for field in form %}
+                          {% if field.render_kw['section'] == 'admin' %}
+                            <div class="form-group">
+                              <i class="{{ field.render_kw['icon'] }}"></i> <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+                              {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                              <p><span class="error">
+                                {% if field.errors %}
+                                {% for error in field.errors %} {{ error }} {% endfor %}
+                            {% endif %}</span></p></div>
+                          {% endif %}
+                        {% endfor %}
+                        {# Group Roles #}
+                        {% for field in form %}
+                          {% if field.render_kw['section'] == 'groups' %}
+                            <i class="{{ field.render_kw['icon'] }}"></i> <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+                            <div class="form-group">
+                              {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                              <p><span class="error">
+                                {% if field.errors %}
+                                {% for error in field.errors %} {{ error }} {% endfor %}
+                            {% endif %}</span></p></div>
+                          {% endif %}
+                        {% endfor %}
+
+                    <div class="modal-footer">
+                        <div style="float:left">
+                          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#ConfirmDelete{{ user.id }}">Delete</button>
+                          {{ form.user_id(value=user.id) }}
+                        </div>
+                        <div style="float:right">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="submit" name="form_submit" value="{{ form.form_id }}" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Delete Confirmation -->
+        <div class="modal fade" id="ConfirmDelete{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="ConfirmDelete{{ user.id }}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="ConfirmDelete{{ form.form_id }}Title">Confirm Delete of User: {{ user.username }}</h4>
+              </div>
+
+              <div class="modal-body" align="center">
+                Are you sure?
+              </div>
+              <form id="User-Delete-Form{{ user.id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
+                {% set form = forms['User-Delete-Form'] %}
+              {{ form.csrf_token }}
+              {{ form.user_id(value=user.id) }}
+
+              <div class="modal-footer">
+                <div style="float:left">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Don't delete.</button>
+                </div>
+                <div style="float:right">
+                  <button type="submit" name="form_submit" value="User-Delete-Form" class="btn btn-danger">Yes, I'm sure.</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    {% endfor %}
+  {% endif %}

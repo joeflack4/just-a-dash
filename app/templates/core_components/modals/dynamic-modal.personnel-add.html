@@ -1,7 +1,6 @@
-{#                {% if form.form_id == 'User-Add-Form' or 'User-Update-Form'%}#}
-                    <h3>Account Information</h3>
+                    <h3>Basic Contact Information</h3>
                     {% for field in form %}
-                      {% if field.render_kw['section'] == 'account' %}
+                      {% if field.render_kw['section'] == 'contact_info' %}
                         <div class="form-group">
                           <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
                           {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
@@ -11,24 +10,23 @@
                         {% endif %}</span></p></div>
                       {% endif %}
                     {% endfor %}
-                    <h3>Roles and Permissions</h3>
-{#                    <h3>Administrative Roles/Permissions</h3>#}
+                    <h3>Address</h3>
                     {% for field in form %}
-                      {% if field.render_kw['section'] == 'admin' %}
-                        <div class="form-group">
-                          <i class="{{ field.render_kw['icon'] }}"></i> <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
-                          {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                      {% if field.render_kw['section'] == 'address' %}
+                          <div class="form-group">
+                            <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
+                            {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
                           <p><span class="error">
                             {% if field.errors %}
                             {% for error in field.errors %} {{ error }} {% endfor %}
                         {% endif %}</span></p></div>
                       {% endif %}
                     {% endfor %}
-{#                    <h3>Group Roles/Permissions</h3>#}
+                    <h3>Other Information</h3>
                     {% for field in form %}
-                      {% if field.render_kw['section'] == 'groups' %}
-                        <i class="{{ field.render_kw['icon'] }}"></i> <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+                      {% if field.render_kw['section'] == '' or not field.render_kw['section'] %}
                         <div class="form-group">
+                          <i class="{{ field.render_kw['icon'] }}"></i> <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
                           {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
                           <p><span class="error">
                             {% if field.errors %}

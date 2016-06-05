@@ -19,7 +19,7 @@ Flask-WTF==0.12
 Flask-Mail==0.9.0
 Flask-Excel
 Flask-Restless
-Flask-Triangle==0.5.3
+Flask-Triangle
 
 # - Server Dependencies #
 #gunicorn==18.0.0

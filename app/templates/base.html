@@ -85,31 +85,26 @@
 
 <!-- Scripts -->
 {% block scripts -%}
+
     <!-- Jquery, Bootstrap, & AdminLTE -->
       {{ super() }}
-    <!-- AngularJS -->
+    <!-- AngularJS Library -->
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
-      {#<script src="../static/js/app.module.js"></script>#}
+    {# AngularJS Module #}
       <script src="{{ url_for('static', filename='js/app.module.js') }}"></script>
     <!-- CDN's -->
       {% for script_path in shared_cdn_scripts %}
         <script src="{{ script_path }}"></script>
       {% endfor %}
-
       {% for script_path in modular_cdn_scripts %}
         <script src="{{ script_path }}"></script>
       {% endfor %}
-    <!-- Proprietary Scripts -->
+    <!-- Proprietary Scripts & AngularJS Services -->
       {% for script_path in shared_local_scripts %}
         <script src="{{ url_for('static', filename=script_path) }}"></script>
       {% endfor %}
-        {# <script src="{{ script_path }}"></script>#}
-        {# <script src="../static/js/{{ script_path }}"></script>#}
       {% for script_path in modular_local_scripts %}
         <script src="{{ url_for('static', filename=script_path) }}"></script>
       {% endfor %}
-        {# <script src="../{{ script_path }}"></script>#}
-        {# <script src="./{{ script_path }}"></script>#}
-        {# <script src="/{{ script_path }}"></script>#}
-        {# <script src="{{ script_path }}"></script>#}
+
 {%- endblock scripts %}

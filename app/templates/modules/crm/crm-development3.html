@@ -1,0 +1,495 @@
+{% extends "base.html" %}
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+  <h3 class="content-header">Customer List</h3>
+    {# Toolbar #}
+    <ul class="nav nav-tabs">
+      <li>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Customer-Add-Modal">
+            Add New <span class="fa fa-user-plus"></span>
+          </button>
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#" data-toggle="modal" data-target="#Customer-CSV-Upload-Modal"><span class="fa fa-upload"></span>Upload CSV</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li><span>&nbsp;&nbsp;&nbsp;</span></li>
+
+      <li class="active"><a data-toggle="tab" href="#contact-info">Contact Info</a></li>
+      <li><a data-toggle="tab" href="#identifiers">Identifiers</a></li>
+      <li><a data-toggle="tab" href="#services-and-authorizations">Services & Authorizations</a></li>
+      <li><a data-toggle="tab" href="#billing-info">Billing Info</a></li>
+      <li><a data-toggle="tab" href="#case-notes">Case Notes</a></li>
+      <li><a data-toggle="tab" href="#relationships">Relationships</a></li>
+      <li><a data-toggle="tab" href="#other">Other</a></li>
+    </ul>
+
+
+    {# Content #}
+    <div class="tab-content">
+
+      <div id="contact-info" class="tab-pane fade in active">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_contacts'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_contacts'] %}
+                {% for label, key in pair.items() %}
+                  {# Multiple fields in 1 cell #}
+                  {% if key is sequence and key is not mapping and key is not string %}
+                    <td>
+                      {#{% for sub_key in key[:-1] %}#}
+                      {% for sub_key in key %}
+                        {# Delimited fields #}
+                        {{ c[sub_key] or ''}}{% if c[sub_key] %}{% if not loop.last %},&nbsp;{% endif %}{% endif %}
+                        {#{% if c[sub_key] %}{% if not loop.last %}{% if sub_key == 'address_zip' and c['address_zip_extension'] %}-{% else %},&nbsp;{% endif %}{% endif %}{% endif %}#}
+                      {% endfor %}
+                    </td>
+                  {% else %}
+                    {# 1 field in 1 cell #}
+                    <td>{{ c[key] or ''}}</td>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div id="identifiers" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_identifiers'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_identifiers'] %}
+                {% for label, key in pair.items() %}
+                  {# Multiple fields in 1 cell #}
+                  {% if key is sequence and key is not mapping and key is not string %}
+                    <td>
+                      {#{% for sub_key in key[:-1] %}#}
+                      {% for sub_key in key %}
+                        {# Delimited fields #}
+                        {{ c[sub_key] or ''}}{% if c[sub_key] %}{% if not loop.last %},&nbsp;{% endif %}{% endif %}
+                        {#{% if c[sub_key] %}{% if not loop.last %}{% if sub_key == 'address_zip' and c['address_zip_extension'] %}-{% else %},&nbsp;{% endif %}{% endif %}{% endif %}#}
+                      {% endfor %}
+                    </td>
+                  {% else %}
+                    {# 1 field in 1 cell #}
+                    <td>{{ c[key] or ''}}</td>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div id="services-and-authorizations" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_services_and_authorizations'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_services_and_authorizations'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+      <div id="billing-info" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_billing_info'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_billing_info'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+      <div id="case-notes" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_case_notes'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_case_notes'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+      <div id="relationships" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_relationships'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_relationships'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+      <div id="other" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_other'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_other'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+{#                  <td>{{ c[key] if c[key] is not None else '' }}</td>#}
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+    </div>
+
+
+
+
+
+    {# Angular-Modal-Sevice Development #}
+    <div class="container" ng-app="app" ng-controller="customerUpdateModalWrapperController">
+      {# Temporary #}
+      <a class="btn btn-default" href ng-click="show()">Open Modal</a>
+      {# <p>{a message a}</p>#}
+      {# Temporary #}
+
+
+      <script type="text/ng-template" id="customer-update-modal.html">
+        <div class="modal fade" id="Customer-Update-Modal{a c.id a}" tabindex="-1" role="dialog" aria-labelledby="Customer-Update-Modal{a c.id a}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="Customer-Update-Modal{a c.id a}">Update Customer: {a c.name_first a}, {a c.name_last a}</h4>
+              </div>
+
+              {# Form #}
+              <div class="modal-body" align="left">
+
+                <div class="alert alert-info" role="alert" style="padding: 7px; margin-bottom: 5px">
+                  <strong>Note:</strong> Fields left blank will leave their values unchanged.
+                </div>
+
+                <form id="Customer-Update-Form{a c.id a}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
+                    {% set form = forms['Customer-Update-Form'] %}
+                    {{ form.csrf_token }}
+
+                    {# Customer Update Form #}
+                        <h3>Basic Contact Information</h3>
+                        {% for field in form %}
+                          {% if field.render_kw['section'] == 'contact_info' %}
+                            <div class="form-group">
+                              {% if field.render_kw['placeholder'] == 'First Name' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.name_first or '', class='form-control') }}
+{#                                {{ field(placeholder=field.render_kw['placeholder'], value=c.name_first or '', class='form-control') }}#}
+                              {% elif field.render_kw['placeholder'] == 'Last Name' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.name_last or '', class='form-control') }}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.name_last or '', class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Primary E-mail' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.email2 or '', class='form-control') }}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.email2 or '', class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Primary Phone #' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.phone1 or '', class='form-control') }}
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.phone1 or '', class='form-control') }}
+                              {% else %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                              {% endif %}
+                              <p><span class="error">
+                                {% if field.errors %}
+                                {% for error in field.errors %} {{ error }} {% endfor %}
+                            {% endif %}</span></p></div>
+                          {% endif %}
+                        {% endfor %}
+
+                        <h3>Address</h3>
+                        {% for field in form %}
+                          {% if field.render_kw['section'] == 'address' %}
+                            <div class="form-group">
+                              {% if field.render_kw['placeholder'] == 'Street Address' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_street or '', class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Apt./Suite #' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_suite or '', class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'City' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_city or '', class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'State' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_state or '', class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Zip Code' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_zip or '', class='form-control') }}
+                              {% elif field.render_kw['placeholder'] == 'Zip Extension' %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], value=c.address_zip_extension or '', class='form-control') }}
+                              {% else %}
+                                <label for="{{ field.name }}">{{ field.render_kw['label'] }} {% if field.flags.required %}*{% endif %}</label>
+                                {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                              {% endif %}
+                              <p><span class="error">
+                                {% if field.errors %}
+                                {% for error in field.errors %} {{ error }} {% endfor %}
+                              {% endif %}</span></p></div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <h3>Other Information</h3>
+                        {% for field in form %}
+                          {% if field.render_kw['section'] == '' or not field.render_kw['section'] %}
+                            {% if field.id != 'csrf_token' %}
+                            {% if field.id != 'id' %}
+                                <div class="form-group">
+                                  <label for="{{ field.name }}">{{ field.render_kw['placeholder'] }}</label>
+                                  {{ field(placeholder=field.render_kw['placeholder'], class='form-control') }}
+                                  <p><span class="error">
+                                    {% if field.errors %}
+                                    {% for error in field.errors %} {{ error }} {% endfor %}
+                                    {% endif %}
+                                  </span></p></div>
+                             {% endif %}
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+
+                    <div class="modal-footer">
+                        <div style="float:left">
+                          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#ConfirmDelete{{ c.id }}">Delete</button>
+                          {{ form.id(value=c.id) }}
+                        </div>
+                        <div style="float:right">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="submit" name="form_submit" value="{{ form.form_id }}" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Delete Confirmation -->
+        <div class="modal fade" id="ConfirmDelete{{ c.id }}" tabindex="-1" role="dialog" aria-labelledby="ConfirmDelete{{ c.id }}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="ConfirmDelete{{ form.form_id }}Title">Confirm Delete of Customer: {{ c.name_first }}, {{ c.name_last }}</h4>
+              </div>
+
+              <div class="modal-body" align="center">
+                Are you sure?
+              </div>
+              <form id="Customer-Delete-Form{{ c.id }}" role="form" method='POST' action="{{ url_for(request.endpoint) }}">
+                {% set form = forms['Customer-Delete-Form'] %}
+              {{ form.csrf_token }}
+              {{ form.id(value=c.id) }}
+
+              <div class="modal-footer">
+                <div style="float:left">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Don't delete.</button>
+                </div>
+                <div style="float:right">
+                  <button type="submit" name="form_submit" value="Customer-Delete-Form" class="btn btn-danger">Yes, I'm sure.</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      </script>
+
+
+
+    </div>
+
+
+{%- endblock content %}
+
+{#reference#}
+{#should comment this out#}
+{#         <div class="modal fade">#}
+{#          <div class="modal-dialog">#}
+{#            <div class="modal-content">#}
+{#              <div class="modal-header">#}
+{##}
+{#                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>#}
+{#                <h4 class="modal-title">Yes or No?</h4>#}
+{#              </div>#}
+{#              <div class="modal-body">#}
+{#                <p>It's your call...</p>#}
+{#              </div>#}
+{#              <div class="modal-footer">#}
+{#                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>#}
+{#                <button type="button" ng-click="close('Yes')" class="btn btn-primary" data-dismiss="modal">Yes</button>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#reference#}

@@ -808,6 +808,12 @@ def crm():
         module_name = Markup('CRM Development #2')
         shared_local_scripts.append('js/components/crm/development/crm.dev.module.js')
         modular_local_styles.append('css/crm/development/crm.dev.css')
+    elif request.path == '/crm/development3':
+        url = 'modules/crm/crm-development3.html'
+        module_name = Markup('CRM Development #3')
+        shared_local_scripts.append('_dependencies/bower_components/angular-modal-service/angular-modal-service.min.js')
+        # shared_local_scripts.append('_dependencies/bower_components/angular-modal-service/angular-modal-service.js')
+        shared_local_scripts.append('js/components/crm/development3/crm.dev.modalController.js')
     else:
         url ='modules/crm/index.html'
         module_name = 'Customer Relationship Management'
@@ -847,6 +853,13 @@ def crm_development():
 @login_required
 @crm_basic_admin_required
 def crm_development2():
+    return crm()
+
+
+@app.route('/crm/development3', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def crm_development3():
     return crm()
 
 

@@ -322,12 +322,40 @@ def add_to_db(data_to_add, data_context):
         # flash(new_cell(data_to_add[0]['name_last']))
         # flash(new_cell(data_to_add[0]['name_first']))
         # flash(new_cell(data_to_add[0].get('name_prefix')))
+        # upload_test = ['name_last', 'name_first', 'name_prefix', 'name_suffix', 'name_middle', 'email1', 'email2', 'phone1', 'phone2',
+        #         'phone3', 'phone4', 'phone5', 'pii_dob', 'pii_other', 'phi', 'pfi', 'address_street',
+        #         'address_suite', 'address_city',
+        #         'address_state', 'address_county', 'address_zip', 'address_zip_extension', 'billing_method',
+        #         'billing_frequency',
+        #         'billing_relation_name', 'billing_email', 'billing_address_street', 'billing_address_suite',
+        #         'billing_address_state', 'billing_address_county', 'billing_address_city', 'billing_address_zip',
+        #         'billing_address_zip_extension',
+        #         'billing_notes', 'relation_1_name', 'relation_1_role', 'relation_2_name', 'relation_2_role',
+        #         'relation_3_name',
+        #         'relation_3_role', 'relation_4_name', 'relation_4_role', 'relation_5_name', 'relation_5_role',
+        #         'customer_type',
+        #         'customer_type_id1', 'customer_type_id2', 'customer_type_id3', 'service_1_id', 'service_1_day',
+        #         'service_1_hours',
+        #         'service_1_type', 'service_1_rate', 'service_2_id', 'service_2_day', 'service_2_hours',
+        #         'service_2_type',
+        #         'service_2_rate', 'service_3_id', 'service_3_day', 'service_3_hours', 'service_3_type',
+        #         'service_3_rate',
+        #         'service_4_id', 'service_4_day', 'service_4_hours', 'service_4_type', 'service_4_rate', 'service_5_id',
+        #         'service_5_day', 'service_5_hours', 'service_5_type', 'service_5_rate', 'service_6_id', 'service_6_day',
+        #         'service_6_hours', 'service_6_type', 'service_6_rate', 'notes_case', 'notes_other']
         # - DEBUGGING
+
+
+
 
         for row in data_to_add:
             i += 1
             try:
                 # Need to flesh out either more parameters, or *args.
+                # Debugging
+                # for item in upload_test:
+                #     db.session.add(Customers(item=row.get('item'))
+                # Debugging
                 db.session.add(Customers(name_last=row.get('name_last'),
                                          name_first=row.get('name_first'),
                                          name_prefix=row.get('name_prefix'),
@@ -358,6 +386,7 @@ def add_to_db(data_to_add, data_context):
                                          billing_address_street=row.get('billing_address_street'),
                                          billing_address_suite=row.get('billing_address_suite'),
                                          billing_address_state=row.get('billing_address_state'),
+                                         billing_address_city=row.get('billing_address_city'),
                                          billing_address_county=row.get('billing_address_county'),
                                          billing_address_zip=row.get('billing_address_zip'),
                                          billing_address_zip_extension=row.get('billing_address_zip_extension'),
@@ -873,6 +902,7 @@ def add_customer(add_form):
             billing_address_street='',
             billing_address_suite='',
             billing_address_state='',
+            billing_address_city='',
             billing_address_county='',
             billing_address_zip='',
             billing_address_zip_extension='',

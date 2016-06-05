@@ -282,7 +282,7 @@
                 <th>{{ label }}</th>
               {% endfor %}
             {% endfor %}
-            {% for pair in data_tree['sections']['customer_case_notes'] %}
+            {% for pair in data_tree['sections']['customer_other'] %}
               {% for label, key in pair.items() %}
                 <th>{{ label }}</th>
               {% endfor %}
@@ -296,7 +296,7 @@
                   <td>{{ c[key] or ''}}</td>
                 {% endfor %}
               {% endfor %}
-              {% for pair in data_tree['sections']['customer_case_notes'] %}
+              {% for pair in data_tree['sections']['customer_other'] %}
                 {% for label, key in pair.items() %}
                   <td>{{ c[key] or ''}}</td>
 {#                  <td>{{ c[key] if c[key] is not None else '' }}</td>#}

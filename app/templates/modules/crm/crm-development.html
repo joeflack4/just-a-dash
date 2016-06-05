@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+
+<!-- Content -->
+{# MY ANGULAR IMPLEMENTATION #}
+    {#{% block body_attribs -%}#}
+    {#  {{ super() }}#}
+    {#  ng-app="app" ng-controller="CrmController as app"#}
+    {#{%- endblock body_attribs %}#}
+{# MY ANGULAR IMPLEMENTATION #}
+
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+  <h3 class="content-header">Customer List</h3>
+    {# Toolbar #}
+    <ul class="nav nav-tabs">
+      <li>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Customer-Add-Modal">
+            Add New <span class="fa fa-user-plus"></span>
+          </button>
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#" data-toggle="modal" data-target="#Customer-CSV-Upload-Modal"><span class="fa fa-upload"></span>Upload CSV</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li><span>&nbsp;&nbsp;&nbsp;</span></li>
+
+      <li class="active"><a data-toggle="tab" href="#contact-info">Contact Info</a></li>
+      <li><a data-toggle="tab" href="#identifiers">Identifiers</a></li>
+      <li><a data-toggle="tab" href="#services-and-authorizations">Services & Authorizations</a></li>
+      <li><a data-toggle="tab" href="#billing-info">Billing Info</a></li>
+      <li><a data-toggle="tab" href="#case-notes">Case Notes</a></li>
+      <li><a data-toggle="tab" href="#relationships">Relationships</a></li>
+      <li><a data-toggle="tab" href="#other">Other</a></li>
+    </ul>
+
+
+    {# Content #}
+    <div class="tab-content">
+
+      <div id="contact-info" class="tab-pane fade in active">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_contacts'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_contacts'] %}
+                {% for label, key in pair.items() %}
+                  {# Multiple fields in 1 cell #}
+                  {% if key is sequence and key is not mapping and key is not string %}
+                    <td>
+                      {#{% for sub_key in key[:-1] %}#}
+                      {% for sub_key in key %}
+                        {# Delimited fields #}
+                        {{ c[sub_key] or ''}}{% if c[sub_key] %}{% if not loop.last %},&nbsp;{% endif %}{% endif %}
+                        {#{% if c[sub_key] %}{% if not loop.last %}{% if sub_key == 'address_zip' and c['address_zip_extension'] %}-{% else %},&nbsp;{% endif %}{% endif %}{% endif %}#}
+                      {% endfor %}
+                    </td>
+                  {% else %}
+                    {# 1 field in 1 cell #}
+                    <td>{{ c[key] or ''}}</td>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div id="identifiers" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_identifiers'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_identifiers'] %}
+                {% for label, key in pair.items() %}
+                  {# Multiple fields in 1 cell #}
+                  {% if key is sequence and key is not mapping and key is not string %}
+                    <td>
+                      {#{% for sub_key in key[:-1] %}#}
+                      {% for sub_key in key %}
+                        {# Delimited fields #}
+                        {{ c[sub_key] or ''}}{% if c[sub_key] %}{% if not loop.last %},&nbsp;{% endif %}{% endif %}
+                        {#{% if c[sub_key] %}{% if not loop.last %}{% if sub_key == 'address_zip' and c['address_zip_extension'] %}-{% else %},&nbsp;{% endif %}{% endif %}{% endif %}#}
+                      {% endfor %}
+                    </td>
+                  {% else %}
+                    {# 1 field in 1 cell #}
+                    <td>{{ c[key] or ''}}</td>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div id="services-and-authorizations" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_services_and_authorizations'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_services_and_authorizations'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+      <div id="billing-info" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_billing_info'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_billing_info'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+      <div id="case-notes" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_case_notes'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_case_notes'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+      <div id="relationships" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_relationships'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_relationships'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+      <div id="other" class="tab-pane fade">
+        <table class="table">
+          <tr>
+            <th>#</th>
+            {% for pair in data_tree['common_fields'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+            {% for pair in data_tree['sections']['customer_case_notes'] %}
+              {% for label, key in pair.items() %}
+                <th>{{ label }}</th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+          {% for c in customers %}
+            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
+              <td>{{ loop.index }}</td>
+              {% for pair in data_tree['common_fields'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+                {% endfor %}
+              {% endfor %}
+              {% for pair in data_tree['sections']['customer_case_notes'] %}
+                {% for label, key in pair.items() %}
+                  <td>{{ c[key] or ''}}</td>
+{#                  <td>{{ c[key] if c[key] is not None else '' }}</td>#}
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          </table>
+      </div>
+
+    </div>
+
+
+  {# MY ANGULAR IMPLEMENTATION #}
+    {# Data Filters #}
+    {# THIS would be what I want     #}
+    {#    <li ng-repeat="tab in app.tabs" ng-class="{ active: isSet($index) }">#}
+    {#      <a href ng-click="setTabz($index)">{a tab.label a}</a>#}
+    {#    </li>#}
+
+    {# Legacy Jinja2 Data Filters #}
+    {#        {% for item in data_sections %}#}
+    {#          <li>#}
+    {#            <a href="{{ url_for(item.section) }}">{{ item.label }}</a>#}
+    {#          </li>#}
+    {#        {% endfor %}#}
+  {# MY ANGULAR IMPLEMENTATION #}
+
+
+
+  {# MY ANGULAR IMPLEMENTATION #}
+    {# DEBUGGING #}
+    {#    <div class="customer-table">#}
+    {#      <table class="table">#}
+    {#        <tr>#}
+    {#          <th>TEST</th>#}
+    {#        </tr>#}
+    {#        <tr>#}
+    {#          <td>TEST</td>#}
+    {#        </tr>#}
+    {#      </table>#}
+    {#    </div>#}
+    {# DEBUGGING #}
+
+    {#  <div ng-if="app.selected_tab == ''">#}
+    {#    <div>#}
+    {#    <table class="table">#}
+    {#      <tr>#}
+    {#          <th>#</th>#}
+    {#          <th>Last Name</th>#}
+    {#          <th>First Name</th>#}
+    {#          <th>Type</th>#}
+    {#          <th>Phone #</th>#}
+    {#          <th>Address</th>#}
+    {#      </tr>#}
+    {#        <tr ng-repeat="c in app.customers" data-toggle="modal" data-id="{a c.id a}" data-target="#Customer-Update-Modal{a c.id a}">#}
+    {#          <td>{a c.id a}</td>#}
+    {#          <td>{a c.name_last a}</td>#}
+    {#          <td>{a c.name_first a}</td>#}
+    {#          <td>{a c.customer_type a}</td>#}
+    {#          <td>{a c.phone1 a}</td>#}
+    {#          <td>{a c.address_street a}, <span ng-if="c.address_suite">{a c.address_suite a}, </span>#}
+    {#              {a c.address_city a}, {a c.address_state a} {a c.address_zip a}<span ng-if="c.address_zip_extension">-#}
+    {#              {a c.address_zip_extension a}</span></td>#}
+    {#        </tr>#}
+    {#    </table>#}
+    {#    </div>#}
+    {#  </div>#}
+  {# MY ANGULAR IMPLEMENTATION #}
+
+
+
+{# -- Legacy Jinja2 Table, Version 2.0 -- #}
+{#    <table class="table">#}
+{#      <tr>#}
+{#          <th>#</th>#}
+{#          <th>Last Name</th>#}
+{#          <th>First Name</th>#}
+{#          <th>Type</th>#}
+{#          <th>Phone #</th>#}
+{#          <th>Address</th>#}
+{#      </tr>#}
+{#      {% for c in customers %}#}
+{#        <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">#}
+{#          <td>{{ loop.index }}</td>#}
+{#          <td>{{ c.name_last }}</td>#}
+{#          <td>{{ c.name_first }}</td>#}
+{#          <td>{{ c.customer_type }}</td>#}
+{#          <td>{{ c.phone1 }}</td>#}
+{#          <td>{{ c.address_street }}, {% if c.address_suite %}{{ c.address_suite}},  {% endif %}#}
+{#              {{ c.address_city }}, {{ c.address_state }} {{ c.address_zip }}{% if c.address_zip_extension %}-{{ c.address_zip_extension }}{% endif %}</td>#}
+{#        </tr>#}
+{#      {% endfor %}#}
+{#    </table>#}
+{%- endblock content %}

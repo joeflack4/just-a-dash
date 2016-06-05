@@ -436,6 +436,7 @@ class Customers(BaseModel):
         'billing_address_street': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_suite': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 30}},
         'billing_address_state': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
+        'billing_address_city': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_county': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_zip': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 50}},
         'billing_address_zip_extension': {'required': False, 'validators': 'string', 'validator_parameters':
@@ -488,6 +489,90 @@ class Customers(BaseModel):
         'notes_case': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 1000}},
         'notes_other': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 1000}}
     }
+
+    data_sections = [{'section': 'customer_contacts', 'label': 'Contact Info'},
+                     {'section': 'customer_identifiers', 'label': 'Identifiers'},
+                     {'section': 'customer_services_and_authorizations', 'label': 'Services & Authorizations'},
+                     {'section': 'customer_billing_info', 'label': 'Billing Info'},
+                     {'section': 'customer_case_notes', 'label': 'Case Notes'},
+                     {'section': 'customer_relationships', 'label': 'Relationships'},
+                     {'section': 'customer_other', 'label': 'Other'}]
+
+    data_tree = {
+        'common_fields': (
+            {'Last Name': 'name_last'},
+            {'First Name': 'name_first'},
+            {'Type': 'customer_type'},
+        ),
+        'sections': {
+            'customer_contacts': (
+                {'Phone #': 'phone1'},
+                {'E-mail': 'email1'},
+                {'Address': ['address_street', 'address_suite', 'address_city', 'address_state', 'address_county',
+                            'address_zip']},
+                # {'Address': ['address_street', 'address_suite', 'address_city', 'address_state', 'address_county',
+                #              'address_zip', 'address_zip_extension']},
+                {'Alt Contact Info': ['email2', 'phone2', 'phone3', 'phone4', 'phone5']},
+            ),
+            'customer_identifiers': (
+                {'DOB': 'pii_dob'},
+                {'Medicaid ID': 'pii_other'},
+                {'Other Identifiers': 'phi'},
+            ),
+            'customer_services_and_authorizations': (
+                {'Service 1': (
+                    {'Type': 'service_1_type'},
+                    {'Days': 'service_1_day'},
+                    {'Hours': 'service_1_hours'},
+                    {'Rate': 'service_1_rate'},
+                )},
+                {'Service 2': (
+                    {'Type': 'service_2_type'},
+                    {'Days': 'service_2_day'},
+                    {'Hours': 'service_2_hours'},
+                    {'Rate': 'service_2_rate'},
+                )},
+                {'Service 3': (
+                    {'Type': 'service_3_type'},
+                    {'Days': 'service_3_day'},
+                    {'Hours': 'service_3_hours'},
+                    {'Rate': 'service_3_rate'},
+                )},
+                {'Service 4': (
+                    {'Type': 'service_4_type'},
+                    {'Days': 'service_4_day'},
+                    {'Hours': 'service_4_hours'},
+                    {'Rate': 'service_4_rate'},
+                )}
+            ),
+            'customer_billing_info': (
+                {'Method': 'billing_method'},
+                {'Frequency': 'billing_frequency'},
+                {'Address': ['billing_relation_name', 'billing_email', 'billing_address_street', 'billing_address_suite',
+                            'billing_address_city', 'billing_address_state', 'billing_address_county',
+                            'billing_address_zip', 'billing_address_zip_extension']},
+                {'Notes': 'billing_notes'},
+
+            ),
+            'customer_case_notes': (
+                {'Case Notes': 'notes_case'},
+            ),
+            'customer_relationships': (
+                {'Relation 1 Name': 'relation_1_name'},
+                {'Relation 1 Type': 'relation_1_role'},
+                {'Relation 2 Name': 'relation_2_name'},
+                {'Relation 2 Type': 'relation_2_role'},
+                {'Relation 3 Name': 'relation_3_name'},
+                {'Relation 3 Type': 'relation_3_role'},
+                {'Relation 4 Name': 'relation_4_name'},
+                {'Relation 4 Type': 'relation_4_role'},
+                {'Relation 5 Name': 'relation_5_name'},
+                {'Relation 5 Type': 'relation_5_role'},
+            ),
+            'customer_other': (
+                {'Other Notes': 'notes_other'},
+            ),
+        }}
 
     id = db.Column(db.Integer, primary_key=True)
     name_last = db.Column(db.String(80), nullable=False, index=True)
@@ -577,7 +662,7 @@ class Customers(BaseModel):
                  phone3, phone4, phone5, pii_dob, pii_other, phi, pfi, address_street, address_suite, address_city,
                  address_state, address_county, address_zip, address_zip_extension, billing_method, billing_frequency,
                  billing_relation_name, billing_email, billing_address_street, billing_address_suite,
-                 billing_address_state, billing_address_county, billing_address_zip, billing_address_zip_extension,
+                 billing_address_state, billing_address_county, billing_address_city, billing_address_zip, billing_address_zip_extension,
                  billing_notes, relation_1_name, relation_1_role, relation_2_name, relation_2_role, relation_3_name,
                  relation_3_role, relation_4_name, relation_4_role, relation_5_name, relation_5_role, customer_type,
                  customer_type_id1, customer_type_id2, customer_type_id3, service_1_id, service_1_day, service_1_hours,
@@ -617,6 +702,7 @@ class Customers(BaseModel):
         self.billing_address_suite = billing_address_suite
         self.billing_address_state = billing_address_state
         self.billing_address_county = billing_address_county
+        self.billing_address_city = billing_address_city
         self.billing_address_zip = billing_address_zip
         self.billing_address_zip_extension = billing_address_zip_extension
         self.billing_notes = billing_notes

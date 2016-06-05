@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+
+<!-- Content -->
+{# MY IMPLEMENTATION #}
+    {#{% block body_attribs -%}#}
+    {#  {{ super() }}#}
+    {#  ng-app="app" ng-controller="CrmController as app"#}
+    {#{%- endblock body_attribs %}#}
+{# MY IMPLEMENTATION #}
+
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+  <h3 class="content-header">Customer List</h3>
+
+    <ul class="nav nav-tabs">
+      <li>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Customer-Add-Modal">
+            Add New <span class="fa fa-user-plus"></span>
+          </button>
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#" data-toggle="modal" data-target="#Customer-CSV-Upload-Modal"><span class="fa fa-upload"></span>Upload CSV</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+      <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+      <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+    </ul>
+
+
+
+
+<div class="tab-content">
+  <div id="home" class="tab-pane fade in active">
+    <h3>HOME</h3>
+    <p>Some content.</p>
+  </div>
+  <div id="menu1" class="tab-pane fade">
+    <h3>Menu 1</h3>
+    <p>Some content in menu 1.</p>
+  </div>
+  <div id="menu2" class="tab-pane fade">
+    <h3>Menu 2</h3>
+    <p>Some content in menu 2.</p>
+  </div>
+</div>
+
+
+<br/><br/><br/>
+{#EXPIRMENT#}
+<div class="container" ng-app="tabApp">
+  <div class="row" ng-controller="TabController">
+  	<div class="col-md-2">
+  		<ul class="nav nav-pills nav-stacked">
+       	<li ng-class="{ active: isSet(1) }">
+          	<a href ng-click="setTab(1)">Home</a>
+       	</li>
+       	<li ng-class="{ active: isSet(2) }">
+          	<a href ng-click="setTab(2)">Profile</a>
+       	</li>
+       	<li ng-class="{ active: isSet(3) }">
+          	<a href ng-click="setTab(3)">Messages</a>
+       	</li>
+     	</ul>
+  	</div>
+
+    <div class="col-md-8">
+  		<div class="jumbotron">
+       	<div ng-show="isSet(1)">
+         	 <h1>Home page</h1>
+          	<p>Welcome to the website!</p>
+         	 <p><a class="btn btn-primary btn-lg" 			role="button">Learn more</a></p>
+        	</div>
+			<div ng-show="isSet(2)">
+          <h1>Profile page</h1>
+          <p>Profile information</p>
+     	</div>
+        <div ng-show="isSet(3)">
+          <h1>Messages</h1>
+          <p> Some messages </p>
+     	</div>
+  	</div>
+  </div>
+</div>
+{#EXPIRMENT#}
+
+
+
+
+  {# MY IMPLEMENTATION #}
+    {# Data Filters #}
+    {# THIS would be what I want     #}
+    {#    <li ng-repeat="tab in app.tabs" ng-class="{ active: isSet($index) }">#}
+    {#      <a href ng-click="setTabz($index)">{a tab.label a}</a>#}
+    {#    </li>#}
+
+    {# Legacy Jinja2 Data Filters #}
+    {#        {% for item in data_sections %}#}
+    {#          <li>#}
+    {#            <a href="{{ url_for(item.section) }}">{{ item.label }}</a>#}
+    {#          </li>#}
+    {#        {% endfor %}#}
+  {# MY IMPLEMENTATION #}
+
+
+
+  {# MY IMPLEMENTATION #}
+    {# DEBUGGING #}
+    {#    <div class="customer-table">#}
+    {#      <table class="table">#}
+    {#        <tr>#}
+    {#          <th>TEST</th>#}
+    {#        </tr>#}
+    {#        <tr>#}
+    {#          <td>TEST</td>#}
+    {#        </tr>#}
+    {#      </table>#}
+    {#    </div>#}
+    {# DEBUGGING #}
+
+    {#  <div ng-if="app.selected_tab == ''">#}
+    {#    <div>#}
+    {#    <table class="table">#}
+    {#      <tr>#}
+    {#          <th>#</th>#}
+    {#          <th>Last Name</th>#}
+    {#          <th>First Name</th>#}
+    {#          <th>Type</th>#}
+    {#          <th>Phone #</th>#}
+    {#          <th>Address</th>#}
+    {#      </tr>#}
+    {#        <tr ng-repeat="c in app.customers" data-toggle="modal" data-id="{a c.id a}" data-target="#Customer-Update-Modal{a c.id a}">#}
+    {#          <td>{a c.id a}</td>#}
+    {#          <td>{a c.name_last a}</td>#}
+    {#          <td>{a c.name_first a}</td>#}
+    {#          <td>{a c.customer_type a}</td>#}
+    {#          <td>{a c.phone1 a}</td>#}
+    {#          <td>{a c.address_street a}, <span ng-if="c.address_suite">{a c.address_suite a}, </span>#}
+    {#              {a c.address_city a}, {a c.address_state a} {a c.address_zip a}<span ng-if="c.address_zip_extension">-#}
+    {#              {a c.address_zip_extension a}</span></td>#}
+    {#        </tr>#}
+    {#    </table>#}
+    {#    </div>#}
+    {#  </div>#}
+  {# MY IMPLEMENTATION #}
+
+
+
+
+
+
+{# -- Legacy Jinja2 Table, Version 2.0 -- #}
+{#    <table class="table">#}
+{#      <tr>#}
+{#          <th>#</th>#}
+{#          <th>Last Name</th>#}
+{#          <th>First Name</th>#}
+{#          <th>Type</th>#}
+{#          <th>Phone #</th>#}
+{#          <th>Address</th>#}
+{#      </tr>#}
+{#      {% for c in customers %}#}
+{#        <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">#}
+{#          <td>{{ loop.index }}</td>#}
+{#          <td>{{ c.name_last }}</td>#}
+{#          <td>{{ c.name_first }}</td>#}
+{#          <td>{{ c.customer_type }}</td>#}
+{#          <td>{{ c.phone1 }}</td>#}
+{#          <td>{{ c.address_street }}, {% if c.address_suite %}{{ c.address_suite}},  {% endif %}#}
+{#              {{ c.address_city }}, {{ c.address_state }} {{ c.address_zip }}{% if c.address_zip_extension %}-{{ c.address_zip_extension }}{% endif %}</td>#}
+{#        </tr>#}
+{#      {% endfor %}#}
+{#    </table>#}
+
+  </div>
+
+{%- endblock content %}

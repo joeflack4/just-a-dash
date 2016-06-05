@@ -540,7 +540,7 @@ def module_settings():
 def gallery():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
-    shared_route_scripts = ('js/app.includes.js', 'js/components/gallery/galleryController.js')
+    shared_local_scripts = ('js/app.includes.js', 'js/components/gallery/galleryController.js')
 
     return render_template('core_modules/app_settings/gallery.html',
                            icon="fa fa-picture-o",
@@ -553,7 +553,7 @@ def gallery():
                            login_form=login_form,
                            current_user=current_user,
                            logged_in=logged_in,
-                           shared_route_scripts=shared_route_scripts)
+                           shared_local_scripts=shared_local_scripts)
 
 ############
 # - Modules - OMS
@@ -734,6 +734,7 @@ def crm_home():
 @app.route('/crm', methods=['GET', 'POST'])
 @login_required
 @crm_basic_admin_required
+# def crm(*kwargs):
 def crm():
     logged_in = current_user.is_authenticated()
     login_form = LoginForm(request.form)
@@ -744,14 +745,8 @@ def crm():
     forms = {'Customer-Add-Form': add_form,
              'Customer-Update-Form': update_form,
              'Customer-Delete-Form': delete_form}
-    data_sections = [{'section': 'customer_contacts', 'label': 'Contact Info'},
-                     {'section': 'customer_identifiers', 'label': 'Identifiers'},
-                     {'section': 'customer_services_and_authorizations', 'label': 'Services & Authorizations'},
-                     {'section': 'customer_billing_info', 'label': 'Billing Info'},
-                     {'section': 'customer_case_notes', 'label': 'Case Notes'},
-                     {'section': 'customer_relationships', 'label': 'Relationships'},
-                     {'section': 'customer_other', 'label': 'Other'}]
-    shared_route_scripts = ('js/components/crm/crmController.js', )
+    shared_local_scripts = ['js/components/crm/crmController.js', ]
+    modular_local_styles = []
 
     try:
         customers = db.session.query(Customers)
@@ -803,10 +798,25 @@ def crm():
                   'submission. Please contact the application administrator.', 'danger')
         return redirect((url_for('crm')))
 
-    return render_template('modules/crm/index.html',
+    if request.path == '/crm/development':
+        url = 'modules/crm/crm-development.html'
+        module_name = Markup('CRM Development')
+        # shared_local_scripts.append('js/components/crm/development/crm.dev.module.js')
+        # modular_local_styles.append('css/crm/development/crm.dev.css')
+    elif request.path == '/crm/development2':
+        url = 'modules/crm/crm-development2.html'
+        module_name = Markup('CRM Development #2')
+        shared_local_scripts.append('js/components/crm/development/crm.dev.module.js')
+        modular_local_styles.append('css/crm/development/crm.dev.css')
+    else:
+        url ='modules/crm/index.html'
+        module_name = 'Customer Relationship Management'
+
+
+    return render_template(url,
                            icon="ion-person-stalker",
                            module_abbreviation="CRM",
-                           module_name="Customer Relationship Management",
+                           module_name=module_name,
                            page_name="CRM Home",
                            form_title="Customer",
                            app_config_settings=get_app_settings(),
@@ -820,8 +830,24 @@ def crm():
                            forms=forms,
                            csv_upload_modal=customer_csv_upload_modal,
                            upload_columns=get_upload_columns(Customers),
-                           data_sections=data_sections,
-                           shared_route_scripts=shared_route_scripts)
+                           data_sections=Customers.data_sections,
+                           data_tree=Customers.data_tree,
+                           shared_local_scripts=shared_local_scripts,
+                           modular_local_styles=modular_local_styles)
+
+
+@app.route('/crm/development', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def crm_development():
+    return crm()
+
+
+@app.route('/crm/development2', methods=['GET', 'POST'])
+@login_required
+@crm_basic_admin_required
+def crm_development2():
+    return crm()
 
 
 @app.route('/customers/contacts', methods=['GET', 'POST'])

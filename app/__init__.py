@@ -11,6 +11,7 @@ from flask.ext.login import LoginManager
 # from flask.ext.login import LoginManager, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restless import APIManager
+from flask.ext.triangle import Triangle
 # from flask.ext.restless import APIManager, ProcessingException
 from flask_adminlte import AdminLTE
 from .config import Config
@@ -27,6 +28,7 @@ app = Flask(__name__)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+Triangle(app)
 
 ######################
 ###     Init DB    ###

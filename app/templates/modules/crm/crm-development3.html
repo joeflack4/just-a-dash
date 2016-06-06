@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+<!-- Body & Angular App -->
+{% block body_attribs -%}
+  {{ super() }}
+  ng-app="app"
+  ng-controller="customerUpdateModalWrapperController"
+{%- endblock body_attribs %}
+
 <!-- Content -->
 {% block content_header -%}
   {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
@@ -9,6 +16,7 @@
     {# - Use html of super-block template.#}
     {{ super() }}
 
+{#  <h3 class="content-header">Customer List</h3>#}
   <h3 class="content-header">Customer List</h3>
     {# Toolbar #}
     <ul class="nav nav-tabs">
@@ -40,6 +48,8 @@
 
 
     {# Content #}
+{#    <div class="tab-content">#}
+{#    <div class="tab-content" ng-controller="customerUpdateModalWrapperController">#}
     <div class="tab-content">
 
       <div id="contact-info" class="tab-pane fade in active">
@@ -58,18 +68,25 @@
             {% endfor %}
           </tr>
           {% for c in customers %}
-            <tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">
-              <td>{{ loop.index }}</td>
+            {#<tr data-toggle="modal" data-id="{{ c.id }}" data-target="#Customer-Update-Modal{{ c.id }}">#}
+{#            <tr href ng-click="show()">#}
+{#            <tr href ng-click="show({{ c.id }})">#}
+{#              <tr id="{{ c.id }}" href ng-click="show()" ng-click="clickEvent($event)">#}
+{#              <tr id="{{ c.id }}" href ng-click="show($event)">#}
+{#              <tr id="hello" href ng-click="show($event)">#}
+              <tr>
+{#              <td><a id="hello" href ng-click="show($event)">{{ loop.index }}</a></td>#}
+              <td id={{ c.id }} href ng-click="show($event)">{{ loop.index }}</td>
               {% for pair in data_tree['common_fields'] %}
                 {% for label, key in pair.items() %}
-                  <td>{{ c[key] or ''}}</td>
+                  <td id={{ c.id }} href ng-click="show($event)">{{ c[key] or ''}}</td>
                 {% endfor %}
               {% endfor %}
               {% for pair in data_tree['sections']['customer_contacts'] %}
                 {% for label, key in pair.items() %}
                   {# Multiple fields in 1 cell #}
                   {% if key is sequence and key is not mapping and key is not string %}
-                    <td>
+                    <td id={{ c.id }} href ng-click="show($event)">
                       {#{% for sub_key in key[:-1] %}#}
                       {% for sub_key in key %}
                         {# Delimited fields #}
@@ -79,7 +96,7 @@
                     </td>
                   {% else %}
                     {# 1 field in 1 cell #}
-                    <td>{{ c[key] or ''}}</td>
+                    <td id={{ c.id }} href ng-click="show($event)">{{ c[key] or ''}}</td>
                   {% endif %}
                 {% endfor %}
               {% endfor %}
@@ -303,14 +320,32 @@
     </div>
 
 
-    {# Angular-Modal-Sevice Development #}
-    <div class="container" ng-app="app" ng-controller="customerUpdateModalWrapperController">
-      {# Temporary #}
-        <a class="btn btn-default" href ng-click="show()">Open Modal</a>
-        {# <p>{a message a}</p>#}
-      {# Temporary #}
-      {% include 'modules/crm/components/customer-update-modal.html' %}
-    </div>
 
+    {# Temporary Dev Playground #}
+    <br/><br/>
+    <h3>Development Playground</h3>
+    {#<div ng-app="app">#}
+{#      <div ng-controller="customerUpdateModalWrapperController">#}
+        <a class="btn btn-default" href ng-click="show()">Open Modal</a>
+{#      </div>#}
+
+      {{ customer_id|angular }}
+
+      <br/><br/>
+
+      <div ng-controller="customerApiController">
+        {{ details|angular }}
+        <div ng-if="!details">
+          Loading results...
+        </div>
+        <div ng-if="details.Response==='True'">
+          {{ details|angular }}
+        </div>
+        <div ng-if="details.Response==='False'">
+          No results found.
+        </div>
+      </div>
+    {#</div>#}
+    {# Temporary Dev Playground #}
 
 {%- endblock content %}

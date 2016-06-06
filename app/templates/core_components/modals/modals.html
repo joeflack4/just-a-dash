@@ -24,3 +24,7 @@
 {# - Note: This modal is within <script> tags and doesn't seem to work if located here. #}
 {# - Link: http://www.dwmkerr.com/the-only-angularjs-modal-service-youll-ever-need/ #}
 {#{% include 'core_components/modals/development-modal.angular.html' %}#}
+{% if customers %}
+  {% include 'modules/crm/components/customer-update-modal.html' %}
+  {% include 'modules/crm/components/customer-delete-modal.html' %}
+{% endif %}

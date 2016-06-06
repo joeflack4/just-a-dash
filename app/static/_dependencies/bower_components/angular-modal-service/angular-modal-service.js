@@ -51,6 +51,7 @@
         return $animate.enter(child, parent);
       };
 
+
       self.showModal = function(options) {
 
         //  Create a deferred we'll resolve when the modal is ready.
@@ -142,7 +143,8 @@
               scope: modalScope,
               element: modalElement,
               close: closeDeferred.promise,
-              closed: closedDeferred.promise
+              closed: closedDeferred.promise,
+              test_data: 'hello'
             };
 
             //  ...which is passed to the caller via the promise.

@@ -815,8 +815,12 @@ def crm():
         # shared_local_scripts.append('_dependencies/bower_components/angular-modal-service/angular-modal-service.js')
         shared_local_scripts.append('js/components/crm/development3/crm.dev.modalController.js')
     else:
-        url ='modules/crm/index.html'
+        url = 'modules/crm/crm-development.html'
         module_name = 'Customer Relationship Management'
+    # - Note: Below is the more stable CRM template. Switch back to it if any issues.
+    # else:
+    #     url ='modules/crm/index.html'
+    #     module_name = 'Customer Relationship Management'
 
 
     return render_template(url,

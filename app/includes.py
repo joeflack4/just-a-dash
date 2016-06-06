@@ -502,15 +502,22 @@ def add_to_db(data_to_add, data_context):
 # -- App Settings
 def get_app_settings(*args):
     if not args:
-        try:
-            app_config_settings = {'App Icon': AppConfig.query.filter_by(key='App Icon').first().value,
-                                   'App Name': AppConfig.query.filter_by(key='App Name').first().value,
-                                   'App Short-Title': AppConfig.query.filter_by(key='App Short-Title').first().value,
-                                   'App Title': AppConfig.query.filter_by(key='App Title').first().value,
-                                   'Secret Key': AppConfig.query.filter_by(key='Secret Key').first().value,
-                                   'Toggle Placeholders': AppConfig.query.filter_by(key='Toggle Placeholders').first().value,}
-        except:
-            app_config_settings = False
+        app_config_settings = {}
+        app_config_keys = ['App Icon', 'App Name', 'App Short-Title', 'App Title', 'Secret Key', 'Toggle Placeholders']
+        for key in app_config_keys:
+            try:
+                app_config_settings[key] = AppConfig.query.filter_by(key=key).first().value
+            except:
+                app_config_settings[key] = False
+        # try:
+        #     app_config_settings = {'App Icon': AppConfig.query.filter_by(key='App Icon').first().value,
+        #                            'App Name': AppConfig.query.filter_by(key='App Name').first().value,
+        #                            'App Short-Title': AppConfig.query.filter_by(key='App Short-Title').first().value,
+        #                            'App Title': AppConfig.query.filter_by(key='App Title').first().value,
+        #                            'Secret Key': AppConfig.query.filter_by(key='Secret Key').first().value,
+        #                            'Toggle Placeholders': AppConfig.query.filter_by(key='Toggle Placeholders').first().value,}
+        # except:
+        #     app_config_settings = False
         return app_config_settings
     else:
         try:

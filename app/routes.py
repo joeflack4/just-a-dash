@@ -20,7 +20,7 @@ from .forms import LoginForm, RegisterForm, UserAddForm, UserUpdateForm, UserDel
     Config_Names_and_Aesthetics, Config_Secret_Key, Config_Modules, OMS_Settings
 from .modals import user_add_modal, user_update_modal, customer_add_modal, customer_update_modal, personnel_add_modal, \
     personnel_update_modal, user_csv_upload_modal, customer_csv_upload_modal, \
-    personnel_csv_upload_modal
+    personnel_csv_upload_modal, violations_csv_upload_modal
 # from .services.telephony.contacts import CompanyContacts
 from .services.telephony.sms import sms_response, sms_check_in_data
 from .services.telephony.calls import call_response, call_check_in_data
@@ -1254,6 +1254,132 @@ def cool_analytics():
                            # modular_cdn_scripts=('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js', 'http://kjdfkljl.com'),
                            modular_local_scripts=modular_local_scripts,
                            testy=testy)
+
+
+class Violations(db.Model):
+    __tablename__ = 'violations'
+
+    db_columns = {
+        'violation_id': {'required': True, 'validators': 'string', 'validator_parameters': {'max': 25}},
+        'inspection_id': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 25}},
+        'violation_category': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 25}},
+        'violation_date': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 25}},
+        'violation_date_closed': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 25}},
+        'violation_type': {'required': False, 'validators': 'string', 'validator_parameters': {'max': 25}},
+    }
+
+    violation_id = db.Column(db.Integer, primary_key=True)
+    inspection_id = db.Column(db.Integer, index=True)
+    violation_category = db.Column(db.String(100), index=True)
+    violation_date = db.Column(db.String(100), index=True)
+    violation_date_closed = db.Column(db.String(100), index=True)
+    violation_type = db.Column(db.String(100), index=True)
+
+    created_on = db.Column(db.DateTime, default=db.func.now(), index=True)
+    updated_on = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now(), index=True)
+
+    def __init__(self, violation_id, inspection_id, violation_category, violation_date, violation_date_closed,
+                 violation_type):
+        self.violation_id = violation_id
+        self.inspection_id = inspection_id
+        self.violation_category = violation_category
+        self.violation_date = violation_date
+        self.violation_date_closed = violation_date_closed
+        self.violation_type = violation_type
+
+    def __repr__(self):
+        return '<id: {}>'.format(self.violation_id)
+
+
+# @app.template_filter('datetime')
+# def format_datetime(value, format='medium'):
+#    # https://pythonhosted.org/Flask-Babel/
+#     import babel
+#     if format == 'full':
+#         format = "EEEE, d. MMMM y 'at' HH:mm"
+#     elif format == 'medium':
+#         format = "EE dd.MM.y HH:mm"
+#
+#     return babel.dates.format_datetime(value, format)
+
+
+@app.route('/violations')
+# @login_required
+def violations():
+    import datetime
+    logged_in = current_user.is_authenticated()
+    login_form = LoginForm(request.form)
+    # modular_cdn_scripts = ('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js', )
+    modular_cdn_scripts = ('//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js',)
+    # modular_local_scripts = ('js/components/analytics/violations-pie-chart.js', )
+    # modular_local_styles = ('css/analytics/violations.css', )
+
+    violations_data = db.session.query(Violations)
+
+    categories = []
+    category_data = {}
+
+    for row in violations_data:
+        if row.violation_category not in categories:
+            categories.append(row.violation_category)
+
+    for category in categories:
+        category_data[category] = {
+            'total_violations': 0,
+            'earliest_violation': '',
+            'latest_violation': ''
+        }
+
+    for category in categories:
+        for row in violations_data:
+            if row.violation_category == category:
+                # Get total violations.
+                category_data[category]['total_violations'] += 1
+
+                # Get earliest violation.
+                if category_data[category]['earliest_violation'] == '':
+                    category_data[category]['earliest_violation'] = datetime.datetime.strptime(row.violation_date,
+                                                                                               '%Y-%m-%d %H:%M:%S')
+                else:
+                    if datetime.datetime.strptime(row.violation_date,
+                                                  '%Y-%m-%d %H:%M:%S')< category_data[category]['earliest_violation']:
+                        category_data[category]['earliest_violation'] = datetime.datetime.strptime(row.violation_date,
+                                                                                                   '%Y-%m-%d %H:%M:%S')
+
+                # Get latest violation.
+                if category_data[category]['latest_violation'] == '':
+                    category_data[category]['latest_violation'] = datetime.datetime.strptime(row.violation_date,
+                                                                                               '%Y-%m-%d %H:%M:%S')
+                else:
+                    if datetime.datetime.strptime(row.violation_date,
+                                                  '%Y-%m-%d %H:%M:%S') > category_data[category]['latest_violation']:
+                        category_data[category]['latest_violation'] = datetime.datetime.strptime(row.violation_date,
+                                                                                                   '%Y-%m-%d %H:%M:%S')
+    from collections import OrderedDict
+    category_data = OrderedDict(sorted(category_data.items()))
+
+    return render_template('modules/analytics/violations.html',
+                           icon="fa fa-dashboard",
+                           module_abbreviation="Dashboard",
+                           module_name='Dashboard',
+                           page_name="Cool Building Violations Analytics",
+                           app_config_settings=get_app_settings(),
+                           # messages='',
+                           # notifications='',
+                           messages=db.session.query(Messages),
+                           notifications=db.session.query(AppNotifications),
+                           login_form=login_form,
+                           current_user=current_user,
+                           logged_in=logged_in,
+                           modular_cdn_scripts=modular_cdn_scripts,
+                           # modular_cdn_scripts=('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js', 'http://kjdfkljl.com'),
+                           # modular_local_scripts=modular_local_scripts,
+                           # modular_local_styles=modular_local_styles,
+                           csv_upload_modal=violations_csv_upload_modal,
+                           upload_columns=get_upload_columns(Violations),
+                           violations_data=violations_data,
+                           categories=categories,
+                           category_data=category_data)
 
 
 if __name__ == "__main__":

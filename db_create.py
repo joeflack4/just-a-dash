@@ -1,4 +1,5 @@
 from app.models import db, AppConfig, Modules, OmsConfig, CrmConfig, HrmConfig, AmsConfig, MmsConfig, User, Roles, Permissions, AppNotifications
+from app.routes import Violations
 from app.config import sk_generator
 # from psycopg2 import IntegrityError
 # from sqlalchemy.exc import IntegrityError

@@ -63,6 +63,13 @@ personnel_csv_upload_modal = {'id': 'Personnel-CSV-Upload-Modal',
                          'form_id': 'Personnel-CSV-Upload-Form',
                          'submit_value': 'Personnel-CSV-Upload-Submit'}
 
+violations_csv_upload_modal = {'id': 'Violations-CSV-Upload-Modal',
+                             'aria_label': 'Violations-CSV-Upload-Modal',
+                             'title_id': 'Violations-CSV-Upload-Modal',
+                             'title': 'Upload Violations',
+                             # 'form_id': CustomerCsvUploadForm.form_id}
+                             'form_id': 'Violations-CSV-Upload-Form',
+                             'submit_value': 'Violations-CSV-Upload-Submit'}
 
 ### Classes ###
 # - Work in progress. -Joe Flack, 03/31/2016

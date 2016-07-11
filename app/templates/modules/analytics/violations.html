@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+  <h3 class="content-header">Building Code Violations</h3>
+
+  <ol class="breadcrumb">
+    <li>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Violations-CSV-Upload-Modal">
+        Upload CSV <span class="fa fa-upload"></span>
+      </button>
+    </li>
+  </ol>
+
+  <div style="float:left; width:58%;">
+    {#    {% for violation in violations_data %}#}
+    {#      <p>{{ violation.violation_id }} / {{ violation.inspection_id }} / {{ violation.violation_category }} /#}
+    {#         {{ violation.violation_date }} / {{ violation.violation_date_closed }} / {{ violation.violation_type }}</p>#}
+    {#    {% endfor %}#}
+
+    {#    {% for category in categories %}#}
+    {#      <p>{{ category }}</p>#}
+    {#    {% endfor %}#}
+
+
+
+    <table class="table">
+      <tr>
+          <th>#</th>
+          <th>Category</th>
+          <th>Earliest Violation</th>
+          <th>Latest Violation</th>
+          <th>Total Violations</th>
+      </tr>
+      {% for category, data in category_data.items() %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ category }}</td>
+          <td>{{ data.earliest_violation.strftime('%m/%d/%Y') }}</td>
+          <td>{{ data.latest_violation.strftime('%m/%d/%Y') }}</td>
+          <td>{{ data.total_violations }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+{#  <div style="width:50%;">#}
+  <div style="float:right; width:40%;">
+      <canvas id="myChart" width="300" height="300"></canvas>
+  </div>
+
+{%- endblock content %}
+
+
+{% block scripts -%}
+  {{ super() }}
+
+  <script type="text/javascript">
+  (function() {
+
+    var ctx = $("#myChart");
+
+    var chart_data = {{ category_data|tojson }};
+    var categories = Object.keys(chart_data);
+    var labels = [];
+    var violations = [];
+
+    {# - Note: Doesn't work. Instead we should use Object.keys to return an array. #}
+    {#    var new_labels = [];#}
+    {#    for (i = 0; i < Object.keys(chart_data).length; i += 1) {#}
+    {#        new_labels.push(chart_data[i]);#}
+    {#        new_labels.push(Object.keys(chart_data));#}
+    {#    }#}
+
+    for (var category in categories) {
+{#        console.log(categories[category]);#}
+{#        console.log(chart_data[categories[category]].total_violations);#}
+        labels.push(categories[category]);
+        violations.push(chart_data[categories[category]].total_violations);
+    }
+
+    var data = {
+        labels: labels,
+        datasets: [
+            {
+{#                data: [300, 50, 100, 300, 50, 100, 300, 50, 100],#}
+                data: violations,
+                backgroundColor: [
+                    "#FF6384",
+                    "#36A2EB",
+                    "#FFCE56",
+                    "#ffa64d",
+                    "#70db70",
+                    "#c266ff",
+                    "#ffbf00",
+                    "#7575a3",
+                    "#ff99ff"
+                ],
+                hoverBackgroundColor: [
+                    "#FF6384",
+                    "#36A2EB",
+                    "#FFCE56",
+                    "#ffa64d",
+                    "#70db70",
+                    "#c266ff",
+                    "#ffbf00",
+                    "#7575a3",
+                    "#ff99ff"
+                ]
+            }]
+    };
+
+    var myPieChart = new Chart(ctx,{
+        type: 'pie',
+        data: data
+        // options: options
+    });
+
+  })();
+  </script>
+
+{%- endblock scripts %}

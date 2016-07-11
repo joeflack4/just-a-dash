@@ -106,8 +106,16 @@ def get_cols_from_context(data_context):
     elif data_context == 'Personnel-CSV-Upload-Submit':
         db_columns = Personnel.db_columns
     else:
-        flash('Error in validation. Upload was detected, but could not determine the source. Please contact the '
-              'application administrator for assistance.', 'danger')
+        try:
+            # Fancy way to pull up an object if I have a string of that object's name:
+            # http://stackoverflow.com/questions/10773348/get-python-class-object-from-string
+            # db_columns = data_context[0:-18]
+            if data_context == 'Violations-CSV-Upload-Submit':
+                from .routes import Violations
+                db_columns = Violations.db_columns
+        except:
+            flash('Error in validation. Upload was detected, but could not determine the source. Please contact the '
+                  'application administrator for assistance.', 'danger')
     return db_columns
 
 
@@ -482,6 +490,22 @@ def add_to_db(data_to_add, data_context):
                 db.session.rollback()
                 errors.append(i)
 
+    elif data_context == 'Violations-CSV-Upload-Submit':
+        for row in data_to_add:
+            i += 1
+            try:
+                from app.routes import Violations
+                db.session.add(Violations(violation_id=row.get('violation_id'),
+                                    inspection_id=row.get('inspection_id'),
+                                    violation_category=row.get('violation_category'),
+                                    violation_date=row.get('violation_date'),
+                                    violation_date_closed=row.get('violation_date_closed'),
+                                    violation_type=row.get('violation_type')
+                                    ))
+                db.session.commit()
+            except:
+                db.session.rollback()
+                errors.append(i)
     else:
         flash('Error occurred when attempting to import data. Upload was detected, but could not determine the source. '
               'Please contact the application administrator.', 'danger')
@@ -1130,7 +1154,6 @@ def get_upload_columns(data_model):
     upload_columns['required'] = make_string_list(upload_columns_lists['required'])
     upload_columns['optional'] = make_string_list(upload_columns_lists['optional'])
     return upload_columns
-
 
 ##############
 # - Variables

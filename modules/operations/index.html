@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+{#  <div page-header>#}
+{#    <h4 class="page-header">Operations Management</h4>#}
+{#  </div>#}
+
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+
+{% if render_settings['Phone Number Visibility'] == 'true' %}
+  <div>
+    <h3 class="content-header">Check-in Data</h3>
+    <table class="table">
+      <tr>
+          <th>#</th>
+          <th>Time (GMT)</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Phone Number</th>
+      </tr>
+      {% for key, value in check_in_entries.items() %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ value.timestamp }}</td>
+          <td>{{ value.first_name }}</td>
+          <td>{{ value.last_name }}</td>
+          <td>{{ value.phone_number }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+{% else %}
+
+  <div>
+    <h3 class="content-header">Check-in Data</h3>
+    <table class="table">
+      <tr>
+          <th>#</th>
+          <th>Time (GMT)</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+      </tr>
+      {% for key, value in check_in_entries.items() %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ value.timestamp }}</td>
+          <td>{{ value.first_name }}</td>
+          <td>{{ value.last_name }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+{% endif %}
+
+
+  <div>
+    <br/>
+    <h4>How to Use</h4>
+    <code>Check-in Phone #: {{ render_settings['Twilio Phone Number'] }}</code>
+    <ol>
+        <li>Person calls the above number.</li>
+        {#        <li>Person sends a text of any kind to the above number.</li>#}
+        <li>The check-in table is automatically updated</li>
+    </ol>
+
+    <br/>
+    <h4>Useful Notes</h4>
+    <ul>
+        <li>When a person's phone # is not recognized, it can be manually added to the system. Until database is up and running, this will need to be added by your system administrator.</li>
+    </ul>
+  </div>
+
+{%- endblock content %}

@@ -7,7 +7,9 @@
 {%- endblock content_header %}
 {% block content -%}
 {#  <div page-header>#}
-    <h4 class="page-header">~ Welcome to {{ app_config_settings['App Short-Title'] }} ~</h4>
+    <h4 class="page-header">Welcome{% if current_user.is_authenticated %}, {{ current_user.username }}.
+      {% else %} ~{% endif %}
+    </h4>
 {#  </div>#}
 
     {# - Use html of super-block template.#}
@@ -22,15 +24,23 @@
 {#Remove this for main project.    #}
 {#    <img src ="http://www.sonshinecompanioncare.com/wp-content/uploads/2015/03/SCC-Header-01.png"/>#}
 
-    <h4>Current Features</h4>
+{#    <h4>Current Features</h4>#}
+{#    <ul>#}
+{#      <li><a href="/checkin">Check-in Service</a></li>#}
+{#      <li><a href="/hrm">CP List (WiP)</a></li>#}
+{#      <li><a href="/crm">Client List (WiP)</a></li>#}
+{#    </ul>#}
+
+{% if app_config_settings['Toggle Placeholders'] == 'true' %}
+  <p>The following metrics are just placeholders.</p>
+
+  {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->
+{% else %}
+    <h3>Sections</h3>
     <ul>
-      <li><a href="{{ url_for('call_check_in') }}">Check-in Service</a></li>
-      <li><a href="{{ url_for('hrm') }}">CP List (WiP)</a></li>
-      <li><a href="{{ url_for('crm') }}">Client List (WiP)</a></li>
+      <li><a href="{{ url_for('operations') }}">Check-in Service</a></li>
     </ul>
+{% endif %}
 
-    <p>Please <a href="" data-toggle="modal" data-target="#LoginForm">log in</a> to access these wonderful features, and more!</p>
-
-{#  {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->#}
 {#  {% include "core_modules/dashboard/components/dashboard_footer.html" %} <!-- Content: Footer -->#}
 {%- endblock content %}

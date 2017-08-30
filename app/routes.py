@@ -52,7 +52,7 @@ record_add_error = 'Attempted to add record, but form submission failed validati
 # - App Core - Root Pathing
 @app.route('/')
 def root_path():
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return redirect(url_for('index'))
     else:
         return redirect(url_for('welcome'))
@@ -60,12 +60,12 @@ def root_path():
 
 @app.route('/welcome')
 def welcome():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     register_form = RegisterForm(request.form)
 
     return render_template('core_modules/welcome/index.html',
-                           module_name=get_app_settings('App Name') + " Control Panel",
+                           module_name=get_app_settings('App Short-Title') + " Control Panel",
                            page_name="Welcome",
                            icon="fa fa-star-o",
                            module_abbreviation="Home",
@@ -81,10 +81,10 @@ def welcome():
 @app.route('/index')
 @login_required
 def index():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('core_modules/dashboard/index.html',
-                           module_name=get_app_settings('App Name') + " Control Panel",
+                           module_name=get_app_settings('App Short-Title') + " Control Panel",
                            page_name="Dashboard",
                            icon="fa fa-dashboard",
                            module_abbreviation="Home",
@@ -112,7 +112,7 @@ def dashboard():
 # - App Core - Standard Routes
 @app.route('/logout')
 def logout():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     logout_user()
     flash(u'Logged out. Thank you, come again!', 'success')
     return redirect(url_for('welcome'))
@@ -120,7 +120,7 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     errors = []
     login_form = LoginForm(request.form)
     register_form = RegisterForm()
@@ -157,7 +157,7 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     register_form = RegisterForm()
     if request.method == 'POST':
@@ -232,7 +232,7 @@ def upload():
 @app.route('/account-settings', methods=['GET', 'POST'])
 @login_required
 def account_settings():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     settings_form = UserUpdateForm(request.form)
     generic_error = 'Error. Data appears to have been posted to the server, but could not determine type of form ' \
@@ -274,7 +274,7 @@ def account_settings():
 @app.route('/profile')
 @login_required
 def profile():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('core_modules/profile/index.html',
                            icon="fa fa-dashboard",
@@ -293,7 +293,7 @@ def profile():
 @app.route('/notifications')
 @login_required
 def notifications():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('core_modules/profile/notifications.html',
                            icon="fa fa-dashboard",
@@ -311,7 +311,7 @@ def notifications():
 @app.route('/tasks')
 @login_required
 def tasks():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('core_modules/profile/tasks.html',
                            icon="fa fa-dashboard",
@@ -334,12 +334,12 @@ def tasks():
 @login_required
 @app_super_admin_required
 def app_settings():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     names_and_aesthetics_form = Config_Names_and_Aesthetics(request.form)
     secret_key_form = Config_Secret_Key(request.form)
     modules_form = Config_Modules(request.form)
-    setting_values = {'App Name': get_app_settings('App Name'),
+    setting_values = {'App Short-Title': get_app_settings('App Short-Title'),
                         'App Icon': get_app_settings('App Icon'),
                         'App Title': get_app_settings('App Title'),
                         'App Short-Title': get_app_settings('App Short-Title'),
@@ -406,7 +406,7 @@ def app_settings():
 @login_required
 @app_basic_admin_required
 def user_management():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     modals = {'UserAddModal': user_add_modal, 'UserUpdateModal': user_update_modal}
 
@@ -485,7 +485,7 @@ def user_management():
 @login_required
 @app_super_admin_required
 def module_settings():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     oms_settings_form = OMS_Settings(request.form)
     oms_setting_values = {'Twilio Account SID': get_oms_settings('Twilio Account SID'),
@@ -538,7 +538,7 @@ def module_settings():
 @login_required
 @app_basic_admin_required
 def gallery():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     shared_local_scripts = ('js/app.includes.js', 'js/components/gallery/galleryController.js')
 
@@ -561,7 +561,7 @@ def gallery():
 @login_required
 @oms_basic_admin_required
 def oms_home():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
 
     return render_template('modules/operations/home.html',
@@ -582,7 +582,7 @@ def oms_home():
 @login_required
 @oms_basic_admin_required
 def operations(*args):
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     render_settings = {'Phone Number Visibility': OmsConfig.query.filter_by(key='Phone Number Visibility').first().value.lower(),
                        'Twilio Phone Number': OmsConfig.query.filter_by(key='Twilio Phone Number').first().value}
@@ -663,7 +663,7 @@ def sms_check_in():
 @login_required
 @oms_super_admin_required
 def oms_settings():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     oms_settings_form = OMS_Settings(request.form)
     oms_setting_values = {'Twilio Account SID': get_oms_settings('Twilio Account SID'),
@@ -714,7 +714,7 @@ def call():
 @login_required
 @crm_basic_admin_required
 def crm_home():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
 
     return render_template('modules/crm/home.html',
@@ -736,7 +736,7 @@ def crm_home():
 @crm_basic_admin_required
 # def crm(*kwargs):
 def crm():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     modals = {'CustomerAddModal': customer_add_modal, 'CustomerUpdateModal': customer_update_modal}
     add_form = CustomerAddForm(request.form)
@@ -920,7 +920,7 @@ def customer_other():
 @login_required
 @crm_super_admin_required
 def crm_settings():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('modules/crm/settings.html',
                            icon="fa fa-dashboard",
@@ -942,7 +942,7 @@ def crm_settings():
 @login_required
 @hrm_basic_admin_required
 def hrm_home():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
 
     return render_template('modules/hrm/home.html',
@@ -964,7 +964,7 @@ def hrm_home():
 @login_required
 @hrm_basic_admin_required
 def hrm():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     modals = {'PersonnelAddModal': personnel_add_modal, 'PersonnelUpdateModal': personnel_update_modal}
     add_form = PersonnelAddForm(request.form)
@@ -1059,7 +1059,7 @@ def hrm():
 @login_required
 @hrm_super_admin_required
 def hrm_settings():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('modules/hrm/settings.html',
                            icon="fa fa-dashboard",
@@ -1084,7 +1084,7 @@ def hrm_settings():
 @login_required
 @ams_basic_admin_required
 def accounting():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('modules/accounting/index.html',
                            icon="fa fa-bar-chart",
@@ -1103,7 +1103,7 @@ def accounting():
 @login_required
 @ams_super_admin_required
 def ams_settings():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('modules/accounting/settings.html',
                            icon="fa fa-dashboard",
@@ -1126,7 +1126,7 @@ def ams_settings():
 @login_required
 @mms_basic_admin_required
 def marketing():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     errors = []
     results = {}
     login_form = LoginForm(request.form)
@@ -1209,7 +1209,7 @@ def marketing():
 @login_required
 @mms_super_admin_required
 def mms_settings():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     return render_template('modules/marketing/settings.html',
                            icon="fa fa-dashboard",
@@ -1228,7 +1228,7 @@ def mms_settings():
 @app.route('/cool-analytics')
 # @login_required
 def cool_analytics():
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     modular_cdn_scripts = ('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js', )
     # shared_local_scripts = ('js/Chart.js/dist/chart.bundle.min.js', 'js/require.js/require.min.js')
@@ -1307,7 +1307,7 @@ class Violations(db.Model):
 # @login_required
 def violations():
     import datetime
-    logged_in = current_user.is_authenticated()
+    logged_in = current_user.is_authenticated
     login_form = LoginForm(request.form)
     # modular_cdn_scripts = ('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js', )
     modular_cdn_scripts = ('//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js',)

@@ -54,8 +54,8 @@ class Config_Names_and_Aesthetics(BaseForm):
 
     # - Note: The 'value' render keywords shown below currently don't work, and are there as placeholders for potential
     # future refactoring.
-    app_name = StringField('app_name', render_kw={"placeholder": "App Name", 'value': get_app_settings('App Name'),
-                           'label': 'App Name'}, validators=[Optional(), Length(min=1, max=50)])
+    app_name = StringField('app_name', render_kw={"placeholder": "App Short-Title", 'value': get_app_settings('App Short-Title'),
+                           'label': 'App Short-Title'}, validators=[Optional(), Length(min=1, max=50)])
     app_icon = StringField('app_icon', render_kw={"placeholder": "App Icon", 'value': get_app_settings('App Icon'),
                            'label': 'App Icon'}, validators=[Optional(), Length(min=1, max=100)])
     app_title = StringField('app_title', render_kw={"placeholder": "App Title", 'value': get_app_settings('App Title'),

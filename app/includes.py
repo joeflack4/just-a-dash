@@ -527,7 +527,7 @@ def add_to_db(data_to_add, data_context):
 def get_app_settings(*args):
     if not args:
         app_config_settings = {}
-        app_config_keys = ['App Icon', 'App Name', 'App Short-Title', 'App Title', 'Secret Key', 'Toggle Placeholders']
+        app_config_keys = ['App Icon', 'App Short-Title', 'App Short-Title', 'App Title', 'Secret Key', 'Toggle Placeholders']
         for key in app_config_keys:
             try:
                 app_config_settings[key] = AppConfig.query.filter_by(key=key).first().value
@@ -535,7 +535,7 @@ def get_app_settings(*args):
                 app_config_settings[key] = False
         # try:
         #     app_config_settings = {'App Icon': AppConfig.query.filter_by(key='App Icon').first().value,
-        #                            'App Name': AppConfig.query.filter_by(key='App Name').first().value,
+        #                            'App Short-Title': AppConfig.query.filter_by(key='App Short-Title').first().value,
         #                            'App Short-Title': AppConfig.query.filter_by(key='App Short-Title').first().value,
         #                            'App Title': AppConfig.query.filter_by(key='App Title').first().value,
         #                            'Secret Key': AppConfig.query.filter_by(key='Secret Key').first().value,
@@ -595,7 +595,7 @@ def update_names_and_aesthetics(current_user, names_and_aesthetics_form):
     try:
         fields_to_update = 0
         form = names_and_aesthetics_form
-        settings = ((form.app_name.data, AppConfig.query.filter_by(key='App Name')),
+        settings = ((form.app_name.data, AppConfig.query.filter_by(key='App Short-Title')),
                     (form.app_icon.data, AppConfig.query.filter_by(key='App Icon')),
                     (form.app_title.data, AppConfig.query.filter_by(key='App Title')),
                     (form.app_short_title.data, AppConfig.query.filter_by(key='App Short-Title')),

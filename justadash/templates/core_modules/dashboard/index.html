@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+{% block content -%}
+{#  <div page-header>#}
+  <h4 class="page-header">Welcome</h4>
+{#    <h4 class="page-header">Welcome{% if current_user.is_authenticated %}, {{ current_user.username }}.#}
+{#      {% else %} ~{% endif %}#}
+{#    </h4>#}
+{#  </div>#}
+
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+      <!-- Broken - Relative file pathing. -->
+      {# {% include "components/dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+      {# {% import "components/dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+      {# {% include "dashboard_small_boxes.html" %} #}<!-- Content: Small Boxes  -->
+      <!-- /Broken -->
+
+{#Remove this for main project.    #}
+{#    <img src ="http://www.sonshinecompanioncare.com/wp-content/uploads/2015/03/SCC-Header-01.png"/>#}
+
+{#    <h4>Current Features</h4>#}
+{#    <ul>#}
+{#      <li><a href="/checkin">Check-in Service</a></li>#}
+{#      <li><a href="/hrm">CP List (WiP)</a></li>#}
+{#      <li><a href="/crm">Client List (WiP)</a></li>#}
+{#    </ul>#}
+
+{% if app_config_settings['Toggle Placeholders'] == 'true' %}
+  <p>The following metrics are just placeholders.</p>
+
+  {% include "core_modules/dashboard/components/dashboard_small_boxes.html" %} <!-- Content: Small Boxes  -->
+{% else %}
+    <h3>Modules</h3>
+    <ul>
+      <li><a href="{{ url_for('index') }}">Operations Management</a></li>
+      <li><a href="{{ url_for('index') }}">Customer Relations Management</a></li>
+      <li><a href="{{ url_for('index') }}">Human Resource Management</a></li>
+    </ul>
+{% endif %}
+
+{#  {% include "core_modules/dashboard/components/dashboard_footer.html" %} <!-- Content: Footer -->#}
+{%- endblock content %}

@@ -1,32 +1,35 @@
-        # - Flask
-Flask
-Jinja2
-itsdangerous
-Werkzeug
+# - Flask
+#Flask
+Flask==0.10.1
+Jinja2==2.7.3
+itsdangerous==0.24
+Werkzeug==0.9.6
 
 # - Flask Extensions #
-#Flask-WhooshAlchemy
+#Flask-WhooshAlchemy==0.56
 #Either cffi or cryptography is a dependency for Flask-Bcrypt#
 #cffi
 cryptography
 Flask-Bcrypt
-Flask-SQLAlchemy
+Flask-SQLAlchemy==2.0
 Flask-Migrate
-Flask-Login
-Flask-Testing
-Flask-WTF
-Flask-Mail
+Flask-Login==0.2.11
+Flask-Testing==0.4.2
+Flask-WTF==0.12
+Flask-Mail==0.9.0
 Flask-Excel
 Flask-Restless
 # Flask-Triangle
 Flask-Triangle-joeflack4
 
 # - Server Dependencies #
-gunicorn
+#gunicorn==18.0.0
+gunicorn==19.1.1
 
 # - Database Dependencies
+#psycopg2==2.6.1
 psycopg2
-SQLAlchemy
+SQLAlchemy==0.9.7
 
 # - Libraries
 requests

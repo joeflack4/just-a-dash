@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{#{% include "core_modules/login/base.html" %}#}
+
+<!-- Content -->
+{% block content_header -%}
+  {% include "core_components/content_area/content_header.html" %} <!-- Content: Header -->
+{%- endblock content_header %}
+
+{% block content -%}
+
+    {# - Use html of super-block template.#}
+    {{ super() }}
+
+    <p>Click <a href='{{ url_for('index') }}'>here</a> to return to home.</p>
+
+{%- endblock content %}

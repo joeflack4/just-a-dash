@@ -1,0 +1,110 @@
+{% extends "adminlte/base.html" %}
+{% import "adminlte/fixes.html" as fixes %}
+
+<!-- Styles -->
+{% block styles -%}
+  {# Bootstrap, Font Awesome, Ionicons, AdminLTE #}
+    {{ super() }}
+  {# Proprietary Styles #}
+    {#<link href="../static/css/app.main.css" rel="stylesheet" type="text/css" />#}
+    <link href="{{ url_for('index', filename='css/app.main.css') }}" rel="stylesheet" type="text/css" />
+    {% for script_path in shared_local_styles %}
+      <script src="{{ url_for('index', filename=script_path) }}"></script>
+    {% endfor %}
+    {% for script_path in modular_local_styles %}
+      <script src="{{ url_for('index', filename=script_path) }}"></script>
+    {% endfor %}
+
+{%- endblock styles %}
+
+<!-- Header -->
+{%  block header -%}
+    <header class="header">
+      <a href="{{ url_for('index') }}" class="logo">
+          <!-- Add the class icon to your logo image or logo icon to add the margining -->
+          {# Just-a-Dash #}
+          {#          <span class="glyphicon glyphicon-equalizer" aria-hidden="true"> Just-a-Dash</span>#}
+{#          <span aria-hidden="true"> <i class="{{ app_config_settings['App Icon'] }}"></i> {{ app_config_settings['App Short-Title'] }}</span>#}
+          <span><i class="{{ app_config_settings['App Icon'] }}"></i> {{ app_config_settings['App Short-Title'] }}</span>
+      </a>
+
+      <!-- Header Navbar: style can be found in header.less -->
+      <nav class="navbar navbar-static-top" role="navigation">
+      {% block navbar %}
+          {% include "core_components/navbar/sidebar_toggle_button.html" %} <!-- Sidebar Toggle -->
+          <div class="navbar-right">
+            <ul class="nav navbar-nav">
+{#              {% include "core_components/navbar/messages_menu.html" %} <!-- Messages -->#}
+              {% include "core_components/navbar/notifications_menu.html" %} <!-- Notifications -->
+              {% include "core_components/navbar/tasks_menu.html" %} <!-- Tasks -->
+              {% include "core_components/navbar/user_menu.html" %} <!-- User Account -->
+            </ul>
+          </div>
+        {%- endblock navbar %}
+      </nav>
+    </header>
+{%- endblock header %}
+
+
+<!-- Sidebar -->
+{% block sidebar -%}
+  {% include "core_components/sidebar/sidebar.html" %} <!-- Sidebar -->
+{%- endblock sidebar %}
+
+
+<!-- Content -->
+{% block content -%}
+
+        {# Message Flashes #}
+        {# The 4 Bootstrap alert classes are: success, info, warning, & danger. #}
+        <div>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                    <div
+                    {% if category == 'message' %}
+                      class="alert alert-warning alert-dismissable" role="alert">
+                    {% else %}
+                      class="alert alert-{{ category }} alert-dismissable" role="alert">
+                    {% endif %}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{ message }}
+                      </div>
+                {% endfor %}
+              {% endif %}
+          {% endwith %}
+        </div>
+{%- endblock content %}
+
+
+<!-- Modals -->
+{% block modals -%}
+  {% include "core_components/modals/modals.html" %}
+{%- endblock modals %}
+
+
+<!-- Scripts -->
+{% block scripts -%}
+
+    <!-- Jquery, Bootstrap, & AdminLTE -->
+      {{ super() }}
+    <!-- AngularJS Library -->
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    {# AngularJS Module #}
+      <script src="{{ url_for('index', filename='js/app.module.js') }}"></script>
+    <!-- CDN's -->
+      {% for script_path in shared_cdn_scripts %}
+        <script src="{{ script_path }}"></script>
+      {% endfor %}
+      {% for script_path in modular_cdn_scripts %}
+        <script src="{{ script_path }}"></script>
+      {% endfor %}
+    <!-- Proprietary Scripts & AngularJS Services -->
+      {% for script_path in shared_local_scripts %}
+        <script src="{{ url_for('index', filename=script_path) }}"></script>
+      {% endfor %}
+      {% for script_path in modular_local_scripts %}
+        <script src="{{ url_for('index', filename=script_path) }}"></script>
+      {% endfor %}
+
+{%- endblock scripts %}

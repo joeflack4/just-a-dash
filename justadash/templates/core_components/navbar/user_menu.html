@@ -1,0 +1,87 @@
+<!-- User Account: style can be found in dropdown.less -->
+<!-- Modals for login/registration are curently in base.html -->
+
+<!-- Dropdown Menu -->
+{% if logged_in %}
+    <li class="dropdown user user-menu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-user"></i>
+        <span>{{ current_user.username }} <i class="caret"></i></span>
+      </a>
+      <ul class="dropdown-menu">
+        <!-- User image -->
+        <li class="user-header bg-light-blue">
+{#          <img src="../../img/avatar3.png" class="img-circle" alt="User Image" />#}
+{#          <img src="avatar3.png" class="img-circle" alt="User Image" />#}
+            <p><strong>~ {{ current_user.username }} ~</strong></p>
+            {% if current_user.admin_role != 'None' %}User/App Admin: {{ current_user.admin_role }}<br/>{% endif %}
+            {% if current_user.oms_role != 'None' %}OMS Admin: {{ current_user.oms_role }}<br/>{% endif %}
+            {% if current_user.crm_role != 'None' %}CRM Admin: {{ current_user.crm_role }}<br/>{% endif %}
+            {% if current_user.hrm_role != 'None' %}HRM Admin: {{ current_user.hrm_role }}<br/>{% endif %}
+            {% if current_user.ams_role != 'None' %}AMS Admin: {{ current_user.ams_role }}<br/>{% endif %}
+    {% if current_user.mms_role != 'None' %}MMS Admin: {{ current_user.mms_role }}{% endif %}
+        </li>
+        <!-- Menu Body -->
+        <li class="user-body">
+          <div class="col-xs-4 text-center">
+            <a href="{{ url_for('index') }}">Dashboard</a>
+          </div>
+          <div class="col-xs-4 text-center">
+            <a href="{{ url_for('index') }}">Notifications</a>
+          </div>
+          <div class="col-xs-4 text-center">
+            <a href="{{ url_for('index') }}">Tasks</a>
+          </div>
+        </li>
+        <!-- Menu Footer-->
+        <li class="user-footer">
+          <div class="pull-left">
+            <a href="{{ url_for('index') }}" class="btn btn-default btn-flat">Profile</a>
+          </div>
+          <div class="pull-right">
+            <a href="{{ url_for('index') }}" class="btn btn-default btn-flat">Sign out</a>
+          </div>
+        </li>
+      </ul>
+    </li>
+
+{% else %}
+    <li class="dropdown notifications-menu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-user"></i>
+        <span>Sign in <i class="caret"></i></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <ul class="menu">
+            <div align="center">
+                <li>
+                   <p></p>
+                </li>
+                <li>
+                   <p>Just-a-Dash application is a light-weight, mobile friendly, scaffolded EMS platform, for your enjoyment!</p>
+                </li>
+                <li>
+{#                  <a href="#Login">#}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#LoginForm">
+                      Login
+                    </button>
+{#                  </a>#}
+                </li>
+                <li>
+                  <p></p>
+                </li>
+                <li>
+{#                  <a href="#Register">#}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#RegisterForm">
+                      Register
+                    </button>
+{#                  </a>#}
+                </li>
+            </div>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+{% endif %}
